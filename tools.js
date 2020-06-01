@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name       DG S0L color coding
+// @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0001
+// @version    0.3.0002
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
@@ -10,6 +10,11 @@
 
 /* TODO:
 integrate/refactor scripts 1, 2 and 4 from Mord */
+
+/* Config start */
+var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
+var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
+/* Config end */
 
 /* function to decode URI params */
 function getQueryParams(qs) {
@@ -49,12 +54,7 @@ function addGlobalStyle(css) {
     head.appendChild(style);
 }
 
-/* Add custom styles */
-addGlobalStyle('.sol { COLOR: #027780; }');
 
-var nap_ally = [ "[S0L]", "[RoF]" ];
-
-var custom_style = "COLOR: #FFD54F;"; // CHANGE HERE
 var elems = document.getElementsByTagName("div");
 var deb=0;
 var player="";
