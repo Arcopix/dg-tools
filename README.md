@@ -29,14 +29,12 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 **Special thanks**
 
 * Mordread
-
-** for providing the base (used to be jQuery code) for some of the navigation
-** for providing the idea of sorting radars (still under testing)
-** for providing the initial implementation of TOTAL POPULATION patch
+* * for providing the base (used to be jQuery code) for some of the navigation
+* * for providing the idea of sorting radars (still under testing)
+* *  for providing the initial implementation of TOTAL POPULATION patch
 
 * Sintelion
-
-** for providing the idea of TOTAL POPULATION patch
+* * for providing the idea of TOTAL POPULATION patch
 
 **Bugs and issues**
 
