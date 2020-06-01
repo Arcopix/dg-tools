@@ -208,18 +208,14 @@ coords = document.getElementsByClassName('coords')
 for (i=0; i<coords.length; i++)
 {
     let c = coords[i];
-//    if (c.tagName!='div') {
-//        continue;
-//    }
-
     c = c.getElementsByTagName('span')[0];
 
     /* Don't bother with home planets */
     if (c.innerText=='0.0.0') {
         continue;
     }
-    let p = c.innerText.split('.');
 
+    let p = c.innerText.split('.');
     c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
 }
 
@@ -253,5 +249,5 @@ if (location.href.includes('/radar/')) {
 }
 
 }
-    
+
 /* End of script */
