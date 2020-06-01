@@ -219,10 +219,6 @@ for (i=0; i<coords.length; i++)
     c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
 }
 
-if (0) {
-
-/* Under development / testing on medusa */
-
 /* Fix sorting of radarts */
 var radars, radar, fleetRow, fleetCount;
 if (location.href.includes('/radar/')) {
@@ -234,20 +230,26 @@ if (location.href.includes('/radar/')) {
         radar = radars[i];
         fleetRow = radar.getElementsByClassName('entry');
 
+        let crow = [];
         for (j=fleetRow.length-1; j>=0; j--) {
-            ;//fleetRow[j].parentNode.removeChild(fleetRow[j]);
+            crow[j] = fleetRow[j];
+            fleetRow[j].parentNode.removeChild(fleetRow[j]);
         }
-/*
-        alert(e.innerHTML);
-        e.detach().sort(function (one, two) {
-            let a = parseInt(one.getElementsByClass('turns')[0].innerText)
-            let b = parseInt(two.getElementsByClass('turns')[0].innerText)
-            return( a <b> b ? 1 : 0 );
-        });*/
-    }
-    //alert("we are the radar mate");
-}
 
+        for (m=24; m>=0; m--) {
+            for (j=crow.length-1; j>=0; j--) {
+                if (crow[j]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                    radars[i].appendChild(crow[j]);
+                    crow[j] = 0;
+                }
+            }
+        }
+        for (j=crow.length-1; j>=0; j--) {
+            if (crow[j]) {
+                radars[i].appendChild(crow[j]);
+            }
+        }
+    }
 }
 
 /* End of script */
