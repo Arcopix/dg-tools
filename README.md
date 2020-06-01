@@ -26,22 +26,22 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
  /* Config end */
   ```
 
-** Special thanks **
+**Special thanks**
 
 * Mordread - for providing the base (used to be jQuery code) for some of the navigation
 * Mordread - for providing the idea of sorting radars (still under testing)
 
-** Bugs and issues **
+**Bugs and issues**
 
 If you find any feel free to open an issue on GitHub (https://github.com/Arcopix/dg-tools/issues) or message me in DarkGalaxy forums.
 
-** Warranty **
+**Warranty**
 
 The open source software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 applicable licenses for more details.
 
-** License **
+**License**
 
 BSD 3-Clause License
 
