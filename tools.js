@@ -5,7 +5,7 @@
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
-// @copyright  2013, Stefan Lekov / Arcopix / Devhex Ltd
+// @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
 // ==/UserScript==
 
 /* TODO:
@@ -54,7 +54,7 @@ function addGlobalStyle(css) {
     head.appendChild(style);
 }
 
-
+/* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
 var deb=0;
 var player="";
@@ -63,7 +63,7 @@ for (var i=0; i<elems.length; i++) {
     if (e.className=="allianceName"&&nap_ally.includes(e.innerText.trim())) {
         e.style = custom_style;
         var p = e.parentElement;
-        for (var j=0; j<p.children.length; j++) {
+for (var j=0; j<p.children.length; j++) {
             if (p.children[j].className=="playerName") {
                 p.style = custom_style;
             }
@@ -95,7 +95,6 @@ for (i=0; i<elems.length; i++) {
     p = e.parentElement.parentElement;
 
     for (j=0; j<p.children.length; j++) {
-        //alert(p.children[j].className);
         if (p.children[j].className=="left name") {
             name = p.children[j].innerText;
         }
