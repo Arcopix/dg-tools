@@ -316,4 +316,19 @@ if (location.href.includes('/comms/')) {
         });
     }
 }
+
+/* Request confirmation when kicking people from alliance */
+if (location.href.includes('/alliances/')) {
+    k = document.querySelectorAll('input[type=submit]');
+    for (i=0; i<=k.length; i++) {
+        if (k[i].value=='Kick Member') {
+            l=k[i];
+            /* Get the player name. This is a bit ugly, but oh well... */
+            let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
+            l.confirmString = "Are you sure you want to kick " + playerName + "?";
+            l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+        }
+    }
+}
+
 /* End of script */
