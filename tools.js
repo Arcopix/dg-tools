@@ -8,9 +8,6 @@
 // @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
 // ==/UserScript==
 
-/* TODO:
-integrate/refactor scripts 1, 2 and 4 from Mord */
-
 /* Config start */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
 var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
