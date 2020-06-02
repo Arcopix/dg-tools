@@ -14,6 +14,7 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Sorts comms in the radar section based on turns
 1. Smart inputs on coordinates in fleet orders and scanning (using dot and backspace now navigates between the coordinates)
 1. Added confirmation on kicking members
+1. Selecting scan type in comms can be done by clicking anywhere on the row
 
 **Installation**
 
