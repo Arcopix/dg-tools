@@ -143,7 +143,7 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 }
 
 /* Navigate through fleets using ARROW keys */
-if (document.querySelector('.nextPrevFleet, .left')) {
+if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .left')) {
     /* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROWO ONLY */
     if (document.querySelector('.nextPrevFleet').innerText === '»') {
         document.addEventListener("keydown", e => {
