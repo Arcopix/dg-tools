@@ -12,6 +12,7 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Implements switching through fleets with ARROW KEYS (left and right)
 1. Show all population in the planet list and planet details page, not just available population
 1. Sorts comms in the radar section based on turns
+1. Added confirmation on kicking members
 
 **Installation**
 
