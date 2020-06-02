@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0004
+// @version    0.3.0005
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
@@ -15,6 +15,9 @@ integrate/refactor scripts 1, 2 and 4 from Mord */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
 var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
 /* Config end */
+
+/* Common counters */
+var i, j, k, l, m, n;
 
 /* function to decode URI params */
 function getQueryParams(qs) {
@@ -58,12 +61,12 @@ function addGlobalStyle(css) {
 var elems = document.getElementsByTagName("div");
 var deb=0;
 var player="";
-for (var i=0; i<elems.length; i++) {
+for (i=0; i<elems.length; i++) {
     var e = elems[i];
     if (e.className=="allianceName"&&nap_ally.includes(e.innerText.trim())) {
         e.style = custom_style;
         var p = e.parentElement;
-        for (var j=0; j<p.children.length; j++) {
+        for (j=0; j<p.children.length; j++) {
             if (p.children[j].className=="playerName") {
                 p.style = custom_style;
             }
@@ -222,6 +225,7 @@ for (i=0; i<coords.length; i++)
 /* Fix sorting of radarts */
 var radars, radar, fleetRow, fleetCount;
 if (location.href.includes('/radar/')) {
+
     radars = document.getElementsByClassName('opacDarkBackground');
     for (i=0; i<radars.length; i++) {
         if (radars[i].className.includes('paddingMid')) {
@@ -244,6 +248,7 @@ if (location.href.includes('/radar/')) {
                 }
             }
         }
+
         for (j=crow.length-1; j>=0; j--) {
             if (crow[j]) {
                 radars[i].appendChild(crow[j]);
