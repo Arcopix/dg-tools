@@ -220,7 +220,7 @@ for (i=0; i<coords.length; i++)
     if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0') {
         continue;
     }
-    if (c) {
+    if (c && c.innerText.match(/[0-9]+\.[0-9]+\.[0-9]+/g)) {
         let p = c.innerText.split('.');
         c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
     }
