@@ -211,7 +211,10 @@ coords = document.getElementsByClassName('coords')
 for (i=0; i<coords.length; i++)
 {
     let c = coords[i];
-    c = c.getElementsByTagName('span')[0];
+    /* In planet details there is no span on the planer coordinates */
+    if (!location.href.includes('/planet/')) {
+        c = c.getElementsByTagName('span')[0];
+    }
 
     /* Don't bother with home planets */
     if (c.innerText=='0.0.0') {
