@@ -299,10 +299,21 @@ if (document.querySelector('input[name="coordinate.0"]')) {
     if (e.which == 8 && this.value=='') {
         e.preventDefault();
         document.querySelector('input[name="coordinate.1"]').focus();
-
     }
 });
 }
 
-
+/* Add short onclick on different comms scans to select that type of scan */
+if (location.href.includes('/comms/')) {
+    k = document.getElementsByTagName('form')[0];
+    l = k.querySelectorAll('div.entry');
+    for (i=0; i<l.length; i++) {
+        if (l[i].className.includes('coordsInput')) {
+            continue;
+        }
+        l[i].addEventListener('click', function(e) {
+            this.getElementsByTagName('input')[0].click();
+        });
+    }
+}
 /* End of script */
