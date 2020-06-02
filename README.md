@@ -23,7 +23,7 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Click on "Create new script"
 1. Paste the code in tools.js
 1. Modify the configuration on line 15 and  (naps and color for naps):
-  ```
+  ```javascript
  /* Config start */
  var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
  var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
