@@ -12,7 +12,7 @@
 integrate/refactor scripts 1, 2 and 4 from Mord */
 
 /* Config start */
-var nap_ally = [ "[S0L]", "[RoF]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
+var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
 var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
 /* Config end */
 
@@ -223,8 +223,6 @@ for (i=0; i<coords.length; i++)
     if (c && c.innerText.match(/[0-9]+\.[0-9]+\.[0-9]+/g)) {
         let p = c.innerText.split('.');
         c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
-    } else {
-        //alert(c.innerText + ' did not match');
     }
 }
 
