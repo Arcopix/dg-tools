@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0006
+// @version    0.3.0009
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
@@ -16,7 +16,7 @@ var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color
 var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
 /* Config end */
 
-/* Common counters */
+/* Common counters & pointers */
 var i, j, k, l, m, n;
 
 /* function to decode URI params */
@@ -88,12 +88,12 @@ if (window.location.pathname=="/mail/" && window.location.search!=="") {
         document.getElementsByName('to')[0].value = query.to;
     }
 }
-var name, left;
 
 /* Add confirmation on canceling buildings */
 elems = document.getElementsByClassName("queueRemoveButton");
 for (i=0; i<elems.length; i++) {
     var add_confirm = 0;
+    var left, name;
     e = elems[i];
     p = e.parentElement.parentElement;
 
@@ -114,7 +114,6 @@ for (i=0; i<elems.length; i++) {
         e.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
     }
 }
-
 
 /* Script by Mordread -> use ARROW keys to navigate in navigation
    fix by Arcopix - removed anonymous function, since it was useless */
@@ -169,7 +168,6 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
         });
     }
 }
-
 
 /* No longer showing "FREE" population, show total population,
   Original concept by Mordread
@@ -271,36 +269,33 @@ if (location.href.includes('/radar/')) {
 if (document.querySelector('input[name="coordinate.0"]')) {
     var el = document.querySelector('input[name="coordinate.0"]');
     el.addEventListener('keydown', function(e) {
-    if(e.which == 110 || e.which == 188 || e.which == 190) {
-        e.preventDefault();
-        document.querySelector('input[name="coordinate.1"]').value = '';
-        document.querySelector('input[name="coordinate.1"]').focus();
-
-    }
-});
+        if(e.which == 110 || e.which == 188 || e.which == 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').value = '';
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 
     el = document.querySelector('input[name="coordinate.1"]');
     el.addEventListener('keydown', function(e) {
-    if(e.which == 110 || e.which == 188 || e.which == 190) {
-        e.preventDefault();
-        document.querySelector('input[name="coordinate.2"]').value = '';
-        document.querySelector('input[name="coordinate.2"]').focus();
-
-    }
-    if (e.which == 8 && this.value=='') {
-        e.preventDefault();
-        document.querySelector('input[name="coordinate.0"]').focus();
-
-    }
-});
+        if(e.which == 110 || e.which == 188 || e.which == 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.2"]').value = '';
+            document.querySelector('input[name="coordinate.2"]').focus();
+        }
+        if (e.which == 8 && this.value=='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.0"]').focus();
+        }
+    });
 
     el = document.querySelector('input[name="coordinate.2"]');
     el.addEventListener('keydown', function(e) {
-    if (e.which == 8 && this.value=='') {
-        e.preventDefault();
-        document.querySelector('input[name="coordinate.1"]').focus();
-    }
-});
+        if (e.which == 8 && this.value=='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 }
 
 /* Add short onclick on different comms scans to select that type of scan */
