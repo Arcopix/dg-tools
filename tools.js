@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0005
+// @version    0.3.0006
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
@@ -217,12 +217,13 @@ for (i=0; i<coords.length; i++)
     }
 
     /* Don't bother with home planets */
-    if (c.innerText=='0.0.0') {
+    if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0') {
         continue;
     }
-
-    let p = c.innerText.split('.');
-    c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
+    if (c) {
+        let p = c.innerText.split('.');
+        c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
+    }
 }
 
 /* Fix sorting of radars */
@@ -265,5 +266,43 @@ if (location.href.includes('/radar/')) {
         }
     }
 }
+
+/* Smart input for coords */
+if (document.querySelector('input[name="coordinate.0"]')) {
+    var el = document.querySelector('input[name="coordinate.0"]');
+    el.addEventListener('keydown', function(e) {
+    if(e.which == 110 || e.which == 188 || e.which == 190) {
+        e.preventDefault();
+        document.querySelector('input[name="coordinate.1"]').value = '';
+        document.querySelector('input[name="coordinate.1"]').focus();
+
+    }
+});
+
+    el = document.querySelector('input[name="coordinate.1"]');
+    el.addEventListener('keydown', function(e) {
+    if(e.which == 110 || e.which == 188 || e.which == 190) {
+        e.preventDefault();
+        document.querySelector('input[name="coordinate.2"]').value = '';
+        document.querySelector('input[name="coordinate.2"]').focus();
+
+    }
+    if (e.which == 8 && this.value=='') {
+        e.preventDefault();
+        document.querySelector('input[name="coordinate.0"]').focus();
+
+    }
+});
+
+    el = document.querySelector('input[name="coordinate.2"]');
+    el.addEventListener('keydown', function(e) {
+    if (e.which == 8 && this.value=='') {
+        e.preventDefault();
+        document.querySelector('input[name="coordinate.1"]').focus();
+
+    }
+});
+}
+
 
 /* End of script */
