@@ -222,33 +222,39 @@ for (i=0; i<coords.length; i++)
     c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
 }
 
-/* Fix sorting of radarts */
+/* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (location.href.includes('/radar/')) {
-
+    /* Get and sort out each coms/radar section */
     radars = document.getElementsByClassName('opacDarkBackground');
     for (i=0; i<radars.length; i++) {
+        /* Skip the header */
         if (radars[i].className.includes('paddingMid')) {
             continue;
         }
+
         radar = radars[i];
         fleetRow = radar.getElementsByClassName('entry');
 
+        /* Clone radar rows and remove the original ones */
         let crow = [];
         for (j=fleetRow.length-1; j>=0; j--) {
             crow[j] = fleetRow[j];
             fleetRow[j].parentNode.removeChild(fleetRow[j]);
         }
 
+        /* For every possible TICK, reducing output the rows */
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
                 if (crow[j]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
                     radars[i].appendChild(crow[j]);
+                    /* Nullify the row so we would not have to search it by class, text and so on */
                     crow[j] = 0;
                 }
             }
         }
 
+        /* Make sure to add any rows that are not already aded/invalidated */
         for (j=crow.length-1; j>=0; j--) {
             if (crow[j]) {
                 radars[i].appendChild(crow[j]);
