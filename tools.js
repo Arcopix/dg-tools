@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0004
+// @version    0.3.0005
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
@@ -15,6 +15,9 @@ integrate/refactor scripts 1, 2 and 4 from Mord */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
 var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
 /* Config end */
+
+/* Common counters */
+var i, j, k, l, m, n;
 
 /* function to decode URI params */
 function getQueryParams(qs) {
@@ -58,12 +61,12 @@ function addGlobalStyle(css) {
 var elems = document.getElementsByTagName("div");
 var deb=0;
 var player="";
-for (var i=0; i<elems.length; i++) {
+for (i=0; i<elems.length; i++) {
     var e = elems[i];
     if (e.className=="allianceName"&&nap_ally.includes(e.innerText.trim())) {
         e.style = custom_style;
         var p = e.parentElement;
-        for (var j=0; j<p.children.length; j++) {
+        for (j=0; j<p.children.length; j++) {
             if (p.children[j].className=="playerName") {
                 p.style = custom_style;
             }
@@ -140,7 +143,7 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 }
 
 /* Navigate through fleets using ARROW keys */
-if (document.querySelector('.nextPrevFleet, .left')) {
+if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .left')) {
     /* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROWO ONLY */
     if (document.querySelector('.nextPrevFleet').innerText === '»') {
         document.addEventListener("keydown", e => {
@@ -219,35 +222,45 @@ for (i=0; i<coords.length; i++)
     c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
 }
 
-if (0) {
-
-/* Under development / testing on medusa */
-
-/* Fix sorting of radarts */
+/* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (location.href.includes('/radar/')) {
+    /* Get and sort out each coms/radar section */
     radars = document.getElementsByClassName('opacDarkBackground');
     for (i=0; i<radars.length; i++) {
+        /* Skip the header */
         if (radars[i].className.includes('paddingMid')) {
             continue;
         }
+
         radar = radars[i];
         fleetRow = radar.getElementsByClassName('entry');
 
+        /* Clone radar rows and remove the original ones */
+        let crow = [];
         for (j=fleetRow.length-1; j>=0; j--) {
-            ;//fleetRow[j].parentNode.removeChild(fleetRow[j]);
+            crow[j] = fleetRow[j];
+            fleetRow[j].parentNode.removeChild(fleetRow[j]);
         }
-/*
-        alert(e.innerHTML);
-        e.detach().sort(function (one, two) {
-            let a = parseInt(one.getElementsByClass('turns')[0].innerText)
-            let b = parseInt(two.getElementsByClass('turns')[0].innerText)
-            return( a <b> b ? 1 : 0 );
-        });*/
-    }
-    //alert("we are the radar mate");
-}
 
+        /* For every possible TICK, reducing output the rows */
+        for (m=24; m>=0; m--) {
+            for (j=crow.length-1; j>=0; j--) {
+                if (crow[j]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                    radars[i].appendChild(crow[j]);
+                    /* Nullify the row so we would not have to search it by class, text and so on */
+                    crow[j] = 0;
+                }
+            }
+        }
+
+        /* Make sure to add any rows that are not already aded/invalidated */
+        for (j=crow.length-1; j>=0; j--) {
+            if (crow[j]) {
+                radars[i].appendChild(crow[j]);
+            }
+        }
+    }
 }
 
 /* End of script */
