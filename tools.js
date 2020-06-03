@@ -207,15 +207,17 @@ for (i=0; i<coords.length; i++)
 {
     let c = coords[i];
     /* In planet details there is no span on the planer coordinates */
-    if (!location.href.includes('/planet/')) {
-        c = c.getElementsByTagName('span')[0];
+    let __c = c.getElementsByTagName('span')[0];
+    if (__c) {
+        c = __c;
     }
 
     /* Don't bother with home planets */
     if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0') {
         continue;
     }
-    if (c && c.innerText.match(/[0-9]+\.[0-9]+\.[0-9]+/g)) {
+
+    if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+$/g)) {
         let p = c.innerText.split('.');
         c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/">' + c.innerHTML + '</a>';
     }
@@ -313,7 +315,7 @@ if (location.href.includes('/comms/')) {
 if (location.href.includes('/alliances/')) {
     k = document.querySelectorAll('input[type=submit]');
     for (i=0; i<=k.length; i++) {
-        if (k[i].value=='Kick Member') {
+        if (k[i]&&k[i].value=='Kick Member') {
             l=k[i];
             /* Get the player name. This is a bit ugly, but oh well... */
             let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
