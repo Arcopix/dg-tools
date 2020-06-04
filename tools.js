@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0009
+// @version    0.3.0010
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
