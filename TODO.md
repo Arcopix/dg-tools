@@ -7,3 +7,4 @@ List of ideas which I may or may not implement.
 1. Button to generate formatted text for Discord/forums from the comms/scan
 1. Fix NULL bug on https://beta.darkgalaxy.com/planet/XXXX/comms/
 1. Screenshot sender
+1. Rewrite sorting
