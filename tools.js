@@ -10,7 +10,7 @@
 
 /* Config start */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
-var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
+var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
 /* Config end */
 
 /* Common counters & pointers */
