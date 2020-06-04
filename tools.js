@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name       DG utilities
 // @namespace  devhex
-// @version    0.3.0010
+// @version    0.4.xxxx
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
 // @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
+// @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
+
 
 /* Config start */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
