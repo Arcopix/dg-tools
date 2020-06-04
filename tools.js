@@ -319,7 +319,7 @@ if (location.href.includes('/comms/')) {
 }
 
 /* Request confirmation when kicking people from alliance */
-if (location.href.includes('/alliances/')) {
+if (window.location.pathname=='/alliances/') {    
     k = document.querySelectorAll('input[type=submit]');
     for (i=0; i<=k.length; i++) {
         if (k[i]&&k[i].value=='Kick Member') {
