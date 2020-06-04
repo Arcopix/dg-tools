@@ -246,7 +246,7 @@ if (location.href.includes('/radar/')) {
         /* For every possible TICK, reducing output the rows */
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
-                if (crow[j]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
                     if (n = ((n+1)%2)) {
                         crow[j].className = "opacBackground lightBorderBottom entry";
                     } else {
