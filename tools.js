@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name       DG utilities
+// @name       DG utilities Git v0.4
 // @namespace  devhex
 // @version    0.4.xxxx
 // @description  various minor improvements of DG interface
@@ -45,7 +45,7 @@ function formatNumber(num)
 function addGlobalStyle(css) {
     var head, style;
     head = document.getElementsByTagName('head')[0];
-    if (!head) { 
+    if (!head) {
 		return;
 	}
     style = document.createElement('style');
@@ -54,14 +54,6 @@ function addGlobalStyle(css) {
     head.appendChild(style);
 }
 /* === END OF GENERIC FUNCTIONS === */
-
-/* Go to mail module and set recepient */
-function configureMail(player)
-{
-    window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + player;
-}
-
-
 
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
@@ -84,7 +76,9 @@ for (i=0; i<elems.length; i++) {
 elems = document.getElementsByClassName("playerName");
 for (i=0; i<elems.length; i++) {
     e = elems[i];
-    e.addEventListener('click', function() { configureMail(this.innerText.trim()) }, false);
+    e.addEventListener('click', function() {
+        window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + this.innerText.trim();
+    }, false);
 }
 
 /* If in mail module and to is set -> set the recepient */
@@ -326,7 +320,7 @@ if (location.href.includes('/comms/')) {
 }
 
 /* Request confirmation when kicking people from alliance */
-if (window.location.pathname=='/alliances/') {    
+if (window.location.pathname=='/alliances/') {
     k = document.querySelectorAll('input[type=submit]');
     for (i=0; i<=k.length; i++) {
         if (k[i]&&k[i].value=='Kick Member') {
