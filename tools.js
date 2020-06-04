@@ -170,12 +170,10 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
   Original concept by Mordread
   Refactored by Arcopix
 */
-var numberWithCommas;
 var line;
 var availablePopulation, occupiedPopulation;
 var planets;
 if (location.href.includes('/planet/')) {
-    numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     line = document.getElementsByClassName('resource')[3];
     availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
     occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
