@@ -76,6 +76,10 @@ for (i=0; i<elems.length; i++) {
 elems = document.getElementsByClassName("playerName");
 for (i=0; i<elems.length; i++) {
     e = elems[i];
+	if (e.parentNode.className=='friendly') {
+		e.style.cursor = 'not-allowed';
+		continue;
+	}
     e.addEventListener('click', function() {
         window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + this.innerText.trim();
     }, false);
