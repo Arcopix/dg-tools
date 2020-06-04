@@ -18,6 +18,8 @@ var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
 /* Common counters & pointers */
 var i, j, k, l, m, n;
 
+/* === START OF GENERIC FUNCTIONS === */
+
 /* function to decode URI params */
 function getQueryParams(qs) {
     qs = qs.split('+').join(' ');
@@ -33,12 +35,6 @@ function getQueryParams(qs) {
     return params;
 }
 
-/* Go to mail module and set recepient */
-function configureMail(player)
-{
-    window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + player;
-}
-
 /* Formatting numbers */
 function formatNumber(num)
 {
@@ -49,12 +45,23 @@ function formatNumber(num)
 function addGlobalStyle(css) {
     var head, style;
     head = document.getElementsByTagName('head')[0];
-    if (!head) { return; }
+    if (!head) { 
+		return;
+	}
     style = document.createElement('style');
     style.type = 'text/css';
     style.innerHTML = css;
     head.appendChild(style);
 }
+/* === END OF GENERIC FUNCTIONS === */
+
+/* Go to mail module and set recepient */
+function configureMail(player)
+{
+    window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + player;
+}
+
+
 
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
