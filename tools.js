@@ -244,10 +244,17 @@ if (location.href.includes('/radar/')) {
             fleetRow[j].parentNode.removeChild(fleetRow[j]);
         }
 
+        n = 0;
         /* For every possible TICK, reducing output the rows */
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
                 if (crow[j]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                    if (n = ((n+1)%2)) {
+                        crow[j].className = "opacBackground lightBorderBottom entry";
+                    } else {
+                        crow[j].className = "opacLightBackground lightBorderBottom entry";
+                    }
+                    //alert(crow[j].className);
                     radars[i].appendChild(crow[j]);
                     /* Nullify the row so we would not have to search it by class, text and so on */
                     crow[j] = 0;
