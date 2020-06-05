@@ -9,7 +9,6 @@
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
-
 /* Config start */
 var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
 var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
@@ -17,6 +16,15 @@ var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
 
 /* Common counters & pointers */
 var i, j, k, l, m, n, p;
+
+/* Development warning */
+
+m = localStorage.getItem('develWarning');
+if (m===getDate()) {
+	window.alert("WARNING, you are using development version of DG utilities.\n Use it at your own risk");
+	window.alert("This message will be displayed on a daily basis");
+	localStorage.setItem('develWarning', getDate());
+}
 
 /* === START OF GENERIC FUNCTIONS === */
 
@@ -53,6 +61,25 @@ function addGlobalStyle(css) {
     style.innerHTML = css;
     head.appendChild(style);
 }
+
+function getDate()
+{
+	let d = new Date();
+	
+    let month = '' + (d.getMonth() + 1);
+	let	day = '' + d.getDate();
+    let year = d.getFullYear();
+
+    if (month.length < 2) {
+        month = '0' + month;
+	}
+    if (day.length < 2) {
+        day = '0' + day;
+	}
+
+    return [year, month, day].join('-');
+}
+
 /* === END OF GENERIC FUNCTIONS === */
 
 /* Updated main menu items */
@@ -67,6 +94,8 @@ p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(p);
+
+
 
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
