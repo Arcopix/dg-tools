@@ -16,7 +16,7 @@ var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
 /* Config end */
 
 /* Common counters & pointers */
-var i, j, k, l, m, n;
+var i, j, k, l, m, n, p;
 
 /* === START OF GENERIC FUNCTIONS === */
 
@@ -55,6 +55,19 @@ function addGlobalStyle(css) {
 }
 /* === END OF GENERIC FUNCTIONS === */
 
+/* Updated main menu items */
+var confIcon = document.createElement('div');
+confIcon.className = 'left relative';
+confIcon.style = 'cursor:pointer;';
+confIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5AYCCxcxPEClUgAAA3ZJREFUOMuVlE1sVGUUhp87987CUlqJpdG2AVJIFzKhTfAn1pgYJMZYNC6wdYw2LtQFKgZtqZLSDkhLf6damUIUNxaLxA3ponHhT1ITpTGFhChKJe0CgoJoqLU/4/Se18XMHaYpmPglN9+5X+557jnfec9xuMU6GE9EDcZSKX8y1rQTgK7320guFJRLVLfsfu3YzfxCgdHZ+REA7fGBmvZ4YkYwhDgX9tztwTfJhYLtEuckDcY635tp7Xi3BiAW68sCnVx6e3zgFdAhACl9powhCSmzo8y7kPT6O3ve6F8WYXvfYUCT/xOGxMSejvjylDeU3gFiNhcmCZMoXJlPYUE+JsP3LReGSXO/lJdlgV5g1NbW0tab2JYbWdXGCtavLcN13fTjuVyYusjoqfEAhqRtn9XWjmYj7OhLANDWm9gENAawrQ/dS/maEq7NLvLJ91c5NvYb1/5OcXdFOfW1TwYwJDU27evaBNDQ0oHT1pt4DIgC9UEqVRsrKF9TwvAP0zQPT5EXdsCMhWSK3miE6IPr+HFikpEvv8EBzITJPjaz4yHgSAADELB+bRl/zBl7h6dYEQ7hSIQwVoShcXCc32f+YXNlBKQAhpnqTTocAkpzq1m4Mh/Xdfni/DS3hR2Q4cjHMZ+Q+eSFHT4/cwnXdSleXRTAgr3UU4YWVA2E67qEnHSaDpaFOfLBFgkBnuumVXADhkyEgIlcnf15/S9cz6WmspiFZGoJzDGf+fkFnqregOd5XLp8ZQnMZBOh5oZXIyZbJelrkf7jhamLlKzKo+/ZCPPzSWQ+8heZnZtnYMcWSosKGTt9FpMfwL7y8W8f6IpFQplKXG9t2rlF0nnHgdFT48zNJ6mrXseZ7ifY+3QVLXX38NMHL/Dc1ggzs3OcODkCOMj086HOlkcc3Oklvdza0Y/kRyUNBaJ99OFqNldGcF0Xz3XxPI+x02c5cXIE3yyTpqJeOPVpf9uB5cOhuT3+AOLbQLS+GUgUry5CUubO/CCy4P6qj/Ts+25Z62V0c7/pRh87gAl+vXIVM4Ej0BIYJt0H3Bxo4s7cSZKRxGUzjmcAUZlKcmBIdlcuI5tyQ3c3PY2NvLW/+3FJQ2YqNNnR3v1vv5TrsGN37EMzvWjSjMmeORo/MPJ8QwODPT3853qz5WBdehrHsme7dqXn3ssNrXW38vsX7dp271V7DXsAAAAASUVORK5CYII="/>';
+
+/* Updating main menu */
+var mainMenu = document.querySelector('div.icons');
+p = mainMenu.getElementsByTagName('a')[2];
+mainMenu.removeChild(p);
+mainMenu.appendChild(confIcon);
+mainMenu.appendChild(p);
+
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
 var deb=0;
@@ -63,7 +76,7 @@ for (i=0; i<elems.length; i++) {
     var e = elems[i];
     if (e.className=="allianceName"&&nap_ally.includes(e.innerText.trim())) {
         e.style = custom_style;
-        var p = e.parentElement;
+        p = e.parentElement;
         for (j=0; j<p.children.length; j++) {
             if (p.children[j].className=="playerName") {
                 p.style = custom_style;
