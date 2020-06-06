@@ -20,9 +20,9 @@ var i, j, k, l, m, n, p;
 /* Development warning */
 
 m = localStorage.getItem('develWarning');
-if (m===getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n Use it at your own risk");
-	window.alert("This message will be displayed on a daily basis");
+if (m!==getDate()) {
+	window.alert("WARNING, you are using development version of DG utilities.\n         Use it at your own risk");
+	window.alert("This message will be displayed on once a day");
 	localStorage.setItem('develWarning', getDate());
 }
 
@@ -31,7 +31,6 @@ if (m===getDate()) {
 /* function to decode URI params */
 function getQueryParams(qs) {
     qs = qs.split('+').join(' ');
-
     var params = {},
         tokens,
         re = /[?&]?([^=]+)=([^&]*)/g;
@@ -39,7 +38,6 @@ function getQueryParams(qs) {
     while (tokens = re.exec(qs)) {
         params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
     }
-
     return params;
 }
 
@@ -65,7 +63,7 @@ function addGlobalStyle(css) {
 function getDate()
 {
 	let d = new Date();
-	
+
     let month = '' + (d.getMonth() + 1);
 	let	day = '' + d.getDate();
     let year = d.getFullYear();
@@ -88,14 +86,14 @@ confIcon.className = 'left relative';
 confIcon.style = 'cursor:pointer;';
 confIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5AYCCxcxPEClUgAAA3ZJREFUOMuVlE1sVGUUhp87987CUlqJpdG2AVJIFzKhTfAn1pgYJMZYNC6wdYw2LtQFKgZtqZLSDkhLf6damUIUNxaLxA3ponHhT1ITpTGFhChKJe0CgoJoqLU/4/Se18XMHaYpmPglN9+5X+557jnfec9xuMU6GE9EDcZSKX8y1rQTgK7320guFJRLVLfsfu3YzfxCgdHZ+REA7fGBmvZ4YkYwhDgX9tztwTfJhYLtEuckDcY635tp7Xi3BiAW68sCnVx6e3zgFdAhACl9powhCSmzo8y7kPT6O3ve6F8WYXvfYUCT/xOGxMSejvjylDeU3gFiNhcmCZMoXJlPYUE+JsP3LReGSXO/lJdlgV5g1NbW0tab2JYbWdXGCtavLcN13fTjuVyYusjoqfEAhqRtn9XWjmYj7OhLANDWm9gENAawrQ/dS/maEq7NLvLJ91c5NvYb1/5OcXdFOfW1TwYwJDU27evaBNDQ0oHT1pt4DIgC9UEqVRsrKF9TwvAP0zQPT5EXdsCMhWSK3miE6IPr+HFikpEvv8EBzITJPjaz4yHgSAADELB+bRl/zBl7h6dYEQ7hSIQwVoShcXCc32f+YXNlBKQAhpnqTTocAkpzq1m4Mh/Xdfni/DS3hR2Q4cjHMZ+Q+eSFHT4/cwnXdSleXRTAgr3UU4YWVA2E67qEnHSaDpaFOfLBFgkBnuumVXADhkyEgIlcnf15/S9cz6WmspiFZGoJzDGf+fkFnqregOd5XLp8ZQnMZBOh5oZXIyZbJelrkf7jhamLlKzKo+/ZCPPzSWQ+8heZnZtnYMcWSosKGTt9FpMfwL7y8W8f6IpFQplKXG9t2rlF0nnHgdFT48zNJ6mrXseZ7ifY+3QVLXX38NMHL/Dc1ggzs3OcODkCOMj086HOlkcc3Oklvdza0Y/kRyUNBaJ99OFqNldGcF0Xz3XxPI+x02c5cXIE3yyTpqJeOPVpf9uB5cOhuT3+AOLbQLS+GUgUry5CUubO/CCy4P6qj/Ts+25Z62V0c7/pRh87gAl+vXIVM4Ej0BIYJt0H3Bxo4s7cSZKRxGUzjmcAUZlKcmBIdlcuI5tyQ3c3PY2NvLW/+3FJQ2YqNNnR3v1vv5TrsGN37EMzvWjSjMmeORo/MPJ8QwODPT3853qz5WBdehrHsme7dqXn3ssNrXW38vsX7dp271V7DXsAAAAASUVORK5CYII="/>';
 
+confIcon.addEventListener('click', function() { showPluginConfiguration() }, false);
+
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(p);
-
-
 
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
@@ -380,3 +378,57 @@ if (window.location.pathname=='/alliances/') {
 }
 
 /* End of script */
+
+/* === START OF GENERIC FUNCTIONS === */
+
+function showPluginConfiguration()
+{
+	var contentBox = document.getElementById('contentBox');
+	var pageTitle = contentBox.querySelector('.pageTitle');
+	var mainBox = document.createElement('div');
+	pageTitle.innerHTML = 'Utilities Configuration';
+	contentBox.innerHTML = '';
+
+	contentBox.appendChild(pageTitle);
+
+	mainBox.className = 'opacBackground ofHidden padding';
+	contentBox.appendChild(mainBox);
+	mainBox.id = 'cfgBox';
+
+    addGlobalStyle('.input-text-cfg { width: 168px; height: 14px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+    addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+
+	mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
+	'  <div class="tableHeader">' +
+    '     <div class="left title" style="padding-left: 4px">Setting</div>' +
+    '     <div class="title right" style="width: 20px"></div>' +
+    '     <div class="title right"></div>' +
+	'  </div>' +
+	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+	'      <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
+	'    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
+	'    </div>' +
+    '  </div>' +
+	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+	'      <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+	'    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
+	'    </div>' +
+	'  </div>' +
+    '</div>';
+
+	alert('menu loaded');
+}
+
+/* === END OF GENERIC FUNCTIONS === */
+
+
