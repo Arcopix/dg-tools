@@ -163,6 +163,9 @@ for (i=0; i<elems.length; i++) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
     document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName=='input') {
+            return;
+        }
         if (e.which === 37) {
             document.querySelector(".navigation.left").click();
         }
@@ -176,6 +179,9 @@ if (document.querySelector(".navigation.left")) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
     document.addEventListener("keydown", e => {
+        if (document.activeElement.tagName=='input') {
+            return;
+        }
         if (e.which === 37) {
             document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
         }
@@ -190,6 +196,9 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
     /* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROWO ONLY */
     if (document.querySelector('.nextPrevFleet').innerText === '»') {
         document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName=='INPUT') {
+                return;
+            }
             if (e.which === 39) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
@@ -197,6 +206,9 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
     } else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
                typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
         document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName=='INPUT') {
+                return;
+            }
             if (e.which === 37) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
@@ -206,6 +218,9 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
         });
     } else { /* In case of '«' */
         document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName=='INPUT') {
+                return;
+            }
             if (e.which === 37) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
