@@ -18,7 +18,6 @@ var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
 var i, j, k, l, m, n, p;
 
 /* Development warning */
-
 m = localStorage.getItem('develWarning');
 if (m!==getDate()) {
 	window.alert("WARNING, you are using development version of DG utilities.\n         Use it at your own risk");
@@ -94,6 +93,9 @@ p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(p);
+
+/* get the turnNumber */
+var turnNumber = document.getElementById('turnNumber').innerText;
 
 /* Colorize the alliance tag / playname if it matches a tag nap_ally */
 var elems = document.getElementsByTagName("div");
