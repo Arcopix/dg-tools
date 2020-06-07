@@ -420,6 +420,22 @@ function showPluginConfiguration()
     '     <div class="title right"></div>' +
 	'  </div>' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+	'      <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
+	'    </div>' +
+    '    <div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+    '  </div>' +
+	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+	'      <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+	'    </div>' +
+    '    <div class="left" style="line-height: 22px">????</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+	'  </div>' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
     '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
     '    <div class="left" style="padding-top: 2px;">' +
 	'      <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
@@ -439,11 +455,24 @@ function showPluginConfiguration()
     '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
 	'    </div>' +
 	'  </div>' +
+	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPopulationTotals" name="cfgPopulationTotals" value="" /> <label for="cfgPopulationTotals">Display total population</label></div>' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="" value="" /> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
+  	'  </div>' +
+	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+	'      <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+	'    </div>' +
+    '    <div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+	'    </div>' +
+	'  </div>' +
     '</div>';
 
-	alert('menu loaded');
+	// alert('menu loaded');
 }
 
 /* === END OF GENERIC FUNCTIONS === */
-
 
