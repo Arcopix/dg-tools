@@ -88,6 +88,31 @@ function parseBool(val)
 
 /* === END OF GENERIC FUNCTIONS === */
 
+/* Check if globacl configuration is set and if not - initiate defaults */
+if (localStorage.getItem('cfgRulername')=='') {
+	localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
+	localStorage.setItem('cfgAllyNAP', '');
+	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
+	localStorage.setItem('cfgAllyCAP', '');
+	localStorage.setItem('cfgAllyCAPcolor', '#FFE66F');
+	
+	localStorage.setItem('cfgPopulationTotals', 'true');
+	localStorage.setItem('cfgRadarSorting', 'true');
+	localStorage.setItem('cfgPlanetSorting', 'true');	
+	alert('Initializing config');
+}
+
+/* Global configuration */
+var cfgRulername = localStorage.getItem('cfgRulername');
+var cfgAllyNAP = localStorage.getItem('cfgAllyNAP');
+var cfgAllyNAPcolor = localStorage.getItem('cfgAllyNAPcolor');
+var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
+var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
+var cfgPopulationTotals = parseBool(localStorage.getItem('cfgPopulationTotals'));
+var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
+var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
+
+
 /* Updated main menu items */
 var confIcon = document.createElement('div');
 confIcon.className = 'left relative';
@@ -415,6 +440,7 @@ function savePluginConfiguration()
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
 	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+	
 	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
 	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
@@ -433,7 +459,6 @@ function dumpPluginConfiguration()
 	alert('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
 	alert('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
 	alert('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
-
 }
 
 function showPluginConfiguration()
@@ -533,7 +558,6 @@ function showPluginConfiguration()
 	/* Buttons */
 	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
 	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
-	// alert('menu loaded');
 }
 
 /* === END OF GENERIC FUNCTIONS === */
