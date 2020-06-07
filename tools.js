@@ -272,7 +272,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .
 var line;
 var availablePopulation, occupiedPopulation;
 var planets;
-if (location.href.includes('/planet/')) {
+if (cfgPopulationTotals && location.href.includes('/planet/')) {
 	line = document.getElementsByClassName('resource')[3];
 	availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
 	occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
@@ -282,7 +282,7 @@ if (location.href.includes('/planet/')) {
 	line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation) + ' / ' + line.getElementsByTagName('span')[0].innerText.split(' / ')[1]
 }
 
-if (window.location.pathname=="/planets/") {
+if (cfgPopulationTotals && window.location.pathname=="/planets/") {
 	planets = document.getElementsByClassName('locationWrapper');
 	for (i=0; i<planets.length; i++) {
 		line = planets[i].getElementsByClassName('resource')[3];
@@ -322,7 +322,7 @@ for (i=0; i<coords.length; i++)
 
 /* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
-if (location.href.includes('/radar/')) {
+if (cfgRadarSorting && location.href.includes('/radar/')) {
 	/* Get and sort out each coms/radar section */
 	radars = document.getElementsByClassName('opacDarkBackground');
 	for (i=0; i<radars.length; i++) {
