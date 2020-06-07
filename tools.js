@@ -90,11 +90,12 @@ function parseBool(val)
 
 /* Check if globacl configuration is set and if not - initiate defaults */
 if (localStorage.getItem('cfgRulername')=='') {
-	localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
-	localStorage.setItem('cfgAllyNAP', '');
+	/* FIXME */
+	localStorage.setItem('cfgRulername', 'FIXME');
+	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
 	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
-	localStorage.setItem('cfgAllyCAP', '');
-	localStorage.setItem('cfgAllyCAPcolor', '#FFE66F');
+	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
+	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
 	
 	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
