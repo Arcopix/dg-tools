@@ -496,7 +496,7 @@ function showPluginConfiguration()
 	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+	'	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
 	'	</div>' +
 	'	<div class="left" style="line-height: 22px">????</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
@@ -529,7 +529,7 @@ function showPluginConfiguration()
 	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+	'	  <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
 	'	</div>' +
 	'	<div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
