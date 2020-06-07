@@ -77,6 +77,15 @@ function getDate()
 	return [year, month, day].join('-');
 }
 
+function parseBool(val)
+{
+	if (val=='true') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /* === END OF GENERIC FUNCTIONS === */
 
 /* Updated main menu items */
@@ -398,6 +407,35 @@ if (window.location.pathname=='/alliances/') {
 
 /* === START OF GENERIC FUNCTIONS === */
 
+function savePluginConfiguration()
+{
+	localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
+	localStorage.setItem('cfgAllyNAP', document.getElementById('cfgAllyNAP').value);
+	localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
+	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
+	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
+	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
+	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+
+	alert("Settings saved successfully");
+}
+
+function dumpPluginConfiguration()
+{
+	alert('cfgRulername = ' + localStorage.getItem('cfgRulername'));
+	alert('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
+	alert('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
+	alert('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+	alert('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
+	alert('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+	alert('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
+	alert('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+	alert('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+
+}
+
 function showPluginConfiguration()
 {
 	var contentBox = document.getElementById('contentBox');
@@ -471,8 +509,30 @@ function showPluginConfiguration()
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
 	'	</div>' +
 	'  </div>' +
+        '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
+	'    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
+	'      <input type="button" name="cfgSave" id="cfgDump" value="Dump" /> ' +
+	'      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
+	'    </div> ' +
+	'  </div>' +
 	'</div>';
-
+	
+	/* Text values */
+	document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
+	document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
+	document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
+	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+	document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
+	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+	
+	/* Boolean setting */
+	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
+	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'))
+	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+	
+	/* Buttons */
+	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
+	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
 	// alert('menu loaded');
 }
 
