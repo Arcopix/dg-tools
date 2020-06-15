@@ -96,10 +96,10 @@ if (localStorage.getItem('cfgRulername')=='') {
 	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
 	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
 	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
-	
+
 	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
-	localStorage.setItem('cfgPlanetSorting', 'true');	
+	localStorage.setItem('cfgPlanetSorting', 'true');
 	alert('Initializing config');
 }
 
@@ -276,9 +276,8 @@ if (cfgPopulationTotals && location.href.includes('/planet/')) {
 	line = document.getElementsByClassName('resource')[3];
 	availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
 	occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
-
-	availablePopulation = parseInt(availablePopulation.replace(',', ''));
-	occupiedPopulation = parseInt(occupiedPopulation.replace(',', ''));
+	availablePopulation = parseInt(availablePopulation.split(',').join(''));
+	occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
 	line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation) + ' / ' + line.getElementsByTagName('span')[0].innerText.split(' / ')[1]
 }
 
@@ -290,8 +289,8 @@ if (cfgPopulationTotals && window.location.pathname=="/planets/") {
 		availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
 		occupiedPopulation = line.getElementsByTagName('span')[1].innerText.replace('(', '').replace(' occupied)', '');
 
-		availablePopulation = parseInt(availablePopulation.replace(',', ''));
-		occupiedPopulation = parseInt(occupiedPopulation.replace(',', ''));
+		availablePopulation = parseInt(availablePopulation.split(',').join(''));
+		occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
 
 		line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation);
 	}
@@ -441,7 +440,7 @@ function savePluginConfiguration()
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
 	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
-	
+
 	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
 	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
@@ -542,7 +541,7 @@ function showPluginConfiguration()
 	'    </div> ' +
 	'  </div>' +
 	'</div>';
-	
+
 	/* Text values */
 	document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
 	document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
@@ -550,12 +549,12 @@ function showPluginConfiguration()
 	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
 	document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
 	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
-	
+
 	/* Boolean setting */
 	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
 	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'))
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
-	
+
 	/* Buttons */
 	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
 	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
