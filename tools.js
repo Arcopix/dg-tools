@@ -9,11 +9,6 @@
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
-/* Config start */
-var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
-var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
-/* Config end */
-
 /* Common counters & pointers */
 var i, j, k, l, m, n, p;
 
