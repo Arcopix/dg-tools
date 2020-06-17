@@ -9,11 +9,6 @@
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
-/* Config start */
-var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
-var custom_style = "COLOR: #FFE66F;"; // Color specified for NAP
-/* Config end */
-
 /* Common counters & pointers */
 var i, j, k, l, m, n, p;
 
@@ -113,7 +108,6 @@ var cfgPopulationTotals = parseBool(localStorage.getItem('cfgPopulationTotals'))
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
-
 /* Updated main menu items */
 var confIcon = document.createElement('div');
 confIcon.className = 'left relative';
@@ -132,18 +126,51 @@ mainMenu.appendChild(p);
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
 
-/* Colorize the alliance tag / playname if it matches a tag nap_ally */
-var elems = document.getElementsByTagName("div");
-var deb=0;
-var player="";
-for (i=0; i<elems.length; i++) {
-	var e = elems[i];
-	if (e.className=="allianceName"&&nap_ally.includes(e.innerText.trim())) {
-		e.style = custom_style;
-		p = e.parentElement;
-		for (j=0; j<p.children.length; j++) {
-			if (p.children[j].className=="playerName") {
-				p.style = custom_style;
+/* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
+if (cfgAllyNAP!='') {
+	var arrayAllyNAP = cfgAllyNAP.split(',');
+	
+	for (i=0; i<arrayAllyNAP.length; i++) {
+		arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
+	}
+	
+	var elems = document.getElementsByTagName("div");
+	var deb=0;
+	var player="";
+	for (i=0; i<elems.length; i++) {
+		var e = elems[i];
+		if (e.className=="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
+			e.style = 'color: ' + cfgAllyNAPcolor;
+			p = e.parentElement;
+			for (j=0; j<p.children.length; j++) {
+				if (p.children[j].className=="playerName") {
+					p.style = 'color: ' + cfgAllyNAPcolor;
+				}
+			}
+		}
+	}
+}
+
+/* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
+if (cfgAllyCAP!='') {
+	var arrayAllyCAP = cfgAllyCAP.split(',');
+	
+	for (i=0; i<arrayAllyCAP.length; i++) {
+		arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
+	}
+	
+	var elems = document.getElementsByTagName("div");
+	var deb=0;
+	var player="";
+	for (i=0; i<elems.length; i++) {
+		var e = elems[i];
+		if (e.className=="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
+			e.style = 'color: ' + cfgAllyCAPcolor;
+			p = e.parentElement;
+			for (j=0; j<p.children.length; j++) {
+				if (p.children[j].className=="playerName") {
+					p.style = 'color: ' + cfgAllyCAPcolor;
+				}
 			}
 		}
 	}
