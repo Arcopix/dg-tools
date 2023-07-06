@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name	   DG utilities Git v0.4
-// @namespace  devhex
-// @version    0.4.xxxx
-// @description  various minor improvements of DG interface
-// @match      https://beta.darkgalaxy.com/
-// @match      https://beta.darkgalaxy.com/*
+// @namespace  devhex
+// @version    0.4.xxxx
+// @description  various minor improvements of DG interface
+// @match      https://beta.darkgalaxy.com/
+// @match      https://beta.darkgalaxy.com/*
 // @match      https://andromeda.darkgalaxy.com
 // @match      https://andromeda.darkgalaxy.com/*
-// @copyright  2023, Stefan Lekov / Arcopix / Devhex Ltd
+// @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
@@ -131,11 +131,11 @@ var turnNumber = document.getElementById('turnNumber').innerText;
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
 if (cfgAllyNAP!='') {
 	var arrayAllyNAP = cfgAllyNAP.split(',');
-	
+
 	for (i=0; i<arrayAllyNAP.length; i++) {
 		arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
 	}
-	
+
 	var elems = document.getElementsByTagName("div");
 	var deb=0;
 	var player="";
@@ -156,16 +156,16 @@ if (cfgAllyNAP!='') {
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
 if (cfgAllyCAP!='') {
 	var arrayAllyCAP = cfgAllyCAP.split(',');
-	
+
 	for (i=0; i<arrayAllyCAP.length; i++) {
 		arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
 	}
-	
-	var elems = document.getElementsByTagName("div");
-	var deb=0;
-	var player="";
+
+	elems = document.getElementsByTagName("div");
+	deb=0;
+	player="";
 	for (i=0; i<elems.length; i++) {
-		var e = elems[i];
+		e = elems[i];
 		if (e.className=="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
 			e.style = 'color: ' + cfgAllyCAPcolor;
 			p = e.parentElement;
@@ -258,8 +258,8 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 }
 
 /* Navigate through fleets using ARROW keys */
-if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet, .left')) {
-	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROWO ONLY */
+if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet')) {
+	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
 	if (document.querySelector('.nextPrevFleet').innerText === '»') {
 		document.addEventListener("keydown", e => {
 			if (document.activeElement.tagName=='INPUT') {
@@ -479,15 +479,16 @@ function savePluginConfiguration()
 
 function dumpPluginConfiguration()
 {
-	alert('cfgRulername = ' + localStorage.getItem('cfgRulername'));
-	alert('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
-	alert('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
-	alert('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	alert('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
-	alert('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	alert('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
-	alert('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
-	alert('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    alert('Data dumping in console');
+	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
+	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
+	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
+	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
+	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+	console.log('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
+	console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
 }
 
 function showPluginConfiguration()
@@ -590,4 +591,3 @@ function showPluginConfiguration()
 }
 
 /* === END OF GENERIC FUNCTIONS === */
-
