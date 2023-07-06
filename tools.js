@@ -7,7 +7,7 @@
 // @match      https://beta.darkgalaxy.com/*
 // @match      https://andromeda.darkgalaxy.com
 // @match      https://andromeda.darkgalaxy.com/*
-// @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
+// @copyright  2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
@@ -17,8 +17,11 @@ var i, j, k, l, m, n, p;
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (m!==getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n		 Use it at your own risk");
-	window.alert("This message will be displayed on once a day");
+	window.alert("WARNING, you are using development version of DG utilities.\n" + 
+					"Use it at your own risk\n" +
+					"\n" +
+					"This message will be displayed on once a day");
+					
 	localStorage.setItem('develWarning', getDate());
 }
 
@@ -85,7 +88,7 @@ function parseBool(val)
 
 /* === END OF GENERIC FUNCTIONS === */
 
-/* Check if globacl configuration is set and if not - initiate defaults */
+/* Check if global configuration is set and if not - initiate defaults */
 if (localStorage.getItem('cfgRulername')=='') {
 	/* FIXME */
 	localStorage.setItem('cfgRulername', 'FIXME');
@@ -97,7 +100,7 @@ if (localStorage.getItem('cfgRulername')=='') {
 	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
 	localStorage.setItem('cfgPlanetSorting', 'true');
-	alert('Initializing config');
+	window.alert('Initializing config');
 }
 
 /* Global configuration */
@@ -474,12 +477,12 @@ function savePluginConfiguration()
 	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
 
-	alert("Settings saved successfully");
+	window.alert("Settings saved successfully");
 }
 
 function dumpPluginConfiguration()
 {
-    alert('Data dumping in console');
+    window.alert('Data dumping in console');
 	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
 	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
 	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
