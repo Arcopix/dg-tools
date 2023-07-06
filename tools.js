@@ -5,7 +5,9 @@
 // @description  various minor improvements of DG interface
 // @match      https://beta.darkgalaxy.com/
 // @match      https://beta.darkgalaxy.com/*
-// @copyright  2020, Stefan Lekov / Arcopix / Devhex Ltd
+// @match      https://andromeda.darkgalaxy.com
+// @match      https://andromeda.darkgalaxy.com/*
+// @copyright  2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage   https://github.com/Arcopix/dg-tools
 // ==/UserScript==
 
