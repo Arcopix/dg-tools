@@ -17,11 +17,11 @@ var i, j, k, l, m, n, p;
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (m!==getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n" + 
+	window.alert("WARNING, you are using development version of DG utilities.\n" +
 					"Use it at your own risk\n" +
 					"\n" +
 					"This message will be displayed on once a day");
-					
+
 	localStorage.setItem('develWarning', getDate());
 }
 
@@ -86,12 +86,38 @@ function parseBool(val)
 	}
 }
 
-/* === END OF GENERIC FUNCTIONS === */
+function initializeConfig()
+{
+    /* First get the playerBox.
+       Then get the first element with "left" and "border" classes
+       This one holds "Welcome [TAG]Player name"
+       This one holds "Welcome PLayer name"
+     */
+    var e = document.getElementById("playerBox").querySelector('.left.border');
+    e = e.innerHTML.trim();
 
-/* Check if global configuration is set and if not - initiate defaults */
-if (localStorage.getItem('cfgRulername')=='') {
-	/* FIXME */
-	localStorage.setItem('cfgRulername', 'FIXME');
+    var playerName = '';
+    if (e && e.match(/^Welcome .*$/g)) {
+        const regexAlly = /^Welcome \[.*\](.*)$/;
+        const regexNonAlly = /^Welcome (.*)$/;
+        var match = e.match(regexAlly);
+        if (match) {
+            playerName = match[1];
+        } else {
+            match = e.match(regexNonAlly);
+            if (match) {
+                playerName = match[1];
+            }
+        }
+    }
+
+    playerName = window.prompt("Enter player name", playerName);
+    if (!playerName) {
+        window.alert("Cancelling initializing of config");
+        return;
+    }
+
+   	localStorage.setItem('cfgRulername', playerName);
 	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
 	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
 	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
@@ -101,6 +127,13 @@ if (localStorage.getItem('cfgRulername')=='') {
 	localStorage.setItem('cfgRadarSorting', 'true');
 	localStorage.setItem('cfgPlanetSorting', 'true');
 	window.alert('Initializing config');
+}
+
+/* === END OF GENERIC FUNCTIONS === */
+
+/* Check if global configuration is set and if not - initiate defaults */
+if (localStorage.getItem('cfgRulername')=='') {
+    initializeConfig();
 }
 
 /* Global configuration */
