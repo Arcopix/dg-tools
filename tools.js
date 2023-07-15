@@ -527,8 +527,7 @@ function sendBase64ImageToDiscord(webhookUrl, base64Image) {
     // Create form data payload
     const form = new FormData();
     const file = new Blob([uint8Array], { type: 'image/png' });
-    //form.append("message", "test 1 2 3\nfoo bar");
-    form.append("content", "test 1 2 3");
+    form.append("content", "Screenshot from " + localStorage.getItem('cfgRulername'));
     form.append("tts", "false");
     form.append('file', file, '/usr/share/screenshot.png');
 
@@ -538,16 +537,11 @@ function sendBase64ImageToDiscord(webhookUrl, base64Image) {
 
     // Set up the request headers
     const headers = {
-//      'Content-Type': 'multipart/form-data',
       'Accept': '*/*'
     };
     for (const header in headers) {
       xhr.setRequestHeader(header, headers[header]);
     }
-      // Display the values
-for (const value of form.values()) {
-  console.log(value);
-}
 
     // Send the request
     xhr.send(form);
@@ -569,8 +563,7 @@ for (const value of form.values()) {
 function ax1()
 {
     const screenshotTarget = document.getElementById('contentBox');
-    const hook = "TODO";
-// Content-Disposition: form-data; name="content"
+    const hook = localStorage.getItem('cfgDiscordTokenA');
 
     html2canvas(screenshotTarget).then((canvas) => {
         const base64image = canvas.toDataURL("image/png");
@@ -578,56 +571,6 @@ function ax1()
 
         sendBase64ImageToDiscord(hook, base64image);
         return;
-        var formData = {
-            content: "test er",
-            file: {
-                value: base64image,
-                options: {
-                    filename: 'screenshot.png',
-                    contentType: 'image/png'
-                }
-            }
-        }
-
-        request.open("POST", hook);
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(JSON.stringify(formData));
-        return;
-
-        window.alert(base64image);
-
-        request.open("POST", hook);
-        request.setRequestHeader('Content-type', 'application/json');
-        //request.setRequestHeader('Content-Type', 'multipart/form-data');
-
-        formData = new FormData();
-
-        formData.append("file1", base64image);
-        formData.append("content", "File Submited");
-
-        const params = {
-            username: localStorage.getItem('cfgRulername'),
-            content: "test hell",
-            embeds: [
-                {
-                    image: {
-                        url: base64image
-                    }
-                }
-            ]
-        }/*,
-            attachments: [{
-                id: 0,
-                description: "Image of a cute little cat",
-                filename: "myfilename.png"
-            }]
-        }*/
-        //var data = "";
-        //data = data + "--boundary\nContent-Disposition: form-data; name=\"payload_json\"\nContent-Type: application/json\n\n" + JSON.stringify(params) + "\n\n";
-        //data = data + "--boundary\nContent-Disposition: form-data; name=\"files[0]\"; filename=\"myfilename.png\"\nContent-Type: image/png\n\n" + base64image + "\n\n--boundary--";
-
-        //request.send(data);
-        request.send(JSON.stringify(params));
     });
 }
 
@@ -639,6 +582,8 @@ function savePluginConfiguration()
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
 	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
 	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+
+    localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
 	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
 	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
@@ -749,6 +694,7 @@ function showPluginConfiguration()
 	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
 	document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
 	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
 	/* Boolean setting */
 	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
