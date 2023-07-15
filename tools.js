@@ -157,11 +157,21 @@ confIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB
 
 confIcon.addEventListener('click', function() { showPluginConfiguration() }, false);
 
+/* Updated main menu items */
+var testIcon = document.createElement('div');
+testIcon.className = 'left relative';
+testIcon.style = 'cursor:pointer;';
+testIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAZCAYAAAArK+5dAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAA2NJREFUeNrslcuLXEUUxn+nqm7f7ts9PdPznkyiwTEvFFRiTAISsslGyCobhSzyP+hKiCCRgKAY8G9wnb0bJyomPvJYByIS1JkYJ9PTk7m3771167hoZ0hmJhM3QRAPFBTnnOL7zvlOVYmq8izN8IztPwjw0zcf6fVvLz4mzMR4ovvnOtoZqT9RsB+/vrBtzG3nPPzm+7K+P/BiR8+9c5CZqSZXvvuNifFE7/+ZyuYzR06cl22RVXXHBeita5/prWuX9POPT6iI6E75P1z58LH4Yy3a3Jp1K4uH5P1lVnoFxsiOPT9y4gPZVoNb1z7VR1vzqIlYQvD80zvz/fx53aLBq8fefSI1FyWEUDI9mSDydICjJy9sZJnhdqzOWRUR3cpc9OL54xhj6WdLJI2It049TxTZbUu5efWTLX7XGYm5/MVZXJRgjNEQwga6c4bhdg1VRcTSbDomxhpPZP7a8fe21Gfm9g6z76W36YwdYNd0cyMQRVbPnJ7judkWqhV5f5m1NU8cWw7t7zA22tDN1YqIGmM0jp3W604BXJp5bly9xMJiinMDAsPtWM+cnuPUyT2MThzClxkheACShmN8rMFKr2BmqqUL9x5KHDv98vJZpmeP0c+W8D7jxvWrdEbqapYe9FnpFSwt9wHYMzukRw9P8fKhUQ4cfIXJXW9gXQyq+CrQTCJ2zzTZM9tiqBUhItpqRrTau5maPcrkrtdxrsHMVEKj7gZTFIISOYO1hlokjI81GB9tbEwPKN5nlGVgcqJBVQXWUk+aeaw1NOoOEUMIJSIOYxyt1gi1msGJQFkGksRhjSAC1gq+CqQPF0iaU6ws/0yvt4Yxwkg7Js8rmomjFlmcE+LYMj//Ffvu3sT7wHI3p9vLiWt2UEFVKc4aqqA4K6SpZ7mbs7jw69/iZuRFhfeBoqjorRakmcf7MJg2KxgRnBNqkSMvKrK+5/ad7gAgLwaMiqKissLvi2u0h2qEoIwMZ3gfCEFJswHwwr2UxT9SeqsFeV5x+04XEYicw7qYyJXEsR2AF2Wgt1pQVcpKr6C3msvEeKIhKPeXMtpDNZwVijKwlpakqedBN6e7kvPL3R6qKiKiL+wdJuuXJInFVwGzfuWnJ5tarzu11ujmV3SnNdSqPTVfVZH/P/1/HeCvAQDBQ8pcrjO3qwAAAABJRU5ErkJggg=="/>';
+
+testIcon.addEventListener('click', function() { ax1() }, false);
+
+
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
+mainMenu.appendChild(testIcon);
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
@@ -226,7 +236,7 @@ for (i=0; i<elems.length; i++) {
 		continue;
 	}
 	e.addEventListener('click', function() {
-		window.location.href = "https://beta.darkgalaxy.com/mail/?to=" + this.innerText.trim();
+		window.location.href = "/mail/?to=" + this.innerText.trim();
 	}, false);
 }
 
@@ -340,7 +350,8 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 var line;
 var availablePopulation, occupiedPopulation;
 var planets;
-if (cfgPopulationTotals && location.href.includes('/planet/')) {
+/* No longer needed */
+if (0 && cfgPopulationTotals && location.href.includes('/planet/')) {
 	line = document.getElementsByClassName('resource')[3];
 	availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
 	occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
@@ -349,7 +360,8 @@ if (cfgPopulationTotals && location.href.includes('/planet/')) {
 	line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation) + ' / ' + line.getElementsByTagName('span')[0].innerText.split(' / ')[1]
 }
 
-if (cfgPopulationTotals && window.location.pathname=="/planets/") {
+/* No longer needed */
+if (0 && cfgPopulationTotals && window.location.pathname=="/planets/") {
 	planets = document.getElementsByClassName('locationWrapper');
 	for (i=0; i<planets.length; i++) {
 		line = planets[i].getElementsByClassName('resource')[3];
@@ -499,6 +511,125 @@ if (window.location.pathname=='/alliances/') {
 /* End of script */
 
 /* === START OF GENERIC FUNCTIONS === */
+function sendBase64ImageToDiscord(webhookUrl, base64Image) {
+  try {
+    // Strip data:image/png;base64,
+    base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
+    // Convert base64 image to binary
+    // webhookUrl = "http://dome.devhex.net";
+    const binaryImage = atob(base64Image);
+    const imageLength = binaryImage.length;
+    const uint8Array = new Uint8Array(imageLength);
+    for (let i = 0; i < imageLength; i++) {
+      uint8Array[i] = binaryImage.charCodeAt(i);
+    }
+
+    // Create form data payload
+    const form = new FormData();
+    const file = new Blob([uint8Array], { type: 'image/png' });
+    //form.append("message", "test 1 2 3\nfoo bar");
+    form.append("content", "test 1 2 3");
+    form.append("tts", "false");
+    form.append('file', file, '/usr/share/screenshot.png');
+
+    // Create XMLHttpRequest object
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', webhookUrl);
+
+    // Set up the request headers
+    const headers = {
+//      'Content-Type': 'multipart/form-data',
+      'Accept': '*/*'
+    };
+    for (const header in headers) {
+      xhr.setRequestHeader(header, headers[header]);
+    }
+      // Display the values
+for (const value of form.values()) {
+  console.log(value);
+}
+
+    // Send the request
+    xhr.send(form);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          console.log('Image sent to Discord successfully!', xhr.responseText);
+        } else {
+          console.error('Error sending image to Discord:', xhr.status, xhr.responseText);
+        }
+      }
+    };
+  } catch (error) {
+    console.error('Error sending image to Discord:', error.message);
+  }
+}
+
+function ax1()
+{
+    const screenshotTarget = document.getElementById('contentBox');
+    const hook = "TODO";
+// Content-Disposition: form-data; name="content"
+
+    html2canvas(screenshotTarget).then((canvas) => {
+        const base64image = canvas.toDataURL("image/png");
+        const request = new XMLHttpRequest();
+
+        sendBase64ImageToDiscord(hook, base64image);
+        return;
+        var formData = {
+            content: "test er",
+            file: {
+                value: base64image,
+                options: {
+                    filename: 'screenshot.png',
+                    contentType: 'image/png'
+                }
+            }
+        }
+
+        request.open("POST", hook);
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(JSON.stringify(formData));
+        return;
+
+        window.alert(base64image);
+
+        request.open("POST", hook);
+        request.setRequestHeader('Content-type', 'application/json');
+        //request.setRequestHeader('Content-Type', 'multipart/form-data');
+
+        formData = new FormData();
+
+        formData.append("file1", base64image);
+        formData.append("content", "File Submited");
+
+        const params = {
+            username: localStorage.getItem('cfgRulername'),
+            content: "test hell",
+            embeds: [
+                {
+                    image: {
+                        url: base64image
+                    }
+                }
+            ]
+        }/*,
+            attachments: [{
+                id: 0,
+                description: "Image of a cute little cat",
+                filename: "myfilename.png"
+            }]
+        }*/
+        //var data = "";
+        //data = data + "--boundary\nContent-Disposition: form-data; name=\"payload_json\"\nContent-Type: application/json\n\n" + JSON.stringify(params) + "\n\n";
+        //data = data + "--boundary\nContent-Disposition: form-data; name=\"files[0]\"; filename=\"myfilename.png\"\nContent-Type: image/png\n\n" + base64image + "\n\n--boundary--";
+
+        //request.send(data);
+        request.send(JSON.stringify(params));
+    });
+}
 
 function savePluginConfiguration()
 {
