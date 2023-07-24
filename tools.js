@@ -572,6 +572,32 @@ function sendBase64ImageToDiscord(webhookUrl, base64Image) {
   }
 }
 
+function imageToBlob(imageURL) {
+  const img = new Image;
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob((blob) => {
+        // here the image is a blob
+        resolve(blob)
+      }, "image/png", 1);
+    };
+  })
+}
+
+function copyToClipboard(base64image) {
+  const blob = imageToBlob(base64image)
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+  return;
+}
+
 function generateScreenshot()
 {
     const screenshotTarget = document.getElementById('contentBox');
@@ -585,7 +611,7 @@ function generateScreenshot()
         if (hook && hook.length > 6) {
             sendBase64ImageToDiscord(hook, base64image);
         } else {
-            window.alert("Discord webhook is not set.\nVisit settings to set it!");
+            copyToClipboard(base64image);
         }
         return;
     });
