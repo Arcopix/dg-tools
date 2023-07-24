@@ -564,12 +564,17 @@ function generateScreenshot()
 {
     const screenshotTarget = document.getElementById('contentBox');
     const hook = localStorage.getItem('cfgDiscordTokenA');
+    const coord = screenshotTarget.getBoundingClientRect()
 
-    html2canvas(screenshotTarget).then((canvas) => {
+    html2canvas(document.body, {x: coord.left, y: coord.top, width: coord.right - coord.left, height: coord.bottom-coord.top}).then((canvas) => {
         const base64image = canvas.toDataURL("image/png");
         const request = new XMLHttpRequest();
 
-        sendBase64ImageToDiscord(hook, base64image);
+        if (hook && hook.length > 6) {
+            sendBase64ImageToDiscord(hook, base64image);
+        } else {
+            window.alert("Discord webhook is not set.\nVisit settings to set it!");
+        }
         return;
     });
 }
