@@ -31,7 +31,8 @@ if (m!==getDate()) {
 /* === START OF GENERIC FUNCTIONS === */
 
 /* function to decode URI params */
-function getQueryParams(qs) {
+function getQueryParams(qs)
+{
 	qs = qs.split('+').join(' ');
 	var params = {},
 		tokens,
@@ -50,7 +51,8 @@ function formatNumber(num)
 }
 
 /* common function in css to change css style */
-function addGlobalStyle(css) {
+function addGlobalStyle(css)
+{
 	var head, style;
 	head = document.getElementsByTagName('head')[0];
 	if (!head) {
@@ -523,8 +525,9 @@ if (window.location.pathname=='/alliances/') {
 
 /* End of script */
 
-/* === START OF GENERIC FUNCTIONS === */
-function sendBase64ImageToDiscord(webhookUrl, base64Image) {
+/* === START OF FEATURE FUNCTIONS === */
+function sendBase64ImageToDiscord(webhookUrl, base64Image)
+{
   try {
     // Strip data:image/png;base64,
     base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
@@ -572,7 +575,8 @@ function sendBase64ImageToDiscord(webhookUrl, base64Image) {
   }
 }
 
-function imageToBlob(imageURL) {
+function imageToBlob(imageURL)
+{
   const img = new Image;
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d");
@@ -591,7 +595,8 @@ function imageToBlob(imageURL) {
   })
 }
 
-function copyToClipboard(base64image) {
+function copyToClipboard(base64image)
+{
   const blob = imageToBlob(base64image)
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
@@ -749,4 +754,4 @@ function showPluginConfiguration()
 	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
 }
 
-/* === END OF GENERIC FUNCTIONS === */
+/* === END OF FEATURE FUNCTIONS === */
