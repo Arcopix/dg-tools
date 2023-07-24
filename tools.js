@@ -471,11 +471,24 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 		}
 	});
 
-	el = document.querySelector('input[name="coordinate.2"]');
+    el = document.querySelector('input[name="coordinate.2"]');
 	el.addEventListener('keydown', function(e) {
+		if(e.which == 110 || e.which == 188 || e.which == 190) {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.3"]').value = '';
+			document.querySelector('input[name="coordinate.3"]').focus();
+		}
 		if (e.which == 8 && this.value=='') {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.1"]').focus();
+		}
+	});
+
+	el = document.querySelector('input[name="coordinate.3"]');
+	el.addEventListener('keydown', function(e) {
+		if (e.which == 8 && this.value=='') {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.2"]').focus();
 		}
 	});
 }
@@ -516,7 +529,6 @@ function sendBase64ImageToDiscord(webhookUrl, base64Image) {
     // Strip data:image/png;base64,
     base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
     // Convert base64 image to binary
-    // webhookUrl = "http://dome.devhex.net";
     const binaryImage = atob(base64Image);
     const imageLength = binaryImage.length;
     const uint8Array = new Uint8Array(imageLength);
