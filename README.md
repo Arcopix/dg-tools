@@ -15,6 +15,7 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Smart inputs on coordinates in fleet orders and scanning (using dot and backspace now navigates between the coordinates)
 1. Added confirmation on kicking members
 1. Selecting scan type in comms can be done by clicking anywhere on the row
+1. Capability to send a screenshot to a Discord channel via user defined webhook
 
 **Installation**
 
@@ -22,13 +23,6 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Enable Tampermonkey plugin
 1. Click on "Create new script"
 1. Paste the code in tools.js
-1. Modify the configuration on line 15 and  (naps and color for naps):
-  ```javascript
- /* Config start */
- var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
- var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
- /* Config end */
-  ```
 
 **Special thanks**
 
