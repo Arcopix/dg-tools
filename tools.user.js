@@ -1,17 +1,16 @@
 // ==UserScript==
-// @name	   DG utilities Git v0.4
-// @namespace  devhex
-// @version    0.4.xxxx
+// @name	     DG utilities v0.4
+// @namespace    devhex
+// @version      0.4.0000
 // @description  various minor improvements of DG interface
-// @match      https://beta.darkgalaxy.com/
-// @match      https://beta.darkgalaxy.com/*
-// @match      https://speedgame.darkgalaxy.com
-// @match      https://speedgame.darkgalaxy.com/*
-// @match      https://andromeda.darkgalaxy.com
-// @match      https://andromeda.darkgalaxy.com/*
-// @require    https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @copyright  2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
-// @homepage   https://github.com/Arcopix/dg-tools
+// @match        https://*.darkgalaxy.com
+// @match        https://*.darkgalaxy.com/*
+// @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
+// @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
+// @homepage     https://github.com/Arcopix/dg-tools
+// @supportURL   https://github.com/Arcopix/dg-tools/issues
+// @downloadURL  https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
+// @grant        none
 // ==/UserScript==
 
 /* Common counters & pointers */
