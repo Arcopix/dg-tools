@@ -10,25 +10,20 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Implements planet navigation with ARROW KEYS (left and right) in building overview
 1. Implements system navigation with ARROW KEYS (left and right) in galaxy and sector navigation
 1. Implements switching through fleets with ARROW KEYS (left and right)
-1. Show all population in the planet list and planet details page, not just available population
+1. ~Show all population in the planet list and planet details page, not just available population~
 1. Sorts comms in the radar section based on turns
 1. Smart inputs on coordinates in fleet orders and scanning (using dot and backspace now navigates between the coordinates)
 1. Added confirmation on kicking members
 1. Selecting scan type in comms can be done by clicking anywhere on the row
+1. Capability to send a screenshot to a Discord channel via user defined webhook
+
+*There are more features which are not listed at the moment*
 
 **Installation**
 
 1. Download/install Tampermonkey plugin for your browser (https://www.tampermonkey.net/).
 1. Enable Tampermonkey plugin
-1. Click on "Create new script"
-1. Paste the code in tools.js
-1. Modify the configuration on line 15 and  (naps and color for naps):
-  ```javascript
- /* Config start */
- var nap_ally = [ "[ALLY1]", "[ALLY2]" ]; // Which alliances you want to be color coded as NAP. Note the brackets.
- var custom_style = "COLOR: #FFD54F;"; // Color specified for NAP
- /* Config end */
-  ```
+1. Open this link https://github.com/Arcopix/dg-tools/raw/dg-tools-v4-dev/tools.user.js
 
 **Special thanks**
 
