@@ -19,7 +19,7 @@ var i, j, k, l, m, n, p;
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (m!==getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n" +
+	window.alert("WARNING, you are using testing version of DG utilities.\n" +
 					"Use it at your own risk\n" +
 					"\n" +
 					"This message will be displayed on once a day");
