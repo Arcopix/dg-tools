@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0000
+// @version      0.4.0001
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
@@ -181,6 +181,13 @@ testIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB
 
 testIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
+/* Updated main menu items */
+var atestIcon = document.createElement('div');
+atestIcon.className = 'left relative';
+atestIcon.style = 'cursor:pointer;';
+atestIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSKVKnYQcQhYnSyIijhKFYtgobQVWnUwufRDaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIq4uToouU+L+k0CLGg+N+vLv3uHsHCPUyU82OcUDVLCMVj4nZ3IoYeEUAIfShF8MSM/VEeiEDz/F1Dx9f76I8y/vcn6NHyZsM8InEs0w3LOJ14ulNS+e8TxxmJUkhPiceM+iCxI9cl11+41x0WOCZYSOTmiMOE4vFNpbbmJUMlXiKOKKoGuULWZcVzluc1XKVNe/JXxjMa8tprtMcQhyLSCAJETKq2EAZFqK0aqSYSNF+zMM/6PiT5JLJtQFGjnlUoEJy/OB/8LtbszA54SYFY0Dni21/jACBXaBRs+3vY9tunAD+Z+BKa/krdWDmk/RaS4scAaFt4OK6pcl7wOUOMPCkS4bkSH6aQqEAvJ/RN+WA/luge9XtrbmP0wcgQ10t3QAHh8BokbLXPN7d1d7bv2ea/f0Acq1yp87JZPIAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBw8RFRwThj7AAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAmtJREFUOMutlN9Lk2EUxz/PXDAnsjbfV2GltoWg0yZUUIHdqRWV3aXiXyCBSUVBXUe/xDuTiOhKtIuaWxnhmhfOrmJBjtp00zl/XIRgyW62vXNvF+ZqzjULv3fPc77ne7485zxHLC6tqOwhtIUI6XQ666zRaP5PMBaL8WJkiCmvl42NDQCKiopoajpNe2cXpaWlO+Zlyvl8H3n+7Cnr6z8AcDkdeN67SSTipFIKqZRCIhHH43HjcjoKOwwGAoyPv6NMkimTJKa8k3mTPngnsVisqKqKEAKz2YzFchgVFbG4tKLOz81x5/bN3GrafZy/cBGLxQpAJDLP2BsXqVQqh3v33n2s1ppNh5FIJIdgs9XTfaUHSZIydydOnqK5pZXBxwN8/eLP4kfmo1itNZtvmE5nT47RaKKn9zqSJKEoScKhEOFQCEVRkCSZnqu9GE2mbdOg5u9ye0cXBoOBWCxGf98DgsEAALW1dVy7cQuDYT+X2zt5MjiQv8t/os5mA2DC486IAQSDASY87l+c+r+PzRZUNU2JXg+A3z+dk+Cf/gxAiV6Pqqq7cCgEyWQSgKqq6pxwVfUhAJJJBSFEYUGBYCG6AEBzSys6XXEmptMV09zSCkA0Gtn91xt1vKSh4Qhm8wEe9vXzyecDVI4eO44sl6MoCqOOV7sXnJ0JMjI8REdnF7Jczpmz5zIxRVEYGR5idiaYX1CrzdV9O/aacDhMW9slDlZWArC8vITL6WR2JrDDr9L+FrQ32pHlClZXv21zGqDvUaDgDpTLK7A32jd7sLVg4/E439fWUPm3fSuEwGg0odPpsgX3Chr2GD8BJfXkHge7nl4AAAAASUVORK5CYII="/>';
+
+atestIcon.addEventListener('click', function() { showNotification("hooha") }, false);
 
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
@@ -188,6 +195,7 @@ p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(testIcon);
+mainMenu.appendChild(atestIcon);
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
@@ -589,22 +597,28 @@ for (i=0; i<allForms.length; i++) {
     }
 }
 
-/* Proof of concept code
-showNotification();
-        function showNotification() {
-            var notificationDiv = document.getElementById("playerBox");
-            notificationDiv.style.display = "block";
-            const qq = notificationDiv.innerHTML;
-            // Replace this content with your notification message
-            notificationDiv.innerHTML = "This is a notification.";
 
-            // Automatically hide the notification after a few seconds (optional)
-            setTimeout(function () {
-                notificationDiv.innerHTML = qq;
-            }, 3000);
-        }
-*/
+function showNotification(message)
+{
+    var newDev = document.getElementById('dhNotification');
+    if (newDev==null) {
+        var newDiv = document.createElement('div');
+        newDiv.id = 'dhNotification';
+        newDiv.className = 'turnUpdateDialog';
+        newDiv.style.minHeight = '50px';
+        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
+        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><span id="dhMsg">Test me!.<br>asd</span>';
+        document.body.appendChild(newDiv);
+    }
 
+    document.getElementById('dhNotification').style.display = 'block';
+    var nMsg = document.getElementById('dhMsg');
+    nMsg.innerText = message;
+
+    setTimeout(function () {
+        document.getElementById('dhNotification').style.display = 'none';
+    }, 3000);
+}
 /* End of script */
 
 /* === START OF FEATURE FUNCTIONS === */
@@ -682,6 +696,7 @@ function copyToClipboard(base64image)
   const blob = imageToBlob(base64image)
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
+  showNotification('The screenshot was copied into the local clipboard!');
   return;
 }
 
@@ -716,7 +731,7 @@ function savePluginConfiguration()
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
 	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
-	
+
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
@@ -734,7 +749,7 @@ function dumpPluginConfiguration()
 	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 	console.log('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
-	
+
 	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
