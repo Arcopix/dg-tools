@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0000
+// @version      0.4.0002
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
@@ -10,6 +10,7 @@
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
 // @downloadURL  https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
+// @updateURL    https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -186,6 +187,10 @@ mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
 mainMenu.appendChild(p);
+
+/* Fix coordinates to be min 100 px in width due bug in Navigation:
+   - News link is not shown due to width of 85px for longer coordinates (10-12) */
+addGlobalStyle(".coords {min-width: 100px;}");
 
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
