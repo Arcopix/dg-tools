@@ -188,10 +188,6 @@ mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
 mainMenu.appendChild(p);
 
-/* Fix coordinates to be min 100 px in width due bug in Navigation:
-   - News link is not shown due to width of 85px for longer coordinates (10-12) */
-addGlobalStyle(".coords {min-width: 100px;}");
-
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
 
@@ -306,6 +302,12 @@ if (document.querySelector(".navigation.left")) {
 			document.querySelector(".navigation.right").click();
 		}
 	});
+}
+
+/* Fix coordinates to be min 100 px in width due bug in Navigation:
+   - News link is not shown due to width of 85px for longer coordinates (10-12) */
+if (location.href.includes('/navigation/')) {
+    addGlobalStyle(".coords {min-width: 100px;}");
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
