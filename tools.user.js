@@ -142,6 +142,7 @@ function initializeConfig()
 
 	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
+    localStorage.setItem('cfgFleetSorting', 'true');
 	localStorage.setItem('cfgPlanetSorting', 'true');
 	window.alert('Initializing config');
 }
@@ -161,6 +162,7 @@ var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
 var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
 var cfgPopulationTotals = parseBool(localStorage.getItem('cfgPopulationTotals'));
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
+var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 /* Updated main menu items */
@@ -413,6 +415,29 @@ for (i=0; i<coords.length; i++)
 	}
 }
 
+if (cfgFleetSorting && location.href.includes('/fleets/')) {
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+   rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('.name a');
+        const linkB = b.querySelector('.name a');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+   rowsArray.forEach(row => table.appendChild(row));
+
+   rows = table.querySelectorAll('.entry');
+
+   for (i = 0; i<rows.length; i++) {
+        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
+   }
+}
+
 /* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
@@ -564,6 +589,21 @@ for (i=0; i<allForms.length; i++) {
     }
 }
 
+/* Proof of concept code
+showNotification();
+        function showNotification() {
+            var notificationDiv = document.getElementById("playerBox");
+            notificationDiv.style.display = "block";
+            const qq = notificationDiv.innerHTML;
+            // Replace this content with your notification message
+            notificationDiv.innerHTML = "This is a notification.";
+
+            // Automatically hide the notification after a few seconds (optional)
+            setTimeout(function () {
+                notificationDiv.innerHTML = qq;
+            }, 3000);
+        }
+*/
 
 /* End of script */
 
@@ -676,8 +716,10 @@ function savePluginConfiguration()
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
 	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
-	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
+	
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+    localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
+    localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
 
 	window.alert("Settings saved successfully");
 }
@@ -692,8 +734,10 @@ function dumpPluginConfiguration()
 	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 	console.log('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
-	console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+	
 	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+    console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
 }
 
 function showPluginConfiguration()
@@ -757,9 +801,10 @@ function showPluginConfiguration()
 	'  </div>' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPopulationTotals" name="cfgPopulationTotals" value="" /> <label for="cfgPopulationTotals">Display total population</label></div>' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="" value="" onchange="alert(\'Not implemented yet\')"/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-  	'  </div>' +
+  	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
+    '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
+    '  </div>' +
 	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
@@ -788,7 +833,8 @@ function showPluginConfiguration()
 
 	/* Boolean setting */
 	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
-	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'))
+	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
+    document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 	/* Buttons */
