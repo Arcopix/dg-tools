@@ -608,7 +608,7 @@ function showNotification(message)
 
     setTimeout(function () {
         document.getElementById('dhNotification').style.display = 'none';
-    }, 3000);
+    }, 5000);
 }
 /* End of script */
 
@@ -727,7 +727,7 @@ function savePluginConfiguration()
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
 
-	window.alert("Settings saved successfully");
+	showNotification("Settings saved successfully");
 }
 
 function dumpPluginConfiguration()
