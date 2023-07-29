@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0000
+// @version      0.4.0002
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
@@ -10,6 +10,7 @@
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
 // @downloadURL  https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
+// @updateURL    https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
 // @grant        none
 // ==/UserScript==
 
@@ -140,8 +141,8 @@ function initializeConfig()
 	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
 	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
 
-	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
+    localStorage.setItem('cfgFleetSorting', 'true');
 	localStorage.setItem('cfgPlanetSorting', 'true');
 	window.alert('Initializing config');
 }
@@ -159,8 +160,8 @@ var cfgAllyNAP = localStorage.getItem('cfgAllyNAP');
 var cfgAllyNAPcolor = localStorage.getItem('cfgAllyNAPcolor');
 var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
 var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
-var cfgPopulationTotals = parseBool(localStorage.getItem('cfgPopulationTotals'));
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
+var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 /* Updated main menu items */
@@ -172,20 +173,19 @@ confIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB
 confIcon.addEventListener('click', function() { showPluginConfiguration() }, false);
 
 /* Updated main menu items */
-var testIcon = document.createElement('div');
-testIcon.className = 'left relative';
-testIcon.style = 'cursor:pointer;';
-testIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSKVKnYQcQhYnSyIijhKFYtgobQVWnUwufRDaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIq4uToouU+L+k0CLGg+N+vLv3uHsHCPUyU82OcUDVLCMVj4nZ3IoYeEUAIfShF8MSM/VEeiEDz/F1Dx9f76I8y/vcn6NHyZsM8InEs0w3LOJ14ulNS+e8TxxmJUkhPiceM+iCxI9cl11+41x0WOCZYSOTmiMOE4vFNpbbmJUMlXiKOKKoGuULWZcVzluc1XKVNe/JXxjMa8tprtMcQhyLSCAJETKq2EAZFqK0aqSYSNF+zMM/6PiT5JLJtQFGjnlUoEJy/OB/8LtbszA54SYFY0Dni21/jACBXaBRs+3vY9tunAD+Z+BKa/krdWDmk/RaS4scAaFt4OK6pcl7wOUOMPCkS4bkSH6aQqEAvJ/RN+WA/luge9XtrbmP0wcgQ10t3QAHh8BokbLXPN7d1d7bv2ea/f0Acq1yp87JZPIAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBw8RFRwThj7AAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAmtJREFUOMutlN9Lk2EUxz/PXDAnsjbfV2GltoWg0yZUUIHdqRWV3aXiXyCBSUVBXUe/xDuTiOhKtIuaWxnhmhfOrmJBjtp00zl/XIRgyW62vXNvF+ZqzjULv3fPc77ne7485zxHLC6tqOwhtIUI6XQ666zRaP5PMBaL8WJkiCmvl42NDQCKiopoajpNe2cXpaWlO+Zlyvl8H3n+7Cnr6z8AcDkdeN67SSTipFIKqZRCIhHH43HjcjoKOwwGAoyPv6NMkimTJKa8k3mTPngnsVisqKqKEAKz2YzFchgVFbG4tKLOz81x5/bN3GrafZy/cBGLxQpAJDLP2BsXqVQqh3v33n2s1ppNh5FIJIdgs9XTfaUHSZIydydOnqK5pZXBxwN8/eLP4kfmo1itNZtvmE5nT47RaKKn9zqSJKEoScKhEOFQCEVRkCSZnqu9GE2mbdOg5u9ye0cXBoOBWCxGf98DgsEAALW1dVy7cQuDYT+X2zt5MjiQv8t/os5mA2DC486IAQSDASY87l+c+r+PzRZUNU2JXg+A3z+dk+Cf/gxAiV6Pqqq7cCgEyWQSgKqq6pxwVfUhAJJJBSFEYUGBYCG6AEBzSys6XXEmptMV09zSCkA0Gtn91xt1vKSh4Qhm8wEe9vXzyecDVI4eO44sl6MoCqOOV7sXnJ0JMjI8REdnF7Jczpmz5zIxRVEYGR5idiaYX1CrzdV9O/aacDhMW9slDlZWArC8vITL6WR2JrDDr9L+FrQ32pHlClZXv21zGqDvUaDgDpTLK7A32jd7sLVg4/E439fWUPm3fSuEwGg0odPpsgX3Chr2GD8BJfXkHge7nl4AAAAASUVORK5CYII="/>';
+var screenshotIcon = document.createElement('div');
+screenshotIcon.className = 'left relative';
+screenshotIcon.style = 'cursor:pointer;';
+screenshotIcon.innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSKVKnYQcQhYnSyIijhKFYtgobQVWnUwufRDaNKQpLg4Cq4FBz8Wqw4uzro6uAqC4AeIq4uToouU+L+k0CLGg+N+vLv3uHsHCPUyU82OcUDVLCMVj4nZ3IoYeEUAIfShF8MSM/VEeiEDz/F1Dx9f76I8y/vcn6NHyZsM8InEs0w3LOJ14ulNS+e8TxxmJUkhPiceM+iCxI9cl11+41x0WOCZYSOTmiMOE4vFNpbbmJUMlXiKOKKoGuULWZcVzluc1XKVNe/JXxjMa8tprtMcQhyLSCAJETKq2EAZFqK0aqSYSNF+zMM/6PiT5JLJtQFGjnlUoEJy/OB/8LtbszA54SYFY0Dni21/jACBXaBRs+3vY9tunAD+Z+BKa/krdWDmk/RaS4scAaFt4OK6pcl7wOUOMPCkS4bkSH6aQqEAvJ/RN+WA/luge9XtrbmP0wcgQ10t3QAHh8BokbLXPN7d1d7bv2ea/f0Acq1yp87JZPIAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBw8RFRwThj7AAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAmtJREFUOMutlN9Lk2EUxz/PXDAnsjbfV2GltoWg0yZUUIHdqRWV3aXiXyCBSUVBXUe/xDuTiOhKtIuaWxnhmhfOrmJBjtp00zl/XIRgyW62vXNvF+ZqzjULv3fPc77ne7485zxHLC6tqOwhtIUI6XQ666zRaP5PMBaL8WJkiCmvl42NDQCKiopoajpNe2cXpaWlO+Zlyvl8H3n+7Cnr6z8AcDkdeN67SSTipFIKqZRCIhHH43HjcjoKOwwGAoyPv6NMkimTJKa8k3mTPngnsVisqKqKEAKz2YzFchgVFbG4tKLOz81x5/bN3GrafZy/cBGLxQpAJDLP2BsXqVQqh3v33n2s1ppNh5FIJIdgs9XTfaUHSZIydydOnqK5pZXBxwN8/eLP4kfmo1itNZtvmE5nT47RaKKn9zqSJKEoScKhEOFQCEVRkCSZnqu9GE2mbdOg5u9ye0cXBoOBWCxGf98DgsEAALW1dVy7cQuDYT+X2zt5MjiQv8t/os5mA2DC486IAQSDASY87l+c+r+PzRZUNU2JXg+A3z+dk+Cf/gxAiV6Pqqq7cCgEyWQSgKqq6pxwVfUhAJJJBSFEYUGBYCG6AEBzSys6XXEmptMV09zSCkA0Gtn91xt1vKSh4Qhm8wEe9vXzyecDVI4eO44sl6MoCqOOV7sXnJ0JMjI8REdnF7Jczpmz5zIxRVEYGR5idiaYX1CrzdV9O/aacDhMW9slDlZWArC8vITL6WR2JrDDr9L+FrQ32pHlClZXv21zGqDvUaDgDpTLK7A32jd7sLVg4/E439fWUPm3fSuEwGg0odPpsgX3Chr2GD8BJfXkHge7nl4AAAAASUVORK5CYII="/>';
 
-testIcon.addEventListener('click', function() { generateScreenshot() }, false);
-
+screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
-mainMenu.appendChild(testIcon);
+mainMenu.appendChild(screenshotIcon);
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
@@ -304,6 +304,12 @@ if (document.querySelector(".navigation.left")) {
 	});
 }
 
+/* Fix coordinates to be min 100 px in width due bug in Navigation:
+   - News link is not shown due to width of 85px for longer coordinates (10-12) */
+if (location.href.includes('/navigation/')) {
+    addGlobalStyle(".coords {min-width: 100px;}");
+}
+
 /* Script by Mordread -> use ARROW keys to navigate in planet details
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
@@ -361,34 +367,6 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
   Original concept by Mordread
   Refactored by Arcopix
 */
-var line;
-var availablePopulation, occupiedPopulation;
-var planets;
-/* No longer needed */
-if (0 && cfgPopulationTotals && location.href.includes('/planet/')) {
-	line = document.getElementsByClassName('resource')[3];
-	availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
-	occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
-	availablePopulation = parseInt(availablePopulation.split(',').join(''));
-	occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
-	line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation) + ' / ' + line.getElementsByTagName('span')[0].innerText.split(' / ')[1]
-}
-
-/* No longer needed */
-if (0 && cfgPopulationTotals && window.location.pathname=="/planets/") {
-	planets = document.getElementsByClassName('locationWrapper');
-	for (i=0; i<planets.length; i++) {
-		line = planets[i].getElementsByClassName('resource')[3];
-
-		availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
-		occupiedPopulation = line.getElementsByTagName('span')[1].innerText.replace('(', '').replace(' occupied)', '');
-
-		availablePopulation = parseInt(availablePopulation.split(',').join(''));
-		occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
-
-		line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation);
-	}
-}
 
 /* Coordinates as links */
 var coords;
@@ -411,6 +389,29 @@ for (i=0; i<coords.length; i++)
 		let p = c.innerText.split('.');
 		c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
 	}
+}
+
+if (cfgFleetSorting && location.href.includes('/fleets/')) {
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+   rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('.name a');
+        const linkB = b.querySelector('.name a');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+   rowsArray.forEach(row => table.appendChild(row));
+
+   rows = table.querySelectorAll('.entry');
+
+   for (i = 0; i<rows.length; i++) {
+        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
+   }
 }
 
 /* Fix sorting of radars */
@@ -565,6 +566,27 @@ for (i=0; i<allForms.length; i++) {
 }
 
 
+function showNotification(message)
+{
+    var newDev = document.getElementById('dhNotification');
+    if (newDev==null) {
+        var newDiv = document.createElement('div');
+        newDiv.id = 'dhNotification';
+        newDiv.className = 'turnUpdateDialog';
+        newDiv.style.minHeight = '50px';
+        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
+        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><span id="dhMsg">Test me!.<br>asd</span>';
+        document.body.appendChild(newDiv);
+    }
+
+    document.getElementById('dhNotification').style.display = 'block';
+    var nMsg = document.getElementById('dhMsg');
+    nMsg.innerText = message;
+
+    setTimeout(function () {
+        document.getElementById('dhNotification').style.display = 'none';
+    }, 5000);
+}
 /* End of script */
 
 /* === START OF FEATURE FUNCTIONS === */
@@ -642,6 +664,7 @@ function copyToClipboard(base64image)
   const blob = imageToBlob(base64image)
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
+  showNotification('The screenshot was copied into the local clipboard!');
   return;
 }
 
@@ -675,25 +698,26 @@ function savePluginConfiguration()
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
-	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
-	localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+    localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
+    localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
 
-	window.alert("Settings saved successfully");
+	showNotification("Settings saved successfully");
 }
 
 function dumpPluginConfiguration()
 {
-    window.alert('Data dumping in console');
+    showNotification('Data dumping in console');
 	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
 	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
 	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	console.log('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
-	console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+
 	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
+    console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
 }
 
 function showPluginConfiguration()
@@ -756,10 +780,10 @@ function showPluginConfiguration()
 	'	</div>' +
 	'  </div>' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPopulationTotals" name="cfgPopulationTotals" value="" /> <label for="cfgPopulationTotals">Display total population</label></div>' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="" value="" onchange="alert(\'Not implemented yet\')"/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-  	'  </div>' +
+  	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
+    '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
+    '  </div>' +
 	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
@@ -787,8 +811,8 @@ function showPluginConfiguration()
     document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
 	/* Boolean setting */
-	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
-	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'))
+	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
+    document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 	/* Buttons */
