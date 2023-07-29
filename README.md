@@ -17,12 +17,13 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Selecting scan type in comms can be done by clicking anywhere on the row
 1. Capability to send a screenshot to a Discord channel via user defined webhook
 
+*There are more features which are not listed at the moment*
+
 **Installation**
 
 1. Download/install Tampermonkey plugin for your browser (https://www.tampermonkey.net/).
 1. Enable Tampermonkey plugin
-1. Click on "Create new script"
-1. Paste the code in tools.js
+1. Open this link https://github.com/Arcopix/dg-tools/raw/dg-tools-v4-dev/tools.user.js
 
 **Special thanks**
 
