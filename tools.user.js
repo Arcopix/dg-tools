@@ -140,7 +140,6 @@ function initializeConfig()
 	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
 	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
 
-	localStorage.setItem('cfgPopulationTotals', 'true');
 	localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
 	localStorage.setItem('cfgPlanetSorting', 'true');
@@ -160,7 +159,6 @@ var cfgAllyNAP = localStorage.getItem('cfgAllyNAP');
 var cfgAllyNAPcolor = localStorage.getItem('cfgAllyNAPcolor');
 var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
 var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
-var cfgPopulationTotals = parseBool(localStorage.getItem('cfgPopulationTotals'));
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
@@ -362,34 +360,6 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
   Original concept by Mordread
   Refactored by Arcopix
 */
-var line;
-var availablePopulation, occupiedPopulation;
-var planets;
-/* No longer needed */
-if (0 && cfgPopulationTotals && location.href.includes('/planet/')) {
-	line = document.getElementsByClassName('resource')[3];
-	availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
-	occupiedPopulation = line.getElementsByTagName('span')[2].innerText.replace('(', '').replace(' occupied)', '')
-	availablePopulation = parseInt(availablePopulation.split(',').join(''));
-	occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
-	line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation) + ' / ' + line.getElementsByTagName('span')[0].innerText.split(' / ')[1]
-}
-
-/* No longer needed */
-if (0 && cfgPopulationTotals && window.location.pathname=="/planets/") {
-	planets = document.getElementsByClassName('locationWrapper');
-	for (i=0; i<planets.length; i++) {
-		line = planets[i].getElementsByClassName('resource')[3];
-
-		availablePopulation = line.getElementsByTagName('span')[0].innerText.split(' / ')[0];
-		occupiedPopulation = line.getElementsByTagName('span')[1].innerText.replace('(', '').replace(' occupied)', '');
-
-		availablePopulation = parseInt(availablePopulation.split(',').join(''));
-		occupiedPopulation = parseInt(occupiedPopulation.split(',').join(''));
-
-		line.getElementsByTagName('span')[0].innerText = formatNumber(availablePopulation+occupiedPopulation);
-	}
-}
 
 /* Coordinates as links */
 var coords;
@@ -721,8 +691,6 @@ function savePluginConfiguration()
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
-	localStorage.setItem('cfgPopulationTotals', document.getElementById('cfgPopulationTotals').checked);
-
 	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
@@ -732,14 +700,13 @@ function savePluginConfiguration()
 
 function dumpPluginConfiguration()
 {
-    window.alert('Data dumping in console');
+    showNotification('Data dumping in console');
 	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
 	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
 	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
 	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	console.log('cfgPopulationTotals = ' + localStorage.getItem('cfgPopulationTotals'));
 
 	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
@@ -806,7 +773,6 @@ function showPluginConfiguration()
 	'	</div>' +
 	'  </div>' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPopulationTotals" name="cfgPopulationTotals" value="" /> <label for="cfgPopulationTotals">Display total population</label></div>' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="" value="" onchange="alert(\'Not implemented yet\')"/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
   	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
     '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
@@ -838,7 +804,6 @@ function showPluginConfiguration()
     document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
 	/* Boolean setting */
-	document.getElementById('cfgPopulationTotals').checked = parseBool(localStorage.getItem('cfgPopulationTotals'));
 	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
