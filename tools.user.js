@@ -607,7 +607,6 @@ for (i=0; i<allForms.length; i++) {
                                 const newId = makeId(8);
                                 children[n].id = newId;
                                 allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
-                                console.log(children[n].type);
                             }
                         }
                     }
