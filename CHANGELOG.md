@@ -1,3 +1,10 @@
+**Version 0.4.0003**
+
+New features:
+
+1. Capability to sort planets by planet name
+1. Minor cleanup of the code
+
 **Version 0.4.0002**
 
 New features:
