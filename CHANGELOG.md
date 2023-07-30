@@ -2,6 +2,12 @@
 
 New features:
 
+1. Capability to sort planets by planet name
+
+**Version 0.4.0002**
+
+New features:
+
 1. Configuration via internal browser storage
 1. Screenshot sender *(either to Discord webhook or to the clipboard)*
 1. Added "labels" on `Repeat` and `All resources` for their respective checkboxes
