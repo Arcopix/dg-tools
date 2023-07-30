@@ -147,6 +147,27 @@ function initializeConfig()
 	window.alert('Initializing config');
 }
 
+function showNotification(message)
+{
+    var newDev = document.getElementById('dhNotification');
+    if (newDev==null) {
+        var newDiv = document.createElement('div');
+        newDiv.id = 'dhNotification';
+        newDiv.className = 'turnUpdateDialog';
+        newDiv.style.minHeight = '50px';
+        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
+        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><span id="dhMsg">Test me!.<br>asd</span>';
+        document.body.appendChild(newDiv);
+    }
+
+    document.getElementById('dhNotification').style.display = 'block';
+    var nMsg = document.getElementById('dhMsg');
+    nMsg.innerText = message;
+
+    setTimeout(function () {
+        document.getElementById('dhNotification').style.display = 'none';
+    }, 5000);
+}
 /* === END OF GENERIC FUNCTIONS === */
 
 /* Check if global configuration is set and if not - initiate defaults */
@@ -445,37 +466,6 @@ if (cfgPlanetSorting) {
     }
 }
 
-function updatePlanetSorting()
-{
-    const table = document.getElementById("planetList");
-    var rows = table.querySelectorAll("div[id='planetList']");
-    var rowsArray = Array.from(rows);
-    const homePlanet = rowsArray.shift();
-    const filterDiv = table.querySelector('div.seperator');
-
-    for (i = 0; i<rows.length; i++) {
-        console.log(rows[i]);
-    }
-
-    rowsArray.sort((a, b) => {
-        const linkA = a.querySelector('div .planetName');
-        const linkB = b.querySelector('div .planetName');
-        const textA = linkA ? linkA.textContent : '';
-        const textB = linkB ? linkB.textContent : '';
-        return textA.localeCompare(textB);
-    });
-
-    table.innerHTML = '';
-    const elementsToRemove = table.querySelectorAll("div[id='planetList']");
-
-    elementsToRemove.forEach((element) => {
-        element.remove();
-    });
-    table.appendChild(filterDiv);
-    table.appendChild(homePlanet);
-    rowsArray.forEach(row => table.appendChild(row));
-}
-
 /* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
@@ -627,31 +617,40 @@ for (i=0; i<allForms.length; i++) {
     }
 }
 
-
-function showNotification(message)
-{
-    var newDev = document.getElementById('dhNotification');
-    if (newDev==null) {
-        var newDiv = document.createElement('div');
-        newDiv.id = 'dhNotification';
-        newDiv.className = 'turnUpdateDialog';
-        newDiv.style.minHeight = '50px';
-        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
-        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><span id="dhMsg">Test me!.<br>asd</span>';
-        document.body.appendChild(newDiv);
-    }
-
-    document.getElementById('dhNotification').style.display = 'block';
-    var nMsg = document.getElementById('dhMsg');
-    nMsg.innerText = message;
-
-    setTimeout(function () {
-        document.getElementById('dhNotification').style.display = 'none';
-    }, 5000);
-}
 /* End of script */
 
 /* === START OF FEATURE FUNCTIONS === */
+function updatePlanetSorting()
+{
+    const table = document.getElementById("planetList");
+    var rows = table.querySelectorAll("div[id='planetList']");
+    var rowsArray = Array.from(rows);
+    const homePlanet = rowsArray.shift();
+    const filterDiv = table.querySelector('div.seperator');
+
+    for (i = 0; i<rows.length; i++) {
+        console.log(rows[i]);
+    }
+
+    rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('div .planetName');
+        const linkB = b.querySelector('div .planetName');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+    table.innerHTML = '';
+    const elementsToRemove = table.querySelectorAll("div[id='planetList']");
+
+    elementsToRemove.forEach((element) => {
+        element.remove();
+    });
+    table.appendChild(filterDiv);
+    table.appendChild(homePlanet);
+    rowsArray.forEach(row => table.appendChild(row));
+}
+
 function sendBase64ImageToDiscord(webhookUrl, base64Image)
 {
   try {
