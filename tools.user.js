@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0002
+// @version      0.4.0003
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
@@ -414,6 +414,68 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
    }
 }
 
+/* Fix sorting of planets */
+if (cfgPlanetSorting) {
+    /* Sort planets in select drop down in Fleet command */
+    var planetSelect;
+	if (planetSelect = document.querySelector('select[name="locationId"]')) {
+        const options = Array.from(planetSelect.options);
+        const homePlanet = options.shift();
+
+        options.sort((a, b) => {
+            const textA = a.text.toLowerCase();
+            const textB = b.text.toLowerCase();
+
+            if (textA < textB) return -1;
+            if (textA > textB) return 1;
+            return 0;
+        });
+
+        // Clear the existing options
+        planetSelect.innerHTML = '';
+        planetSelect.appendChild(homePlanet);
+        // Re-insert the sorted options
+        options.forEach((option) => {
+            planetSelect.appendChild(option);
+        });
+    }
+
+    if (location.href.includes('/planets/')) {
+        updatePlanetSorting();
+    }
+}
+
+function updatePlanetSorting()
+{
+    const table = document.getElementById("planetList");
+    var rows = table.querySelectorAll("div[id='planetList']");
+    var rowsArray = Array.from(rows);
+    const homePlanet = rowsArray.shift();
+    const filterDiv = table.querySelector('div.seperator');
+
+    for (i = 0; i<rows.length; i++) {
+        console.log(rows[i]);
+    }
+
+    rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('div .planetName');
+        const linkB = b.querySelector('div .planetName');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+    table.innerHTML = '';
+    const elementsToRemove = table.querySelectorAll("div[id='planetList']");
+
+    elementsToRemove.forEach((element) => {
+        element.remove();
+    });
+    table.appendChild(filterDiv);
+    table.appendChild(homePlanet);
+    rowsArray.forEach(row => table.appendChild(row));
+}
+
 /* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
@@ -780,7 +842,7 @@ function showPluginConfiguration()
 	'	</div>' +
 	'  </div>' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="" value="" onchange="alert(\'Not implemented yet\')"/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
+	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
   	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
     '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
     '  </div>' +
