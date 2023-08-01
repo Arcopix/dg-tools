@@ -722,21 +722,28 @@ for (i=0; i<allForms.length; i++) {
     var allDivs = allForms[i].getElementsByTagName("div");
     for (j=0; j<allDivs.length; j++) {
         k = allDivs[j].innerText.trim();
-        if (k == "Repeat:" || k == "Repeat" || k == "All Resources:" || k == "All Resources") {
-            var siblings = allDivs[j].parentNode.children;
-            for (m = 0; m < siblings.length; m++) {
-                var sibling = siblings[m];
-                if (sibling !== allDivs[j] && sibling.tagName === 'DIV' && sibling.children) {
-                    var children = sibling.children;
-                    for (n = 0; n < children.length; n++) {
-                        if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
-                            if (children[n].id == '') {
-                                const newId = makeId(8);
-                                children[n].id = newId;
-                                allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
-                            }
-                        }
-                    }
+        if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
+			continue;
+		}
+		
+        var siblings = allDivs[j].parentNode.children;
+        for (m = 0; m < siblings.length; m++) {
+            var sibling = siblings[m];
+            if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
+				continue;
+			}
+            
+			var children = sibling.children;
+            for (n = 0; n < children.length; n++) {
+			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
+					/* All such cases do not have ID at the current time, but who knows */
+                    if (children[n].id == '') {
+                        const newId = makeId(8);
+                        children[n].id = newId;
+                        allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
+                    } else {
+						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
+					}
                 }
             }
         }
