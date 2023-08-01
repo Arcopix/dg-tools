@@ -411,6 +411,17 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 	});
 }
 
+if (window.location.href.match(/\/fleet\/[0-9]+/)) {
+    buf = getQueryParams(document.location.search);
+
+    if (buf.c1 && buf.c2 && buf.c3 && buf.c4) {
+        document.querySelector('input[name="coordinate.0"]').value = buf.c1;
+        document.querySelector('input[name="coordinate.1"]').value = buf.c2;
+        document.querySelector('input[name="coordinate.2"]').value = buf.c3;
+        document.querySelector('input[name="coordinate.3"]').value = buf.c4;
+    }
+}
+
 /* Navigate through fleets using ARROW keys */
 if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet')) {
 	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
