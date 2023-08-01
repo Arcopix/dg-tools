@@ -448,8 +448,7 @@ if (location.href.includes('/fleets/')) {
         var fleet = { name: link.text, url: link.href };
         fleetArray.push(fleet);
     }
-    console.log(fleetArray);
-    //localStorage.setItem('
+    localStorage.setItem('fleetArray', fleetArray);
 }
 
 
