@@ -435,6 +435,23 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
    }
 }
 
+/* Cache fleets for future usage */
+if (location.href.includes('/fleets/')) {
+    var fleetArray = [];
+    const table = document.getElementById("fleetList");
+    rows = table.querySelectorAll('.entry');
+    rowsArray = Array.from(rows);
+
+    for (i = 0; i<rowsArray.length; i++) {
+        const link = rowsArray[i].querySelector('.name a');
+        var fleet = { name: link.text, url: link.href };
+        fleetArray.push(fleet);
+    }
+    console.log(fleetArray);
+    //localStorage.setItem('
+}
+
+
 /* Fix sorting of planets */
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
