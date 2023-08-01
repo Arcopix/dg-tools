@@ -2,6 +2,21 @@
 
 New features:
 
+1. *Move to planet* icon was added in Navigation on each planet which provides handy shortcut to queue a fleet to move to that target
+1. Overall planet statistics *(HTML & Markdown formatting)*
+
+Updates:
+
+1. Minor code cleanup & optimization for `Repeat` label workaround
+
+Removed:
+
+1. Some debug output was removed
+
+**Version 0.4.0003**
+
+New features:
+
 1. Capability to sort planets by planet name
 1. Minor cleanup of the code
 
