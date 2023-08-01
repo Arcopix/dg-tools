@@ -415,6 +415,8 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
 
     if (buf.c1 && buf.c2 && buf.c3 && buf.c4) {
+        showNotification("Make sure you actually queue your fleet.");
+
         document.querySelector('input[name="coordinate.0"]').value = buf.c1;
         document.querySelector('input[name="coordinate.1"]').value = buf.c2;
         document.querySelector('input[name="coordinate.2"]').value = buf.c3;
