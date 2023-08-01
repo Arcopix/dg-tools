@@ -539,7 +539,6 @@ if (location.href.includes('/fleets/')) {
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
-
 /* Fix sorting of planets */
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
@@ -569,6 +568,23 @@ if (cfgPlanetSorting) {
     if (location.href.includes('/planets/')) {
         updatePlanetSorting();
     }
+}
+
+if (0&&location.href.includes('/planets/')) {
+    addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
+    addGlobalStyle("svg { position: absolute; left: 0; top: 0; fill: none; stroke: #fff; stroke-dasharray: 150 480; stroke-dashoffset: 150; transition: 1s ease-in-out; }");
+
+    addGlobalStyle(".btn:hover { transition: 1s ease-in-out; background: #2F75BA; }");
+
+    addGlobalStyle(".btn:hover svg { stroke-dashoffset: -480; }");
+
+    addGlobalStyle(".btn span { color: white; font-size: 12px; font-weight: 100; }");
+
+    buf = document.querySelector('div .header.pageTitle');
+    buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Merchant</span></button>';
+
 }
 
 /* Fix sorting of radars */
