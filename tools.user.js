@@ -328,7 +328,7 @@ if (document.querySelector(".navigation.left")) {
 
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
-if (location.href.includes('/navigation/')) {
+if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     addGlobalStyle(".coords {min-width: 100px;}");
 }
 
