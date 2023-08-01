@@ -106,6 +106,11 @@ function parseBool(val)
 	}
 }
 
+function parseInteger(val)
+{
+    return parseInt(val.replaceAll(',', '').replace('%', '').replace('(', '').replace(')', '').replace('+', ''));
+}
+
 function initializeConfig()
 {
     /* First get the playerBox.
@@ -576,7 +581,7 @@ if (cfgPlanetSorting) {
     }
 }
 
-if (0&&location.href.includes('/planets/')) {
+if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
     addGlobalStyle("svg { position: absolute; left: 0; top: 0; fill: none; stroke: #fff; stroke-dasharray: 150 480; stroke-dashoffset: 150; transition: 1s ease-in-out; }");
 
@@ -588,9 +593,139 @@ if (0&&location.href.includes('/planets/')) {
 
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
-    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
-    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Merchant</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnMerch" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Merchant</span></button>';
 
+    document.getElementById('btnStats').addEventListener("click", generateStats, false);
+    document.getElementById('btnMerch').addEventListener("click", generateMerch, false);
+}
+
+function generateStats()
+{
+    var el;
+    var buf;
+    var plBuf;
+    var genData = { "count": 0, "worker": 0, "soldier": 0, "ground": 0, "orbit": 0};
+    var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+
+    document.getElementById('btnStats').style.display = 'none';
+    document.getElementById('btnMerch').style.display = 'none';
+
+    const fmt = new Intl.NumberFormat('en-US');
+    const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    console.log(total);
+    for (const [key, value] of Object.entries(total)) {
+         el = document.querySelectorAll("div .resource."+key);
+         for (var i=0; i<el.length; i++) {
+             const data = el[i].querySelector("span").innerText.split(' ');
+             /* Map:
+              * data[0] -> current storage
+              * data[1] -> current income (in brackets with a +)
+              * data[1] -> abundance ratio (with %)
+              */
+             total[key] += parseInteger(data[0]);
+             income[key] += parseInteger(data[1]);
+             ratio[key] += parseInteger(data[2]);
+         }
+    }
+
+    /* Calculate avergaes for ratios */
+    for (const [key, value] of Object.entries(total)) {
+        total[key] = fmt.format(total[key]);
+        income[key] = fmt.format(income[key]);
+        ratio[key] = fmtRatio.format(ratio[key]/el.length, 2);
+    }
+
+    /* Detect ground and orbit space, population and soldiers */
+    plBuf = document.getElementsByClassName('locationWrapper');
+    plBuf = Array.from(plBuf);
+    for (i=0; i<plBuf.length; i++) {
+        el = plBuf[i].getElementsByTagName('span');
+        genData.count++;
+        genData.orbit += parseInteger(el[1].innerText);
+        genData.ground += parseInteger(el[2].innerText);
+        genData.worker += parseInteger(el[4].innerText);
+        genData.soldier += parseInteger(el[3].innerText);
+    }
+
+    el = document.getElementById('planetList');
+    /* while testing */
+    el.innerHTML = '';
+
+    el.innerHTML += "<div id='genTable' class='left' style='height: 100%; width: 40%;'></div>";
+    buf = document.getElementById('genTable');
+    buf.innerHTML = "<div id='aTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%;'></div>";
+    buf = document.getElementById('aTable');
+    buf.innerHTML = "<div id='bTable' class='opacBackground lightBorder paddingMid ofHidden'></div>";
+    buf = document.getElementById('bTable');
+    buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Planets</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + genData.count + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Space</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + genData.ground + " / " + genData.orbit + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Workers</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.worker) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Soldiers</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.soldier) + "</div>";
+    //buf.innerHTML = "<pre>" + genData + "</pre>";
+
+    el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%;'></div>";
+    el = document.getElementById('resTable');
+
+    el.innerHTML += "<div id='statHeader' class='lightBorder ofHidden opacBackground'></div>";
+    buf = document.getElementById('statHeader');
+    buf.innerHTML += "<div class='left resource' style='width: 12%;'>&nbsp;</div>";
+    for (const [key, value] of Object.entries(total)) {
+        buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>" + key + "</div>";
+    }
+    el.innerHTML += "<div id='statStorage' class='lightBorder ofHidden opacBackground'></div>";
+    buf = document.getElementById('statStorage');
+    buf.innerHTML += "<div class='left resource' style='width: 12%;'>Storage</div>";
+    for (const [key, value] of Object.entries(total)) {
+        buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>" + value + "</div>";
+    }
+    el.innerHTML += "<div id='statIncome' class='lightBorder ofHidden opacBackground'></div>";
+    buf = document.getElementById('statIncome');
+    buf.innerHTML += "<div class='left resource' style='width: 12%;'>Income</div>";
+    for (const [key, value] of Object.entries(income)) {
+        buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>+" + value + "</div>";
+    }
+    el.innerHTML += "<div id='statRatio' class='lightBorder ofHidden opacBackground'></div>";
+    buf = document.getElementById('statRatio');
+    buf.innerHTML += "<div class='left resource' style='width: 12%;'>Abundance</div>";
+    for (const [key, value] of Object.entries(ratio)) {
+        buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>" + value + "%</div>";
+    }
+
+    buf = document.querySelector('div .header.pageTitle');
+    buf.innerHTML = '<span>Planet Statistics</span>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
+
+    document.getElementById('btnCopy').addEventListener("click", function (e) {
+        buf = "```\n";
+        buf += "---- General statistics ---------------------------------\n";
+        buf += " Planets: " + fmt.format(genData.count).padStart(12) + "\n";
+        buf += "  Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
+        buf += "   Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
+        buf += " Workers: " + fmt.format(genData.worker).padStart(12) + "\n";
+        buf += "Soldiers: " + fmt.format(genData.soldier).padStart(12) + "\n\n";
+        buf += "---- Resources ------------------------------------------\n";
+        buf += "           " + "Storage".padStart(16) + "Income".padStart(16) + "Abundance".padStart(14) + "\n";
+        buf += "    Metal: " + total.metal.padStart(16) + income.metal.padStart(16) + ratio.metal.padStart(14) + "\n";
+        buf += "  Mineral: " + total.mineral.padStart(16) + income.mineral.padStart(16) + ratio.mineral.padStart(14) + "\n";
+        buf += "     Food: " + total.food.padStart(16) + income.food.padStart(16) + ratio.food.padStart(14) + "\n";
+        buf += "   Energy: " + total.energy.padStart(16) + income.energy.padStart(16) + ratio.energy.padStart(14) + "\n";
+        buf += "```"
+
+        navigator.clipboard.writeText(buf);
+        showNotification("Information copied to clipboard");
+    }, false);
+}
+
+function generateMerch()
+{
+    window.alert("Not implemented yet!");
 }
 
 /* Fix sorting of radars */
