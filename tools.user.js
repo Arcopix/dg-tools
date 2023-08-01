@@ -16,7 +16,8 @@
 // ==/UserScript==
 
 /* Common counters & pointers */
-var i, j, k, l, m, n, p;
+var i, j, k, l, m, n, p, q;
+var buf;
 
 /* Development warning */
 m = localStorage.getItem('develWarning');
@@ -329,7 +330,69 @@ if (document.querySelector(".navigation.left")) {
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
 if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-    addGlobalStyle(".coords {min-width: 100px;}");
+    addGlobalStyle(".coords {min-width: 120px;}");
+
+    addGlobalStyle("img.jumpTo {cursor: pointer;}");
+    addGlobalStyle("div.contextMenu { background-color: rgba(100, 100, 100, 0.8); min-width: 100px; padding: 10px; display: none; position: absolute; border: 1px solid #fff}");
+    addGlobalStyle("div.contextMenuItem { background-color: rgba(100, 100, 100); margin: 2px; padding-left: 3px; border-left: 1px solid #000 }");
+    addGlobalStyle("div.contextMenuItem:hover { background-color: rgba(80, 80, 80, 1); }");
+
+    var newDiv = document.createElement('div');
+    newDiv.id = 'dhFleetListMenu';
+    newDiv.className = 'contextMenu';
+    newDiv.style.minHeight = '50px';
+    document.body.appendChild(newDiv);
+
+    buf = document.querySelectorAll('div .planets');
+    for (i = 0; i<buf.length; i++) {
+        p = buf[i].querySelector('div .right');
+        n = buf[i].querySelector('span');
+        /* Actual coordinates */
+        n = n.innerHTML;
+
+        q = makeId(8);
+        p.innerHTML = p.innerHTML + '<img id='+q+' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACxMAAAsTAQCanBgAAAIASURBVDhPrVI9T1NhFD7n3pYQsAVhs3wUSHAQEogLE5OrSGIg8gOQ9LZOLE7+AxbS3kIMEwuw2Ogv0MnBxMbo0IRIgTICpjeQkN77Hs85vBSucdNnuPd8v+fjgX8F2n8Mo34wYYDmWXx4bYFaCK1Kw+v/bvU2YgUG1n71JTudMosLBHDC/6o6AKY4MMPRexGY3JHXe27ttwUkOdHpfEKgPmMwf1hIVQCR6zCIMFtuPkXCDTacGjSzN0UcDWDIy5KMrWjm8FX6XTtZwHLd63mPicQMv9jvgnap0A5kZiL6Zgw812TGWOl0MITkYwcxQwQDCLh/kL+3lfUv5hCiSmhw8riQ+qEdyMJkZm3b4qrDvWDnGxaLiPAaKBoXez3X9UFiE64u2Y5gdNvVu203lnvPDMFbqwK4zrH+JYawanNud/Anhv3ghePgOpEp8RK/GkMN64plXYsO1Pg7JdsWVZMBtvmp9Xq+p9DqME+SSfeL+DSGOJa5IaoWEJLIneVUovPMk5rspVdFl3H2X3ZrB9lSMIdEmZBQ99XmwYjf3OHKs3KqnytdR9Ycw+jm5RCF4WcWPx7k00tia08TQSonJJEAOdXNOAohUrH5THwSE6HxrCdO5SGf7iMEZa66KKfSbStomsd6wHzYZRZ6f6XyXQwWg0d6Z3sqRk1mFuJY/X8B4Ddult5tzWNgCQAAAABJRU5ErkJggg=="/>';
+        m = document.getElementById(q);
+        m.setAttribute('coordinate', n);
+        m.className = 'jumpTo';
+        m.addEventListener("click", showJumpMenu, false);
+    }
+
+}
+
+function showJumpMenu(e)
+{
+    const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
+    const m = document.getElementById('dhFleetListMenu');
+    const f = JSON.parse(localStorage.getItem('fleetArray'));
+    if (coordinate.length!=4) {
+        window.alert('Bad coordinates');
+        return;
+    }
+
+    if (f==null) {
+        window.alert('No fleets are cached. Visit your fleet list!');
+        return;
+    }
+
+    m.style.left = e.x + 'px';
+    m.style.top = e.y + 'px';
+    console.log(e);
+    m.style.display = 'block';
+
+    for (var i =0; i < f.length; i++) {
+        var newDiv = document.createElement('div');
+        var url = f[i].url;
+        url += '?';
+        url += 'c1=' + coordinate[0];
+        url += '&c2=' + coordinate[1];
+        url += '&c3=' + coordinate[2];
+        url += '&c4=' + coordinate[3];
+
+        newDiv.className = 'contextMenuItem';
+        newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
+        m.appendChild(newDiv);
+    }
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
@@ -448,7 +511,7 @@ if (location.href.includes('/fleets/')) {
         var fleet = { name: link.text, url: link.href };
         fleetArray.push(fleet);
     }
-    localStorage.setItem('fleetArray', fleetArray);
+    localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
 
