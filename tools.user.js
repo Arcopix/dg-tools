@@ -725,23 +725,29 @@ for (i=0; i<allForms.length; i++) {
         if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
 			continue;
 		}
-		
+        /* We've reached a div with inner text "Repeat" or "All Resources" */
         var siblings = allDivs[j].parentNode.children;
         for (m = 0; m < siblings.length; m++) {
             var sibling = siblings[m];
+            /* Test out siblings to find a sibling DIV which has childen */
             if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
 				continue;
 			}
-            
+
 			var children = sibling.children;
             for (n = 0; n < children.length; n++) {
+                /* Test out the siblings for CHECKBOX(es) */
 			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
+                    /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
+
 					/* All such cases do not have ID at the current time, but who knows */
                     if (children[n].id == '') {
                         const newId = makeId(8);
                         children[n].id = newId;
+                        /* Update the original DIV to have label with the newId of the checkbox */
                         allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
                     } else {
+                        /* Update the original DIV to have label with the ID of the checkbox */
 						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
 					}
                 }
