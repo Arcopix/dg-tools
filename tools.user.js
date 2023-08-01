@@ -382,9 +382,14 @@ function showJumpMenu(e)
 
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
-    console.log(e);
-    m.style.display = 'block';
 
+    /* The context menu is aleady populated */
+    if (m.innerHTML!='') {
+        m.style.display = 'block';
+        return;
+    }
+
+    /* Populate context menu prior to showing it */
     for (var i =0; i < f.length; i++) {
         var newDiv = document.createElement('div');
         var url = f[i].url;
@@ -398,6 +403,7 @@ function showJumpMenu(e)
         newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
         m.appendChild(newDiv);
     }
+    m.style.display = 'block';
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
