@@ -153,12 +153,17 @@ function showNotification(message)
 {
     var newDev = document.getElementById('dhNotification');
     if (newDev==null) {
+        addGlobalStyle(".vcenter { display: table; left: 70px;  height: 100%; text-align: center; /* optional */ }");
+        addGlobalStyle(".vcenter > :first-child { display: table-cell; vertical-align: middle; }");
+
         var newDiv = document.createElement('div');
         newDiv.id = 'dhNotification';
         newDiv.className = 'turnUpdateDialog';
         newDiv.style.minHeight = '50px';
+        newDiv.style.padding = 0;
         newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
-        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><span id="dhMsg">Test me!.<br>asd</span>';
+        newDiv.style.verticalAlign = 'middle';
+        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><div class="vcenter"><p id="dhMsg">Test me!.asd</p></div>';
         document.body.appendChild(newDiv);
     }
 
@@ -166,9 +171,9 @@ function showNotification(message)
     var nMsg = document.getElementById('dhMsg');
     nMsg.innerText = message;
 
-    setTimeout(function () {
+        setTimeout(function () {
         document.getElementById('dhNotification').style.display = 'none';
-    }, 5000);
+    }, 8000);
 }
 /* === END OF GENERIC FUNCTIONS === */
 
