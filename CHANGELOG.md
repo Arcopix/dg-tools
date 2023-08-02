@@ -9,6 +9,7 @@ Updates:
 
 1. Minor code cleanup & optimization for `Repeat` label workaround
 1. Added userscript icon
+1. Implemented bugfix for missing images for destroying buildings by replacing those with local images *(only basic mines are added at the current time)*
 
 Removed:
 
