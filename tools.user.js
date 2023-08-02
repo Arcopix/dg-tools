@@ -33,6 +33,8 @@ const logisticsCapacity = {
     "hulk": 1562500
 };
 
+const RTT = [32, 24, 16];
+var curRTT = 0;
 
 /* Development warning */
 m = localStorage.getItem('develWarning');
@@ -609,7 +611,7 @@ if (location.href.includes('/planets/')) {
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
-    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Logistics</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
@@ -754,7 +756,6 @@ function generateStats()
 
 function generateLogistics()
 {
-    document.getElementById('btnLogst').style.display = 'none';
     const plBuf = document.getElementsByClassName('locationWrapper');
     const plArr = Array.from(plBuf);
     const fmt = new Intl.NumberFormat('en-US');
@@ -770,21 +771,31 @@ function generateLogistics()
                 income[key] += parseInteger(data[1]);
             }
         }
-        var subEl = plArr[i].getElementsByClassName('planetHeadSection');
         var totalIncome = income.metal + income.mineral + income.food + income.energy;
-        subEl[2].innerHTML += '<div class="lightBorder ofHidden opacBackground"><div class="left resource"><span>Logistics: Total income is +' + fmt.format(totalIncome) + ' RU/turn.</span></div></div>';
-        subEl[2].innerHTML += '<div class="lightBorder ofHidden opacBackground"><div class="left resource"><span>Logistics round-trip over <strong>32</strong> turns: ' + getLogistics(totalIncome) + '</span></div></div>';
-        console.log(income);
+        var subEl = plArr[i].getElementsByClassName('planetHeadSection');
 
-        // logisticsCapacity
+        subEl[2].innerHTML = subEl[2].querySelector("div .lightBorder.ofHidden.opacBackground").outerHTML;
+        subEl[2].innerHTML += '<div class="lightBorder ofHidden opacBackground"><div class="left resource"><span>Logistics: Total income is +' + fmt.format(totalIncome) + ' RU/turn.</span></div></div>';
+        subEl[2].innerHTML += '<div class="lightBorder ofHidden opacBackground"><div class="left resource"><span>Logistics round-trip over <strong>' + RTT[curRTT] + '</strong> turns: ' + getLogistics(totalIncome) + '</span></div></div>';
     }
+
+    /* Shift to next flight times */
+    curRTT++;
+    /* If out of bound -> reset curRTT */
+    if (curRTT >= RTT.length) {
+        curRTT = 0;
+    }
+
+    /* Update label of the button */
+    document.getElementById('labelLogst').innerText = 'Logistics / ' + RTT[curRTT] + ' turns';
 }
 
 function getLogistics(res)
 {
     var ret = '';
-    /* Calculating for 16 ticks of income */
-    res *= 32;
+    /* Calculating for X ticks of income */
+    res *= RTT[curRTT];
+
     const fmt = new Intl.NumberFormat('en-US');
     console.log(res);
     console.log(logisticsCapacity);
