@@ -4,6 +4,7 @@ New features:
 
 1. *Move to planet* icon was added in Navigation on each planet which provides handy shortcut to queue a fleet to move to that target
 1. Overall planet statistics *(HTML & Markdown formatting)*
+1. Logistic calculator in `Planet List` per planet
 
 Updates:
 
