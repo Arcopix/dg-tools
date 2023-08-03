@@ -47,6 +47,11 @@ if (0 && m!==getDate()) {
 	localStorage.setItem('develWarning', getDate());
 }
 
+/* Check if global configuration is set and if not - initiate defaults */
+if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=='') {
+    initializeConfig();
+}
+
 /* === START OF GENERIC FUNCTIONS === */
 
 /* function to decode URI params */
@@ -130,6 +135,7 @@ function parseInteger(val)
 
 function initializeConfig()
 {
+    console.log("Initializing initial configuration");
     /* First get the playerBox.
        Then get the first element with "left" and "border" classes
        This one holds "Welcome [TAG]Player name"
@@ -198,11 +204,6 @@ function showNotification(message)
     }, 8000);
 }
 /* === END OF GENERIC FUNCTIONS === */
-
-/* Check if global configuration is set and if not - initiate defaults */
-if (localStorage.getItem('cfgRulername')=='') {
-    initializeConfig();
-}
 
 /* Global configuration */
 var cfgRulername = localStorage.getItem('cfgRulername');
