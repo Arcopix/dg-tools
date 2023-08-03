@@ -58,159 +58,6 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
     initializeConfig();
 }
 
-/* === START OF GENERIC FUNCTIONS === */
-
-/* function to decode URI params */
-function getQueryParams(qs)
-{
-	qs = qs.split('+').join(' ');
-	var params = {},
-		tokens,
-		re = /[?&]?([^=]+)=([^&]*)/g;
-
-	while (tokens = re.exec(qs)) {
-		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-	}
-	return params;
-}
-
-function makeId(length)
-{
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-}
-
-/* Formatting numbers */
-function formatNumber(num)
-{
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-
-/* common function in css to change css style */
-function addGlobalStyle(css)
-{
-	var head, style;
-	head = document.getElementsByTagName('head')[0];
-	if (!head) {
-		return;
-	}
-	style = document.createElement('style');
-	style.type = 'text/css';
-	style.innerHTML = css;
-	head.appendChild(style);
-}
-
-function getDate()
-{
-	let d = new Date();
-
-	let month = '' + (d.getMonth() + 1);
-	let	day = '' + d.getDate();
-	let year = d.getFullYear();
-
-	if (month.length < 2) {
-		month = '0' + month;
-	}
-	if (day.length < 2) {
-		day = '0' + day;
-	}
-
-	return [year, month, day].join('-');
-}
-
-function parseBool(val)
-{
-	if (val=='true') {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function parseInteger(val)
-{
-    return parseInt(val.replaceAll(',', '').replace('%', '').replace('(', '').replace(')', '').replace('+', ''));
-}
-
-function initializeConfig()
-{
-    console.log("Initializing initial configuration");
-    /* First get the playerBox.
-       Then get the first element with "left" and "border" classes
-       This one holds "Welcome [TAG]Player name"
-       This one holds "Welcome PLayer name"
-     */
-    var e = document.getElementById("playerBox").querySelector('.left.border');
-    e = e.innerHTML.trim();
-
-    var playerName = '';
-    if (e && e.match(/^Welcome .*$/g)) {
-        const regexAlly = /^Welcome \[.*\](.*)$/;
-        const regexNonAlly = /^Welcome (.*)$/;
-        var match = e.match(regexAlly);
-        if (match) {
-            playerName = match[1];
-        } else {
-            match = e.match(regexNonAlly);
-            if (match) {
-                playerName = match[1];
-            }
-        }
-    }
-
-    playerName = window.prompt("Enter player name", playerName);
-    if (!playerName) {
-        window.alert("Cancelling initializing of config");
-        return;
-    }
-
-   	localStorage.setItem('cfgRulername', playerName);
-	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
-	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
-	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
-	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
-
-	localStorage.setItem('cfgRadarSorting', 'true');
-    localStorage.setItem('cfgFleetSorting', 'true');
-	localStorage.setItem('cfgPlanetSorting', 'true');
-	window.alert('Initializing config');
-}
-
-function showNotification(message)
-{
-    var newDev = document.getElementById('dhNotification');
-    if (newDev==null) {
-        addGlobalStyle(".vcenter { display: table; left: 70px;  height: 100%; text-align: center; /* optional */ }");
-        addGlobalStyle(".vcenter > :first-child { display: table-cell; vertical-align: middle; }");
-
-        var newDiv = document.createElement('div');
-        newDiv.id = 'dhNotification';
-        newDiv.className = 'turnUpdateDialog';
-        newDiv.style.minHeight = '50px';
-        newDiv.style.padding = 0;
-        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
-        newDiv.style.verticalAlign = 'middle';
-        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><div class="vcenter"><p id="dhMsg">Test me!.asd</p></div>';
-        document.body.appendChild(newDiv);
-    }
-
-    document.getElementById('dhNotification').style.display = 'block';
-    var nMsg = document.getElementById('dhMsg');
-    nMsg.innerText = message;
-
-        setTimeout(function () {
-        document.getElementById('dhNotification').style.display = 'none';
-    }, 8000);
-}
-/* === END OF GENERIC FUNCTIONS === */
-
 /* Global configuration */
 var cfgRulername = localStorage.getItem('cfgRulername');
 var cfgAllyNAP = localStorage.getItem('cfgAllyNAP');
@@ -392,47 +239,6 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         m.addEventListener("click", showJumpMenu, false);
     }
 
-}
-
-function showJumpMenu(e)
-{
-    const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
-    const m = document.getElementById('dhFleetListMenu');
-    const f = JSON.parse(localStorage.getItem('fleetArray'));
-    if (coordinate.length!=4) {
-        window.alert('Bad coordinates');
-        return;
-    }
-
-    if (f==null) {
-        window.alert('No fleets are cached. Visit your fleet list!');
-        return;
-    }
-
-    m.style.left = e.x + 'px';
-    m.style.top = e.y + 'px';
-
-    /* The context menu is aleady populated */
-    if (m.innerHTML!='') {
-        m.style.display = 'block';
-        return;
-    }
-
-    /* Populate context menu prior to showing it */
-    for (var i =0; i < f.length; i++) {
-        var newDiv = document.createElement('div');
-        var url = f[i].url;
-        url += '?';
-        url += 'c1=' + coordinate[0];
-        url += '&c2=' + coordinate[1];
-        url += '&c3=' + coordinate[2];
-        url += '&c4=' + coordinate[3];
-
-        newDiv.className = 'contextMenuItem';
-        newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
-        m.appendChild(newDiv);
-    }
-    m.style.display = 'block';
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
@@ -638,6 +444,216 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
     }
 }
 
+
+
+/* Fix sorting of radars */
+var radars, radar, fleetRow, fleetCount;
+if (cfgRadarSorting && location.href.includes('/radar/')) {
+	/* Get and sort out each coms/radar section */
+	radars = document.getElementsByClassName('opacDarkBackground');
+	for (i=0; i<radars.length; i++) {
+		/* Skip the header */
+		if (radars[i].className.includes('paddingMid')) {
+			continue;
+		}
+
+		radar = radars[i];
+		fleetRow = radar.getElementsByClassName('entry');
+
+		/* Clone radar rows and remove the original ones */
+		let crow = [];
+		for (j=fleetRow.length-1; j>=0; j--) {
+			crow[j] = fleetRow[j];
+			fleetRow[j].parentNode.removeChild(fleetRow[j]);
+		}
+
+		n = 0;
+		/* For every possible TICK, reducing output the rows */
+		for (m=24; m>=0; m--) {
+			for (j=crow.length-1; j>=0; j--) {
+				if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+					if (n = ((n+1)%2)) {
+						crow[j].className = "opacBackground lightBorderBottom entry";
+					} else {
+						crow[j].className = "opacLightBackground lightBorderBottom entry";
+					}
+					//alert(crow[j].className);
+					radars[i].appendChild(crow[j]);
+					/* Nullify the row so we would not have to search it by class, text and so on */
+					crow[j] = 0;
+				}
+			}
+		}
+
+		/* Make sure to add any rows that are not already aded/invalidated */
+		for (j=crow.length-1; j>=0; j--) {
+			if (crow[j]) {
+				radars[i].appendChild(crow[j]);
+			}
+		}
+	}
+}
+
+/* Smart input for coords */
+if (document.querySelector('input[name="coordinate.0"]')) {
+	var el = document.querySelector('input[name="coordinate.0"]');
+	el.addEventListener('keydown', function(e) {
+		if(e.which == 110 || e.which == 188 || e.which == 190) {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.1"]').value = '';
+			document.querySelector('input[name="coordinate.1"]').focus();
+		}
+	});
+
+	el = document.querySelector('input[name="coordinate.1"]');
+	el.addEventListener('keydown', function(e) {
+		if(e.which == 110 || e.which == 188 || e.which == 190) {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.2"]').value = '';
+			document.querySelector('input[name="coordinate.2"]').focus();
+		}
+		if (e.which == 8 && this.value=='') {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.0"]').focus();
+		}
+	});
+
+    el = document.querySelector('input[name="coordinate.2"]');
+	el.addEventListener('keydown', function(e) {
+		if(e.which == 110 || e.which == 188 || e.which == 190) {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.3"]').value = '';
+			document.querySelector('input[name="coordinate.3"]').focus();
+		}
+		if (e.which == 8 && this.value=='') {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.1"]').focus();
+		}
+	});
+
+	el = document.querySelector('input[name="coordinate.3"]');
+	el.addEventListener('keydown', function(e) {
+		if (e.which == 8 && this.value=='') {
+			e.preventDefault();
+			document.querySelector('input[name="coordinate.2"]').focus();
+		}
+	});
+}
+
+/* Add short onclick on different comms scans to select that type of scan */
+if (location.href.includes('/comms/')) {
+	k = document.getElementsByTagName('form')[0];
+	l = k.querySelectorAll('div.entry');
+	for (i=0; i<l.length; i++) {
+		if (l[i].className.includes('coordsInput')) {
+			continue;
+		}
+		l[i].addEventListener('click', function(e) {
+			this.getElementsByTagName('input')[0].click();
+		});
+	}
+}
+
+/* Request confirmation when kicking people from alliance */
+if (window.location.pathname=='/alliances/') {
+	k = document.querySelectorAll('input[type=submit]');
+	for (i=0; i<=k.length; i++) {
+		if (k[i]&&k[i].value=='Kick Member') {
+			l=k[i];
+			/* Get the player name. This is a bit ugly, but oh well... */
+			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
+			l.confirmString = "Are you sure you want to kick " + playerName + "?";
+			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+		}
+	}
+}
+
+/* Add <label on couple of elements */
+/* This needs a bit of optimization as it is ... well not great */
+var allForms = document.getElementsByTagName("form");
+for (i=0; i<allForms.length; i++) {
+    var allDivs = allForms[i].getElementsByTagName("div");
+    for (j=0; j<allDivs.length; j++) {
+        k = allDivs[j].innerText.trim();
+        if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
+			continue;
+		}
+        /* We've reached a div with inner text "Repeat" or "All Resources" */
+        var siblings = allDivs[j].parentNode.children;
+        for (m = 0; m < siblings.length; m++) {
+            var sibling = siblings[m];
+            /* Test out siblings to find a sibling DIV which has childen */
+            if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
+				continue;
+			}
+
+			var children = sibling.children;
+            for (n = 0; n < children.length; n++) {
+                /* Test out the siblings for CHECKBOX(es) */
+			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
+                    /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
+
+					/* All such cases do not have ID at the current time, but who knows */
+                    if (children[n].id == '') {
+                        const newId = makeId(8);
+                        children[n].id = newId;
+                        /* Update the original DIV to have label with the newId of the checkbox */
+                        allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
+                    } else {
+                        /* Update the original DIV to have label with the ID of the checkbox */
+						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
+					}
+                }
+            }
+        }
+    }
+}
+
+/* End of script */
+
+/* === START OF FEATURE FUNCTIONS === */
+
+function showJumpMenu(e)
+{
+    const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
+    const m = document.getElementById('dhFleetListMenu');
+    const f = JSON.parse(localStorage.getItem('fleetArray'));
+    if (coordinate.length!=4) {
+        window.alert('Bad coordinates');
+        return;
+    }
+
+    if (f==null) {
+        window.alert('No fleets are cached. Visit your fleet list!');
+        return;
+    }
+
+    m.style.left = e.x + 'px';
+    m.style.top = e.y + 'px';
+
+    /* The context menu is aleady populated */
+    if (m.innerHTML!='') {
+        m.style.display = 'block';
+        return;
+    }
+
+    /* Populate context menu prior to showing it */
+    for (var i =0; i < f.length; i++) {
+        var newDiv = document.createElement('div');
+        var url = f[i].url;
+        url += '?';
+        url += 'c1=' + coordinate[0];
+        url += '&c2=' + coordinate[1];
+        url += '&c3=' + coordinate[2];
+        url += '&c4=' + coordinate[3];
+
+        newDiv.className = 'contextMenuItem';
+        newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
+        m.appendChild(newDiv);
+    }
+    m.style.display = 'block';
+}
+
 function generateStats()
 {
     var el;
@@ -827,172 +843,6 @@ function getLogistics(res)
     return ret;
 }
 
-/* Fix sorting of radars */
-var radars, radar, fleetRow, fleetCount;
-if (cfgRadarSorting && location.href.includes('/radar/')) {
-	/* Get and sort out each coms/radar section */
-	radars = document.getElementsByClassName('opacDarkBackground');
-	for (i=0; i<radars.length; i++) {
-		/* Skip the header */
-		if (radars[i].className.includes('paddingMid')) {
-			continue;
-		}
-
-		radar = radars[i];
-		fleetRow = radar.getElementsByClassName('entry');
-
-		/* Clone radar rows and remove the original ones */
-		let crow = [];
-		for (j=fleetRow.length-1; j>=0; j--) {
-			crow[j] = fleetRow[j];
-			fleetRow[j].parentNode.removeChild(fleetRow[j]);
-		}
-
-		n = 0;
-		/* For every possible TICK, reducing output the rows */
-		for (m=24; m>=0; m--) {
-			for (j=crow.length-1; j>=0; j--) {
-				if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-					if (n = ((n+1)%2)) {
-						crow[j].className = "opacBackground lightBorderBottom entry";
-					} else {
-						crow[j].className = "opacLightBackground lightBorderBottom entry";
-					}
-					//alert(crow[j].className);
-					radars[i].appendChild(crow[j]);
-					/* Nullify the row so we would not have to search it by class, text and so on */
-					crow[j] = 0;
-				}
-			}
-		}
-
-		/* Make sure to add any rows that are not already aded/invalidated */
-		for (j=crow.length-1; j>=0; j--) {
-			if (crow[j]) {
-				radars[i].appendChild(crow[j]);
-			}
-		}
-	}
-}
-
-/* Smart input for coords */
-if (document.querySelector('input[name="coordinate.0"]')) {
-	var el = document.querySelector('input[name="coordinate.0"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').value = '';
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
-
-	el = document.querySelector('input[name="coordinate.1"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').value = '';
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.0"]').focus();
-		}
-	});
-
-    el = document.querySelector('input[name="coordinate.2"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.3"]').value = '';
-			document.querySelector('input[name="coordinate.3"]').focus();
-		}
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
-
-	el = document.querySelector('input[name="coordinate.3"]');
-	el.addEventListener('keydown', function(e) {
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-	});
-}
-
-/* Add short onclick on different comms scans to select that type of scan */
-if (location.href.includes('/comms/')) {
-	k = document.getElementsByTagName('form')[0];
-	l = k.querySelectorAll('div.entry');
-	for (i=0; i<l.length; i++) {
-		if (l[i].className.includes('coordsInput')) {
-			continue;
-		}
-		l[i].addEventListener('click', function(e) {
-			this.getElementsByTagName('input')[0].click();
-		});
-	}
-}
-
-/* Request confirmation when kicking people from alliance */
-if (window.location.pathname=='/alliances/') {
-	k = document.querySelectorAll('input[type=submit]');
-	for (i=0; i<=k.length; i++) {
-		if (k[i]&&k[i].value=='Kick Member') {
-			l=k[i];
-			/* Get the player name. This is a bit ugly, but oh well... */
-			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
-			l.confirmString = "Are you sure you want to kick " + playerName + "?";
-			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
-		}
-	}
-}
-
-/* Add <label on couple of elements */
-/* This needs a bit of optimization as it is ... well not great */
-var allForms = document.getElementsByTagName("form");
-for (i=0; i<allForms.length; i++) {
-    var allDivs = allForms[i].getElementsByTagName("div");
-    for (j=0; j<allDivs.length; j++) {
-        k = allDivs[j].innerText.trim();
-        if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
-			continue;
-		}
-        /* We've reached a div with inner text "Repeat" or "All Resources" */
-        var siblings = allDivs[j].parentNode.children;
-        for (m = 0; m < siblings.length; m++) {
-            var sibling = siblings[m];
-            /* Test out siblings to find a sibling DIV which has childen */
-            if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
-				continue;
-			}
-
-			var children = sibling.children;
-            for (n = 0; n < children.length; n++) {
-                /* Test out the siblings for CHECKBOX(es) */
-			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
-                    /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
-
-					/* All such cases do not have ID at the current time, but who knows */
-                    if (children[n].id == '') {
-                        const newId = makeId(8);
-                        children[n].id = newId;
-                        /* Update the original DIV to have label with the newId of the checkbox */
-                        allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
-                    } else {
-                        /* Update the original DIV to have label with the ID of the checkbox */
-						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
-					}
-                }
-            }
-        }
-    }
-}
-
-/* End of script */
-
-/* === START OF FEATURE FUNCTIONS === */
 function updatePlanetSorting()
 {
     const table = document.getElementById("planetList");
@@ -1255,3 +1105,156 @@ function showPluginConfiguration()
 }
 
 /* === END OF FEATURE FUNCTIONS === */
+
+/* === START OF GENERIC FUNCTIONS === */
+
+/* function to decode URI params */
+function getQueryParams(qs)
+{
+	qs = qs.split('+').join(' ');
+	var params = {},
+		tokens,
+		re = /[?&]?([^=]+)=([^&]*)/g;
+
+	while (tokens = re.exec(qs)) {
+		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+	}
+	return params;
+}
+
+function makeId(length)
+{
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+/* Formatting numbers */
+function formatNumber(num)
+{
+	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+}
+
+/* common function in css to change css style */
+function addGlobalStyle(css)
+{
+	var head, style;
+	head = document.getElementsByTagName('head')[0];
+	if (!head) {
+		return;
+	}
+	style = document.createElement('style');
+	style.type = 'text/css';
+	style.innerHTML = css;
+	head.appendChild(style);
+}
+
+function getDate()
+{
+	let d = new Date();
+
+	let month = '' + (d.getMonth() + 1);
+	let	day = '' + d.getDate();
+	let year = d.getFullYear();
+
+	if (month.length < 2) {
+		month = '0' + month;
+	}
+	if (day.length < 2) {
+		day = '0' + day;
+	}
+
+	return [year, month, day].join('-');
+}
+
+function parseBool(val)
+{
+	if (val=='true') {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function parseInteger(val)
+{
+    return parseInt(val.replaceAll(',', '').replace('%', '').replace('(', '').replace(')', '').replace('+', ''));
+}
+
+function initializeConfig()
+{
+    console.log("Initializing initial configuration");
+    /* First get the playerBox.
+       Then get the first element with "left" and "border" classes
+       This one holds "Welcome [TAG]Player name"
+       This one holds "Welcome PLayer name"
+     */
+    var e = document.getElementById("playerBox").querySelector('.left.border');
+    e = e.innerHTML.trim();
+
+    var playerName = '';
+    if (e && e.match(/^Welcome .*$/g)) {
+        const regexAlly = /^Welcome \[.*\](.*)$/;
+        const regexNonAlly = /^Welcome (.*)$/;
+        var match = e.match(regexAlly);
+        if (match) {
+            playerName = match[1];
+        } else {
+            match = e.match(regexNonAlly);
+            if (match) {
+                playerName = match[1];
+            }
+        }
+    }
+
+    playerName = window.prompt("Enter player name", playerName);
+    if (!playerName) {
+        window.alert("Cancelling initializing of config");
+        return;
+    }
+
+   	localStorage.setItem('cfgRulername', playerName);
+	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
+	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
+	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
+	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
+
+	localStorage.setItem('cfgRadarSorting', 'true');
+    localStorage.setItem('cfgFleetSorting', 'true');
+	localStorage.setItem('cfgPlanetSorting', 'true');
+	window.alert('Initializing config');
+}
+
+function showNotification(message)
+{
+    var newDev = document.getElementById('dhNotification');
+    if (newDev==null) {
+        addGlobalStyle(".vcenter { display: table; left: 70px;  height: 100%; text-align: center; /* optional */ }");
+        addGlobalStyle(".vcenter > :first-child { display: table-cell; vertical-align: middle; }");
+
+        var newDiv = document.createElement('div');
+        newDiv.id = 'dhNotification';
+        newDiv.className = 'turnUpdateDialog';
+        newDiv.style.minHeight = '50px';
+        newDiv.style.padding = 0;
+        newDiv.style.background = 'rgba(0, 50, 250, 0.7)';
+        newDiv.style.verticalAlign = 'middle';
+        newDiv.innerHTML = '<div><img src="/images/buttons/warning.png" width="50" height="50"></div><div class="vcenter"><p id="dhMsg">Test me!.asd</p></div>';
+        document.body.appendChild(newDiv);
+    }
+
+    document.getElementById('dhNotification').style.display = 'block';
+    var nMsg = document.getElementById('dhMsg');
+    nMsg.innerText = message;
+
+        setTimeout(function () {
+        document.getElementById('dhNotification').style.display = 'none';
+    }, 8000);
+}
+/* === END OF GENERIC FUNCTIONS === */
