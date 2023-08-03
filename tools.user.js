@@ -757,13 +757,14 @@ function generateStats()
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
 
     document.getElementById('btnCopy').addEventListener("click", function (e) {
+        var turn = ' turn '+ turnNumber + ' ';
         buf = "```\n";
-        buf += "---- General statistics ---------------------------------\n";
-        buf += " Planets: " + fmt.format(genData.count).padStart(12) + "\n";
-        buf += "  Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
-        buf += "   Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
-        buf += " Workers: " + fmt.format(genData.worker).padStart(12) + "\n";
-        buf += "Soldiers: " + fmt.format(genData.soldier).padStart(12) + "\n\n";
+        buf += "---- General statistics ---------------------" + turn.padEnd(12, '-') + "\n";
+        buf += "  Planets: " + fmt.format(genData.count).padStart(12) + "\n";
+        buf += "   Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
+        buf += "    Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
+        buf += "  Workers: " + fmt.format(genData.worker).padStart(12) + "\n";
+        buf += " Soldiers: " + fmt.format(genData.soldier).padStart(12) + "\n\n";
         buf += "---- Resources ------------------------------------------\n";
         buf += "           " + "Storage".padStart(16) + "Income".padStart(16) + "Abundance".padStart(14) + "\n";
         buf += "    Metal: " + total.metal.padStart(16) + income.metal.padStart(16) + ratio.metal.padStart(14) + "\n";
