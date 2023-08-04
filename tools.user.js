@@ -1054,9 +1054,15 @@ function copyToClipboard(base64image)
 
 function generateScreenshot()
 {
+    var hook = false;
     const screenshotTarget = document.getElementById('contentBox');
-    const hook = localStorage.getItem('cfgDiscordTokenA');
     const coord = screenshotTarget.getBoundingClientRect()
+
+    if (window.event.ctrlKey) {
+        hook = false;
+    } else {
+        hook = localStorage.getItem('cfgDiscordTokenA');
+    }
 
     html2canvas(document.body, {x: coord.left, y: coord.top, width: coord.right - coord.left, height: coord.bottom-coord.top}).then((canvas) => {
         const base64image = canvas.toDataURL("image/png");
