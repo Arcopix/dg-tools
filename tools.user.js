@@ -264,10 +264,6 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         }
         /* Actual coordinates */
         n = n.innerHTML;
-		
-		if (n.querySelector('a')) {
-			n = n.querySelector('a');
-		}
 
         q = makeId(8);
         p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
@@ -791,7 +787,7 @@ function showJumpMenu(e)
         m.style.display = 'block';
         return;
     }
-	
+
     /* Populate context menu prior to showing it */
     for (var i =0; i < f.length; i++) {
         var newDiv = document.createElement('div');
