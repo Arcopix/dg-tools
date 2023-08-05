@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	     DG utilities v0.4
+// @name	     DG utilities v0.4 Dev
 // @namespace    devhex
 // @version      0.4.0005
 // @description  various minor improvements of DG interface
@@ -383,6 +383,32 @@ if (location.href.includes('/fleets/')) {
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
+if (window.location.href.match(/\/fleet\/[0-9]+/)) {
+    i = JSON.parse(localStorage.getItem('fleetArray'));
+    /* By default we should add this fleet to the fleetArray */
+    p = true;
+    for (j = 0; j<i.length; j++) {
+        if (i[j].url == window.location.href) {
+            /* If we find the URL in the fleetArray, set p to FALSE and leave the for */
+            p = false;
+            break;
+        }
+        console.log(i[j]);
+    }
+
+    /* If we need to add it */
+    if (p) {
+        q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
+        if (q) {
+            console.log('Adding fleet ' + q + ' to the fleetArray cache');
+            i.push({'name': q, 'url': window.location.href});
+            localStorage.setItem('fleetArray', JSON.stringify(i));
+        } else {
+            console.log('Cannot find name for fleet with URL ' + window.location.href);
+        }
+    }
+}
+
 /* Fix sorting of planets */
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
@@ -757,7 +783,7 @@ function showJumpMenu(e)
         m.style.display = 'block';
         return;
     }
-
+	
     /* Populate context menu prior to showing it */
     for (var i =0; i < f.length; i++) {
         var newDiv = document.createElement('div');
