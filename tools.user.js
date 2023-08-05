@@ -105,6 +105,30 @@ mainMenu.appendChild(p);
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
 
+
+/* Coordinates as links */
+var coords;
+coords = document.getElementsByClassName('coords')
+for (i=0; i<coords.length; i++)
+{
+	let c = coords[i];
+	/* In planet details there is no span on the planer coordinates */
+	let __c = c.getElementsByTagName('span')[0];
+	if (__c) {
+		c = __c;
+	}
+
+	/* Don't bother with home planets */
+	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0.0') {
+		continue;
+	}
+
+	if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
+		let p = c.innerText.split('.');
+		c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
+	}
+}
+
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
 if (cfgAllyNAP!='') {
 	var arrayAllyNAP = cfgAllyNAP.split(',');
@@ -334,33 +358,6 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 	}
 }
 
-/* No longer showing "FREE" population, show total population,
-  Original concept by Mordread
-  Refactored by Arcopix
-*/
-
-/* Coordinates as links */
-var coords;
-coords = document.getElementsByClassName('coords')
-for (i=0; i<coords.length; i++)
-{
-	let c = coords[i];
-	/* In planet details there is no span on the planer coordinates */
-	let __c = c.getElementsByTagName('span')[0];
-	if (__c) {
-		c = __c;
-	}
-
-	/* Don't bother with home planets */
-	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0.0') {
-		continue;
-	}
-
-	if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
-		let p = c.innerText.split('.');
-		c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
-	}
-}
 
 if (cfgFleetSorting && location.href.includes('/fleets/')) {
     const table = document.getElementById("fleetList");
