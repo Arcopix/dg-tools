@@ -260,6 +260,10 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         n = buf[i].querySelector('span');
         /* Actual coordinates */
         n = n.innerHTML;
+		
+		if (n.querySelector('a')) {
+			n = n.querySelector('a');
+		}
 
         q = makeId(8);
         p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
