@@ -258,6 +258,11 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     for (i = 0; i<buf.length; i++) {
         p = buf[i].querySelector('div .right');
         n = buf[i].querySelector('span');
+	
+        if (n.querySelector('a')) {
+            n = n.querySelector('a');
+        }
+	
         /* Actual coordinates */
         n = n.innerHTML;
 
