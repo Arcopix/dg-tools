@@ -10,8 +10,8 @@
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
-// @downloadURL  https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
-// @updateURL    https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/tools.user.js
+// @downloadURL  https://github.com/Arcopix/dg-tools/raw/master/tools.user.js
+// @updateURL    https://github.com/Arcopix/dg-tools/raw/master/tools.user.js
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACrUlEQVQ4jY2T3YsTZxTGf+/MZCfZmDXR1P1wdT+irfiRokK7uCBExC0UBC9KL/z4B7wqlf4BvW0RKvaqf0ahoLe6CquorWyWlqwbdsmaTHSSycxOZiYz7+uFFoIW6gMHDoeH53A+HsGHMIDxUcHs3jT7AOwQa0dSB1pAPEwW7+VTnxYyS5WjB7/+bH7myIimCgKJ7bidraa19njD+uO55d8ZKLYBNSyg6XDi0ucHvvv2wtmL0zOlgjeIWd+oEycSoWICt4NtNTt/vWj8fq/evdkd8ByQ+lcTJjUvOXzti/kfr1++9E1+fynbsHs0222ar17jhTH1rQZr63X8cJDJasmxLPH4tp88vTqbei2A3Lm5/I3vr138wdg9ka5ttvB9j5bVwmrbJDKhY9u8srvEiQQEQqn+dl/99DKQP+tpOH2lcvzG2CdT+2ubTXp+n7GZI6h0jr+rVYJBwuHTiwQqxT+bTdr9hHagUn6iCrFixTg+mV2YnZuaf/GyRa22Sa44QT49xk5kUz57ASklgW5yoJzn4do6Xcf5d+lzwIIxnh895LiB2di2abUsukFCbrrB4wfLfHl+iVhKnjx4iDFiEg4GwxdMA4e0sB+Mbmw0tF7PJYxCgiAkkgo3gUgqokRhjJhUKhWKxeKwgAaMGn4YO27Plb3+QHe9HUwzT27PXo6dPEWn66CAUqlEJpNB07RhAQk4hhPJ6k7P8Rw3Kjj9GL9l8+dqFaVgeXkZgMXFRR6trNDpdIYFPKDKrpRWXpoeuX+mqKt9KZQhUO++7P/iPlDWI6kcA0w/ZsEKVSZS/+GOD9EFfgXuktEFumDS1MQvAtyP6OwBt4BJAD1WoMBLFKtAAEwAWd66cthsgYB1Ab8Bt4EG7xEA8sBRoAycBGbf1beApwKeCViVb0cA4A0jB1JIhWkJiAAAAABJRU5ErkJggg==
 // @grant        none
 // ==/UserScript==
