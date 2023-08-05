@@ -119,13 +119,18 @@ if (cfgAllyNAP!='') {
 	for (i=0; i<elems.length; i++) {
 		var e = elems[i];
 		if (e.className=="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
-			e.style = 'color: ' + cfgAllyNAPcolor;
-			p = e.parentElement;
-			for (j=0; j<p.children.length; j++) {
-				if (p.children[j].className=="playerName") {
-					p.style = 'color: ' + cfgAllyNAPcolor;
-				}
-			}
+            /* Colorize the alliance TAG */
+			e.style.color = cfgAllyNAPcolor;
+            /* Find the Element with the entire planet */
+			p = e.parentElement.parentElement.parentElement;
+            /* Reset the border of the planet */
+            p.style.border = "1px solid " + cfgAllyNAPcolor;
+            /* Reset the color for any text */
+            p.style.color = cfgAllyNAPcolor;
+            p.querySelector("span").style.color = cfgAllyNAPcolor;
+            p.querySelector("a").style.color = cfgAllyNAPcolor;
+            /* Properly colorize the player name */
+            p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
 		}
 	}
 }
@@ -144,13 +149,18 @@ if (cfgAllyCAP!='') {
 	for (i=0; i<elems.length; i++) {
 		e = elems[i];
 		if (e.className=="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
-			e.style = 'color: ' + cfgAllyCAPcolor;
-			p = e.parentElement;
-			for (j=0; j<p.children.length; j++) {
-				if (p.children[j].className=="playerName") {
-					p.style = 'color: ' + cfgAllyCAPcolor;
-				}
-			}
+            /* Colorize the alliance TAG */
+			e.style.color = cfgAllyCAPcolor;
+            /* Find the Element with the entire planet */
+			p = e.parentElement.parentElement.parentElement;
+            /* Reset the border of the planet */
+            p.style.border = "1px solid " + cfgAllyCAPcolor;
+            /* Reset the color for any text */
+            p.style.color = cfgAllyCAPcolor;
+            p.querySelector("span").style.color = cfgAllyCAPcolor;
+            p.querySelector("a").style.color = cfgAllyCAPcolor;
+            /* Properly colorize the player name */
+            p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
 		}
 	}
 }
