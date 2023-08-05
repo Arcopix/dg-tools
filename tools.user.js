@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	     DG utilities v0.4
+// @name	 DG utilities v0.4
 // @namespace    devhex
 // @version      0.4.0004
 // @description  various minor improvements of DG interface
