@@ -692,8 +692,10 @@ function showHelp()
     (<img style="vertical-align: middle;" src="` + imageContainer['confIcon.png'] + `"/>) the generated screenshot will
     be automatically sent to it. The URL in question should look something like this: <br/>
     <pre style='padding-left: 50px; border-left: 3px solid #fff;'>https://discord.com/api/webhooks/1234567890123456789/kjdUEuqnsduqwrgQG1_asdhUQubfqu13hsUSQhQ_GYJKQVBDyhqg31gbmasHSs-ggWP</pre>
-    <strong style='font-size: larger;'>Tip:</strong>Pressing <em>Ctrl</em> key on your keyboard will always store the image
-    to your clipboard regardless of your Discord webhook configuration in the settings.<br/><br/>
+    <div class="green seperator">
+      <strong>Tip:</strong> Pressing <em>Ctrl</em> key on your keyboard will always store the image
+    to your clipboard regardless of your Discord webhook configuration in the settings.
+    </div><br/>
     Here's an example:
     </p>
     <img style="padding: 10px;" src="` + imageContainer['screenshotExample.png'] + `"/>
@@ -703,7 +705,7 @@ function showHelp()
     help.innerHTML += `<div class="topicContent">
     <p>While browsing the in-game Navigation you can press the queue fleet icon (<img style="vertical-align: middle;" src="` + imageContainer['jumpToIcon.png'] + `"/>)
     which will pop a context menu with your current fleets.</p>
-    <p><strong style='color: red;'>Warning:</strong> This will only open the selected fleet and populate the coordinates. You'll have to confirm the fleet movement manually.</p>
+    <div class="error seperator"><strong>Warning:</strong> This will only open the selected fleet and populate the coordinates. You'll have to confirm the fleet movement manually.</div>
     <img style="padding: 10px;" src="` + imageContainer['navigationExample.png'] + `"/>
     </div>`;
 
