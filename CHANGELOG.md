@@ -5,12 +5,20 @@
 1. *Move to planet* icon was added in Navigation on each planet which provides handy shortcut to queue a fleet to move to that target
 1. Overall planet statistics *(HTML & Markdown formatting)*
 1. Logistic calculator in `Planet List` per planet
+1. DG utilities built in help
 
 **Updates:**
 
-1. Minor code cleanup & optimization for `Repeat` label workaround
+1. Minor code cleanup
+1. Optimization for `Repeat` label workaround
+1. Optimization for colorization based on NAP/CAP filters
 1. Added userscript icon
 1. Implemented bugfix for missing images for destroying buildings by replacing those with local images *(only basic mines are added at the current time)*
+
+**Bug Fixes:**
+
+1. Colorization now applies the same effect to the border of the planet
+1. Fixed initial configuration initialization
 
 **Removed:**
 
