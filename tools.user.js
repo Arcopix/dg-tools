@@ -64,7 +64,7 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
     initializeConfig();
 }
 
-if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')=='') {
+if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
 }
 
@@ -629,7 +629,7 @@ function showHelp()
 
     const main = document.getElementById('contentBox');
 
-    localStorage.setItem('cfgShowedHelp', true);
+    localStorage.setItem('cfgShowedHelp', 'v0.4.0004');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
     addGlobalStyle('.topicContent { display: none; padding: 10px; border-bottom: 1px solid #ddd; }');
