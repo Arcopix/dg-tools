@@ -7,6 +7,7 @@
 **Updates:**
 
 1. Updated bugfix for missing images *(added few more buildings)*
+1. Creating a new fleet now adds it to the fleetArray cache without having to visit the `Fleet List` page
 
 ## Version 0.4.0004
 

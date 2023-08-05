@@ -387,7 +387,7 @@ if (location.href.includes('/fleets/')) {
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
-if (window.location.href.match(/\/fleet\/[0-9]+/)) {
+if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     i = JSON.parse(localStorage.getItem('fleetArray'));
     /* By default we should add this fleet to the fleetArray */
     p = true;
@@ -403,6 +403,7 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     /* If we need to add it */
     if (p) {
         q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
+        q = q.trim();
         if (q) {
             console.log('Adding fleet ' + q + ' to the fleetArray cache');
             i.push({'name': q, 'url': window.location.href});
