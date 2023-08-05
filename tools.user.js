@@ -441,7 +441,7 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
             if (imageContainer[imgFilename]) {
                 el[i].src = imageContainer[imgFilename];
             } else {
-                console.log('No image overide for ' + imgFilename);
+                console.log('No image override for ' + imgFilename);
             }
         }
     }
@@ -561,13 +561,20 @@ if (location.href.includes('/comms/')) {
 if (window.location.pathname=='/alliances/') {
 	k = document.querySelectorAll('input[type=submit]');
 	for (i=0; i<=k.length; i++) {
-		if (k[i]&&k[i].value=='Kick Member') {
+		if (!k[i]) {
+            continue;
+        }
+        if (k[i].value=='Kick Member') {
 			l=k[i];
 			/* Get the player name. This is a bit ugly, but oh well... */
 			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
 			l.confirmString = "Are you sure you want to kick " + playerName + "?";
 			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
 		}
+        if (k[i].value=='Leave Alliance') {
+            l=k[i];
+            l.addEventListener('click', function(evt) { if (confirm("Are you sure you want to leave?")===false) evt.preventDefault(); });
+        }
 	}
 }
 
