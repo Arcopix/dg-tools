@@ -1,3 +1,13 @@
+## Version 0.4.0005
+
+**New features:**
+
+1. Added confirmation upon leaving the current alliance
+
+**Updates:**
+
+1. Updated bugfix for missing images *(added few more buildings)*
+
 ## Version 0.4.0004
 
 **New features:**
