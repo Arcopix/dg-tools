@@ -90,7 +90,16 @@ mainMenu.appendChild(p);
 
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
+var jsonPageDataCache = null;
 
+if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) {
+    console.log("Setting jsonPageData to cache");
+    localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
+    jsonPageDataCache = jsonPageData;
+} else {
+    jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
+    console.log("Not defined");
+}
 
 /* Coordinates as links */
 var coords;
@@ -385,6 +394,10 @@ if (location.href.includes('/fleets/')) {
         fleetArray.push(fleet);
     }
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+}
+
+if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
+    improveResXfer(document.getElementById('fleetQueue'));
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
@@ -763,6 +776,130 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
+}
+
+function improveResXfer(fleetQueue)
+{
+    var planetName = null;
+    var planetCoords = null;
+    var planetData = null;
+    const fmt = new Intl.NumberFormat('en-US');
+
+    if (!fleetQueue) {
+        console.log("Premature");
+        return;
+    }
+
+    buf = fleetQueue.querySelector('div .entry');
+
+    if (!buf) {
+        console.log("Premature");
+        return;
+    }
+
+    buf = buf.querySelector('div .nameColumn');
+
+    if (!buf) {
+        console.log("Premature");
+        return;
+    }
+
+    buf = buf.getElementsByTagName('span');
+
+    if (!buf||(buf.length!==2&&buf.length!==4)) {
+        console.log("Warning - unexpected buf");
+        console.log(buf);
+        return;
+    }
+
+    if (buf.length==2) {
+        planetCoords = buf[0].innerText.split('.');
+        buf = buf[1];
+    }
+
+    if (buf.length==4) {
+        planetCoords = buf[2].innerText.split('.');
+        buf = buf[3];
+    }
+
+    if (planetCoords.length!==4) {
+        console.log("Unexpected coordinates " + planetCoords);
+        return;
+    } else {
+        planetCoords[0] = parseInt(planetCoords[0]);
+        planetCoords[1] = parseInt(planetCoords[1]);
+        planetCoords[2] = parseInt(planetCoords[2]);
+        planetCoords[3] = parseInt(planetCoords[3]);
+    }
+
+    if (buf.className === 'friendly') {
+        planetName = buf.innerText.trim();
+    } else {
+        /* Not friendly */
+        return;
+    }
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+        return;
+    }
+
+    for (i = 0; i<jsonPageDataCache.locationList.length; i++) {
+        /* Home planet does not have coordinates */
+        if (jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            jsonPageDataCache.locationList[i].coordinates = [0, 0, 0, 0];
+        }
+
+        if (jsonPageDataCache.locationList[i].name === planetName &&
+            JSON.stringify(jsonPageDataCache.locationList[i].coordinates) === JSON.stringify(planetCoords)) {
+            planetData = jsonPageDataCache.locationList[i];
+            break;
+        }
+    }
+
+    if (!planetData) {
+        console.log("Couldn't find the planet");
+        return;
+    }
+
+    if (!planetData.mobileUnitCount) {
+        console.log("Bad planetData structure");
+        return;
+    }
+
+    buf = document.querySelectorAll('div .left.ofHidden.lightBorder.opacDarkBackground.seperator.fleetLeftInnerSmall');
+    if (buf.length!==2) {
+        console.log("Unexpected document structure");
+        return;
+    }
+
+    buf = buf[1];
+
+    p = buf.querySelectorAll('div .title');
+    if (p.length!==2) {
+        console.log("Unexpected header structure");
+        return;
+    }
+    p[1].style.width = '70px';
+
+    p = buf.querySelector('div .tableHeader');
+    p.innerHTML += '<div class="title" style="width: 120px; text-align: right;"><a href="/planet/' + planetData.id + '">' + planetName + '</a></div>';
+
+
+    p = buf.querySelectorAll('div .transferRow');
+    for (i=0; i<p.length; i++) {
+        q = p[i].getElementsByTagName('div')[2].innerText.trim();
+        for (j=0; j<planetData.mobileUnitCount.unitList.length; j++) {
+            if (planetData.mobileUnitCount.unitList[j].name === q) {
+                k = planetData.mobileUnitCount.unitList[j].amount;
+                console.log(planetData.mobileUnitCount.unitList[j].amount);
+                console.log(p[i]);
+                p[i].innerHTML += '<div class="right text ' + q.toLowerCase() + '" style="cursor: pointer;" onclick="this.parentNode.querySelector(\'input\').value = ' + k + ';">' + fmt.format(k) + '</div>';
+            }
+        }
+        console.log(q);
+    }
+    console.log(planetData);
 }
 
 function showJumpMenu(e)
