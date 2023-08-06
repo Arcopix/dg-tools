@@ -22,7 +22,8 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Labels for `Repeat` and `All resources` are now activating the checkbox
 1. Capability to select planet for fleet queuing from the *Navigation*
 1. General planet income statistics
-1. Logistic calculator per planet
+1. Logistics calculator per planet
+1. Improved resources transfer with fleet orders
 
 *There are more features which are not listed at the moment*
 

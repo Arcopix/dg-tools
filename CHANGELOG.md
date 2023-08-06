@@ -3,6 +3,7 @@
 **New features:**
 
 1. Added confirmation upon leaving the current alliance
+1. Improved resource transfer on fleet actions
 
 **Updates:**
 
