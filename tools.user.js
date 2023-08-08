@@ -1137,10 +1137,6 @@ function updatePlanetSorting()
     const homePlanet = rowsArray.shift();
     const filterDiv = table.querySelector('div.seperator');
 
-    for (i = 0; i<rows.length; i++) {
-        console.log(rows[i]);
-    }
-
     rowsArray.sort((a, b) => {
         const linkA = a.querySelector('div .planetName');
         const linkB = b.querySelector('div .planetName');
