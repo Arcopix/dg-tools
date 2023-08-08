@@ -97,8 +97,8 @@ if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' &
     localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
     jsonPageDataCache = jsonPageData;
 } else {
+    console.log("Fetching jsonPageData to cache");
     jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
-    console.log("Not defined");
 }
 
 /* Coordinates as links */
@@ -786,21 +786,18 @@ function improveResXfer(fleetQueue)
     const fmt = new Intl.NumberFormat('en-US');
 
     if (!fleetQueue) {
-        console.log("Premature");
         return;
     }
 
     buf = fleetQueue.querySelector('div .entry');
 
     if (!buf) {
-        console.log("Premature");
         return;
     }
 
     buf = buf.querySelector('div .nameColumn');
 
     if (!buf) {
-        console.log("Premature");
         return;
     }
 
@@ -897,7 +894,6 @@ function improveResXfer(fleetQueue)
                 p[i].innerHTML += '<div class="right text ' + q.toLowerCase() + '" style="cursor: pointer;" onclick="this.parentNode.querySelector(\'input\').value = ' + k + ';">' + fmt.format(k) + '</div>';
             }
         }
-        console.log(q);
     }
     console.log(planetData);
 }
