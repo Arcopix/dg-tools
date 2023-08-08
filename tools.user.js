@@ -1327,14 +1327,14 @@ function showPluginConfiguration()
 	'	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
 	'  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+	'<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
 	'	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
 	'	</div>' +
 	'	<div class="left" style="line-height: 22px">????</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div>' +
+	'  </div> -->' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
 	'	<div class="left" style="padding-top: 2px;">' +
