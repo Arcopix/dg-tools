@@ -115,6 +115,23 @@ if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' &
     jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
 }
 
+addGlobalStyle('[data-tooltip] { display: inline-block; position: relative; cursor: help;  padding: 4px; }');
+addGlobalStyle('[data-tooltip]:before { content: attr(data-tooltip); display: none; position: absolute; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 4px 8px; font-size: 14px; line-height: 1.4; min-width: 100px; text-align: center; border-radius: 4px; }');
+addGlobalStyle('[data-tooltip-position="top"]:before, [data-tooltip-position="bottom"]:before { left: 50%; -ms-transform: translateX(-50%); -moz-transform: translateX(-50%); -webkit-transform: translateX(-50%); transform: translateX(-50%); }');
+addGlobalStyle('[data-tooltip-position="right"]:before, [data-tooltip-position="left"]:before { top: 50%; -ms-transform: translateY(-50%); -moz-transform: translateY(-50%); -webkit-transform: translateY(-50%); transform: translateY(-50%); }');
+addGlobalStyle('[data-tooltip-position="top"]:before { bottom: 100%; margin-bottom: 6px; }');
+addGlobalStyle('[data-tooltip-position="right"]:before { left: 100%; margin-left: 6px; }');
+addGlobalStyle('[data-tooltip-position="bottom"]:before { top: 100%; margin-top: 6px; }');
+addGlobalStyle('[data-tooltip-position="left"]:before { right: 100%; margin-right: 6px; }');
+addGlobalStyle('[data-tooltip]:after { content: \'\'; display: none; position: absolute; width: 0; height: 0; border-color: transparent; border-style: solid; }');
+addGlobalStyle('[data-tooltip-position="top"]:after, [data-tooltip-position="bottom"]:after { left: 50%; margin-left: -6px; }');
+addGlobalStyle('[data-tooltip-position="right"]:after, [data-tooltip-position="left"]:after { top: 50%; margin-top: -6px; }');
+addGlobalStyle('[data-tooltip-position="top"]:after { bottom: 100%; border-width: 6px 6px 0; border-top-color: #000; }');
+addGlobalStyle('[data-tooltip-position="right"]:after { left: 100%; border-width: 6px 6px 6px 0; border-right-color: #000; }');
+addGlobalStyle('[data-tooltip-position="bottom"]:after { top: 100%; border-width: 0 6px 6px; border-bottom-color: #000; }');
+addGlobalStyle('[data-tooltip-position="left"]:after { right: 100%; border-width: 6px 0 6px 6px; border-left-color: #000; }');
+addGlobalStyle('[data-tooltip]:hover:before, [data-tooltip]:hover:after { display: block; z-index: 9000; }');
+
 /* Coordinates as links */
 var coords;
 coords = document.getElementsByClassName('coords')
@@ -942,14 +959,44 @@ function improveResXfer(fleetQueue)
         q = p[i].getElementsByTagName('div')[2].innerText.trim();
         for (j=0; j<planetData.mobileUnitCount.unitList.length; j++) {
             if (planetData.mobileUnitCount.unitList[j].name === q) {
+                // console.log(planetData);
                 k = planetData.mobileUnitCount.unitList[j].amount;
-                console.log(planetData.mobileUnitCount.unitList[j].amount);
-                console.log(p[i]);
-                p[i].innerHTML += '<div class="right text ' + q.toLowerCase() + '" style="cursor: pointer;" onclick="this.parentNode.querySelector(\'input\').value = ' + k + ';">' + fmt.format(k) + '</div>';
+                //console.log(planetData.mobileUnitCount.unitList[j].amount);
+                //console.log(p[i]);
+                console.log(q);
+                t = document.createElement('div');
+                t.className = 'right text ' + q.toLowerCase();
+                t.setAttribute('value', k);
+                r = getIncome(planetData, q);
+                if (r>0) {
+                    t.setAttribute('data-tooltip', "+" + fmt.format(r));
+                    t.setAttribute('data-tooltip-position', 'left');
+                }
+                t.style.cursor = 'pointer';
+                t.innerHTML = fmt.format(k);
+                t.addEventListener("click", function (k) { this.parentNode.querySelector('input').value = this.getAttribute('value'); }, false);
+                p[i].appendChild(t);
+                break;
             }
         }
     }
     console.log(planetData);
+}
+
+function getIncome(planet, type)
+{
+    var i;
+    if (!planet.upkeepUnitCount) {
+        console.log("Missing upkeepUnitCount");
+        return null;
+    }
+
+    for (i=0; i<planet.upkeepUnitCount.unitList.length; i++) {
+        if (planet.upkeepUnitCount.unitList[i].name === type) {
+            return planet.upkeepUnitCount.unitList[i].amount;
+        }
+    }
+    return null;
 }
 
 function showScanMenu(e)
