@@ -317,16 +317,16 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
 
-    if (buf.c1 && buf.c2 && buf.c3 && buf.c4) {
+    if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
         addGlobalStyle("@keyframes color { 0%   { background: #A00; } 50% { background: #000; } 100% { background: #A00; } }");
         addGlobalStyle(".blinkButton { animation: color 1s infinite linear }");
 
         showNotification("Make sure you actually queue your fleet.");
 
-        document.querySelector('input[name="coordinate.0"]').value = buf.c1;
-        document.querySelector('input[name="coordinate.1"]').value = buf.c2;
-        document.querySelector('input[name="coordinate.2"]').value = buf.c3;
-        document.querySelector('input[name="coordinate.3"]').value = buf.c4;
+        document.querySelector('input[name="coordinate.0"]').value = buf.c0;
+        document.querySelector('input[name="coordinate.1"]').value = buf.c1;
+        document.querySelector('input[name="coordinate.2"]').value = buf.c2;
+        document.querySelector('input[name="coordinate.3"]').value = buf.c3;
 
         buf = document.querySelector('input[name="coordinate.0"]').parentNode.parentNode.parentNode;
         buf = buf.querySelector('input[type="Submit"]');
@@ -950,10 +950,10 @@ function showJumpMenu(e)
         var newDiv = document.createElement('div');
         var url = f[i].url;
         url += '?';
-        url += 'c1=' + coordinate[0];
-        url += '&c2=' + coordinate[1];
-        url += '&c3=' + coordinate[2];
-        url += '&c4=' + coordinate[3];
+        url += 'c0=' + coordinate[0];
+        url += '&c1=' + coordinate[1];
+        url += '&c2=' + coordinate[2];
+        url += '&c3=' + coordinate[3];
 
         newDiv.className = 'contextMenuItem';
         newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
