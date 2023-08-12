@@ -6,7 +6,7 @@
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0005
+// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0005-a1
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -17,7 +17,7 @@
 // ==/UserScript==
 
 /* Common counters & pointers */
-var i, j, k, l, m, n, p, q;
+var i, j, k, l, m, n, p, r, q, s, t;
 var buf;
 
 /* Common data */
@@ -266,7 +266,7 @@ if (document.querySelector(".navigation.left")) {
 if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     addGlobalStyle(".coords {min-width: 130px;}");
 
-    addGlobalStyle("img.jumpTo {cursor: pointer;}");
+    addGlobalStyle("img.jumpTo, img.scanIcon {cursor: pointer;}");
     addGlobalStyle("div.contextMenu { background-color: rgba(100, 100, 100, 0.8); min-width: 100px; padding: 10px; display: none; position: absolute; border: 1px solid #fff}");
     addGlobalStyle("div.contextMenuItem { background-color: rgba(100, 100, 100); margin: 2px; padding-left: 3px; border-left: 1px solid #000 }");
     addGlobalStyle("div.contextMenuItem:hover { background-color: rgba(80, 80, 80, 1); }");
@@ -284,12 +284,14 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     } else {
         for (i=0; i<jsonPageDataCache.locationList.length; i++) {
             p = jsonPageDataCache.locationList[i];
-            console.log(p.id);
             for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
                 if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
                     foundComms = true;
-                    // console.log("Found comms on " + p.name + " " + p.id + " ");
+                    break;
                 }
+            }
+            if (foundComms) {
+                break;
             }
         }
     }
@@ -305,23 +307,26 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         /* Actual coordinates */
         n = n.innerHTML;
 
-        q = makeId(8);
-        p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
-        m = document.getElementById(q);
+        if (foundComms) {
+            r = document.createElement('img');
+            r.id = makeId(8);
+            console.log(imageContainer["scanPlanet.png"]);
+            r.src = imageContainer["scanPlanet.png"];
+            r.setAttribute('coordinate', n);
+            r.className = 'scanIcon';
+            r.style.paddingRight = '4px';
+            r.addEventListener("click", showScanMenu, false);
+            p.appendChild(r);
+        }
+
+        m = document.createElement('img');
+        m.id = makeId(8);
+        m.src = imageContainer["jumpToIcon.png"];
         m.setAttribute('coordinate', n);
         m.className = 'jumpTo';
         m.addEventListener("click", showJumpMenu, false);
-
-        if (foundComms) {
-            q = makeId(8);
-            p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
-            m = document.getElementById(q);
-            m.setAttribute('coordinate', n);
-            m.className = 'jumpTo';
-            m.addEventListener("click", showScanMenu, false);
-        }
+        p.appendChild(m);
     }
-
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
@@ -949,6 +954,7 @@ function improveResXfer(fleetQueue)
 
 function showScanMenu(e)
 {
+    console.log("Executing showScanMenu");
     var commsLink = [];
     const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
     const m = document.getElementById('dhFleetListMenu');
@@ -961,15 +967,7 @@ function showScanMenu(e)
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         p = jsonPageDataCache.locationList[i];
         for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
-
-            /* Just for test */
-            if (p.name === "Terra Charlie") {
-                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
-                break;
-            }
-
             if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
-                console.log(p);
                 commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
                 break;
             }
@@ -985,9 +983,12 @@ function showScanMenu(e)
     m.style.top = e.y + 'px';
 
     /* The context menu is aleady populated */
-    if (m.innerHTML!='') {
+    if (m.innerHTML!='' && m.getAttribute('menuType') === 'scan') {
         m.style.display = 'block';
         return;
+    } else {
+        m.innerHTML = '';
+        m.setAttribute('menuType', 'scan');
     }
 
     /* Populate context menu prior to showing it */
@@ -1009,6 +1010,7 @@ function showScanMenu(e)
 
 function showJumpMenu(e)
 {
+    console.log("Executing showJumpMenu");
     const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
     const m = document.getElementById('dhFleetListMenu');
     const f = JSON.parse(localStorage.getItem('fleetArray'));
@@ -1026,9 +1028,12 @@ function showJumpMenu(e)
     m.style.top = e.y + 'px';
 
     /* The context menu is aleady populated */
-    if (m.innerHTML!='') {
+    if (m.innerHTML!='' && m.getAttribute('menuType') === 'fleet') {
         m.style.display = 'block';
         return;
+    } else {
+        m.innerHTML = '';
+        m.setAttribute('menuType', 'fleet');
     }
 
     /* Populate context menu prior to showing it */
