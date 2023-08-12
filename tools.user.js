@@ -601,9 +601,9 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 	});
 }
 
-/* Add short onclick on different comms scans to select that type of scan */
-if (location.href.includes('/comms/')) {
-	k = document.getElementsByTagName('form')[0];
+if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
+    /* Add short onclick on different comms scans to select that type of scan */
+    k = document.getElementsByTagName('form')[0];
 	l = k.querySelectorAll('div.entry');
 	for (i=0; i<l.length; i++) {
 		if (l[i].className.includes('coordsInput')) {
@@ -613,6 +613,15 @@ if (location.href.includes('/comms/')) {
 			this.getElementsByTagName('input')[0].click();
 		});
 	}
+
+    /* If coordinates are set as parameters, set the coordinates for scanning */
+    buf = getQueryParams(document.location.search);
+    if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
+        document.getElementsByName('coordinate.0')[0].value = buf.c0;
+        document.getElementsByName('coordinate.1')[0].value = buf.c1;
+        document.getElementsByName('coordinate.2')[0].value = buf.c2;
+        document.getElementsByName('coordinate.3')[0].value = buf.c3;
+    }
 }
 
 /* Request confirmation when kicking people from alliance */
