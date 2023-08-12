@@ -24,6 +24,7 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. General planet income statistics
 1. Logistics calculator per planet
 1. Improved resources transfer with fleet orders
+1. Capability to select planet for scanning from the *Navigation*
 
 *There are more features which are not listed at the moment*
 
@@ -44,6 +45,9 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 
 * Sintelion
   * for providing the idea of TOTAL POPULATION patch
+
+* Raptor
+  * for proof of concept code for general statistics
 
 **Bugs and issues**
 
