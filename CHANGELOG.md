@@ -4,11 +4,16 @@
 
 1. Added confirmation upon leaving the current alliance
 1. Improved resource transfer on fleet actions
+1. Shortcut for scanning a target planet from navigation
 
 **Updates:**
 
-1. Updated bugfix for missing images *(added few more buildings)*
+1. Updated bugfix for missing images *(added all buildings)*
 1. Creating a new fleet now adds it to the fleetArray cache without having to visit the `Fleet List` page
+
+**Removed:**
+
+1. Unused input TODO/???? was removed from the configuration
 
 ## Version 0.4.0004
 
