@@ -791,6 +791,10 @@ function showWhatsNew()
       <li>Creating a new fleet now adds it to the fleetArray cache without having to visit the <a href="/fleets/">Fleet List</a> page</li>
     </ul>
     <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Fixed issues with NAP/CAP colorization in player rankigs</li>
+    </ul><br/>
     <strong>Removed:</strong>
     <ul>
       <li>Unused input TODO/???? was removed from the configuration</li>
