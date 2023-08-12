@@ -264,7 +264,7 @@ if (document.querySelector(".navigation.left")) {
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
 if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-    addGlobalStyle(".coords {min-width: 120px;}");
+    addGlobalStyle(".coords {min-width: 130px;}");
 
     addGlobalStyle("img.jumpTo {cursor: pointer;}");
     addGlobalStyle("div.contextMenu { background-color: rgba(100, 100, 100, 0.8); min-width: 100px; padding: 10px; display: none; position: absolute; border: 1px solid #fff}");
@@ -276,6 +276,23 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     newDiv.className = 'contextMenu';
     newDiv.style.minHeight = '50px';
     document.body.appendChild(newDiv);
+
+    var foundComms = false;
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+    } else {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            p = jsonPageDataCache.locationList[i];
+            console.log(p.id);
+            for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+                if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
+                    foundComms = true;
+                    // console.log("Found comms on " + p.name + " " + p.id + " ");
+                }
+            }
+        }
+    }
 
     buf = document.querySelectorAll('div .planets');
     for (i = 0; i<buf.length; i++) {
@@ -294,6 +311,15 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         m.setAttribute('coordinate', n);
         m.className = 'jumpTo';
         m.addEventListener("click", showJumpMenu, false);
+
+        if (foundComms) {
+            q = makeId(8);
+            p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
+            m = document.getElementById(q);
+            m.setAttribute('coordinate', n);
+            m.className = 'jumpTo';
+            m.addEventListener("click", showScanMenu, false);
+        }
     }
 
 }
@@ -919,6 +945,66 @@ function improveResXfer(fleetQueue)
         }
     }
     console.log(planetData);
+}
+
+function showScanMenu(e)
+{
+    var commsLink = [];
+    const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
+    const m = document.getElementById('dhFleetListMenu');
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+        return;
+    }
+
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        p = jsonPageDataCache.locationList[i];
+        for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+
+            /* Just for test */
+            if (p.name === "Terra Charlie") {
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
+                break;
+            }
+
+            if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
+                console.log(p);
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
+                break;
+            }
+        }
+    }
+
+    if (commsLink.length === 0) {
+        window.alert('No planet with comms is detected!');
+        return;
+    }
+
+    m.style.left = e.x + 'px';
+    m.style.top = e.y + 'px';
+
+    /* The context menu is aleady populated */
+    if (m.innerHTML!='') {
+        m.style.display = 'block';
+        return;
+    }
+
+    /* Populate context menu prior to showing it */
+    for (var i=0; i < commsLink.length; i++) {
+        var newDiv = document.createElement('div');
+        var url = commsLink[i].url;
+        url += '?';
+        url += 'c0=' + coordinate[0];
+        url += '&c1=' + coordinate[1];
+        url += '&c2=' + coordinate[2];
+        url += '&c3=' + coordinate[3];
+
+        newDiv.className = 'contextMenuItem';
+        newDiv.innerHTML = '<a href="' + url + '">' + commsLink[i].name + '</a>';
+        m.appendChild(newDiv);
+    }
+    m.style.display = 'block';
 }
 
 function showJumpMenu(e)
