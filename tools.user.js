@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name	 DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0004
+// @version      0.4.0005
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js
+// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0005-a1
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -17,7 +17,7 @@
 // ==/UserScript==
 
 /* Common counters & pointers */
-var i, j, k, l, m, n, p, q;
+var i, j, k, l, m, n, p, r, q, s, t;
 var buf;
 
 /* Common data */
@@ -52,6 +52,10 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
 
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
+} else {
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0005') {
+        showWhatsNew();
+    }
 }
 
 /* Global configuration */
@@ -80,17 +84,57 @@ screenshotIcon.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] +
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
+
+/* Updated main menu items */
+/* Proof of concept for screenshot of specific element
+var screenshotIcon2 = document.createElement('div');
+screenshotIcon2.className = 'left relative';
+screenshotIcon2.style = 'cursor:pointer;';
+screenshotIcon2.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+screenshotIcon2.addEventListener('click', function() { generateScreenshot('foobar') }, false);
+*/
+
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
+/* Proof of concept for screenshot of specific element
+mainMenu.appendChild(screenshotIcon2);
+*/
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
+var jsonPageDataCache = null;
 
+if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) {
+    console.log("Setting jsonPageData to cache");
+    localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
+    jsonPageDataCache = jsonPageData;
+} else {
+    console.log("Fetching jsonPageData to cache");
+    jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
+}
+
+addGlobalStyle('[data-tooltip] { display: inline-block; position: relative; cursor: help;  padding: 4px; }');
+addGlobalStyle('[data-tooltip]:before { content: attr(data-tooltip); display: none; position: absolute; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 4px 8px; font-size: 14px; line-height: 1.4; min-width: 100px; text-align: center; border-radius: 4px; }');
+addGlobalStyle('[data-tooltip-position="top"]:before, [data-tooltip-position="bottom"]:before { left: 50%; -ms-transform: translateX(-50%); -moz-transform: translateX(-50%); -webkit-transform: translateX(-50%); transform: translateX(-50%); }');
+addGlobalStyle('[data-tooltip-position="right"]:before, [data-tooltip-position="left"]:before { top: 50%; -ms-transform: translateY(-50%); -moz-transform: translateY(-50%); -webkit-transform: translateY(-50%); transform: translateY(-50%); }');
+addGlobalStyle('[data-tooltip-position="top"]:before { bottom: 100%; margin-bottom: 6px; }');
+addGlobalStyle('[data-tooltip-position="right"]:before { left: 100%; margin-left: 6px; }');
+addGlobalStyle('[data-tooltip-position="bottom"]:before { top: 100%; margin-top: 6px; }');
+addGlobalStyle('[data-tooltip-position="left"]:before { right: 100%; margin-right: 6px; }');
+addGlobalStyle('[data-tooltip]:after { content: \'\'; display: none; position: absolute; width: 0; height: 0; border-color: transparent; border-style: solid; }');
+addGlobalStyle('[data-tooltip-position="top"]:after, [data-tooltip-position="bottom"]:after { left: 50%; margin-left: -6px; }');
+addGlobalStyle('[data-tooltip-position="right"]:after, [data-tooltip-position="left"]:after { top: 50%; margin-top: -6px; }');
+addGlobalStyle('[data-tooltip-position="top"]:after { bottom: 100%; border-width: 6px 6px 0; border-top-color: #000; }');
+addGlobalStyle('[data-tooltip-position="right"]:after { left: 100%; border-width: 6px 6px 6px 0; border-right-color: #000; }');
+addGlobalStyle('[data-tooltip-position="bottom"]:after { top: 100%; border-width: 0 6px 6px; border-bottom-color: #000; }');
+addGlobalStyle('[data-tooltip-position="left"]:after { right: 100%; border-width: 6px 0 6px 6px; border-left-color: #000; }');
+addGlobalStyle('[data-tooltip]:hover:before, [data-tooltip]:hover:after { display: block; z-index: 9000; }');
 
 /* Coordinates as links */
 var coords;
@@ -241,9 +285,9 @@ if (document.querySelector(".navigation.left")) {
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
 if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-    addGlobalStyle(".coords {min-width: 120px;}");
+    addGlobalStyle(".coords {min-width: 130px;}");
 
-    addGlobalStyle("img.jumpTo {cursor: pointer;}");
+    addGlobalStyle("img.jumpTo, img.scanIcon {cursor: pointer;}");
     addGlobalStyle("div.contextMenu { background-color: rgba(100, 100, 100, 0.8); min-width: 100px; padding: 10px; display: none; position: absolute; border: 1px solid #fff}");
     addGlobalStyle("div.contextMenuItem { background-color: rgba(100, 100, 100); margin: 2px; padding-left: 3px; border-left: 1px solid #000 }");
     addGlobalStyle("div.contextMenuItem:hover { background-color: rgba(80, 80, 80, 1); }");
@@ -254,26 +298,57 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     newDiv.style.minHeight = '50px';
     document.body.appendChild(newDiv);
 
+    var foundComms = false;
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+    } else {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            p = jsonPageDataCache.locationList[i];
+            for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+                if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
+                    foundComms = true;
+                    break;
+                }
+            }
+            if (foundComms) {
+                break;
+            }
+        }
+    }
+
     buf = document.querySelectorAll('div .planets');
     for (i = 0; i<buf.length; i++) {
         p = buf[i].querySelector('div .right');
         n = buf[i].querySelector('span');
-	
+
         if (n.querySelector('a')) {
             n = n.querySelector('a');
         }
-	
+      
         /* Actual coordinates */
         n = n.innerHTML;
 
-        q = makeId(8);
-        p.innerHTML = p.innerHTML + '<img id=' + q + ' src="' + imageContainer["jumpToIcon.png"] + '"/>';
-        m = document.getElementById(q);
+        if (foundComms) {
+            r = document.createElement('img');
+            r.id = makeId(8);
+            console.log(imageContainer["scanPlanet.png"]);
+            r.src = imageContainer["scanPlanet.png"];
+            r.setAttribute('coordinate', n);
+            r.className = 'scanIcon';
+            r.style.paddingRight = '4px';
+            r.addEventListener("click", showScanMenu, false);
+            p.appendChild(r);
+        }
+
+        m = document.createElement('img');
+        m.id = makeId(8);
+        m.src = imageContainer["jumpToIcon.png"];
         m.setAttribute('coordinate', n);
         m.className = 'jumpTo';
         m.addEventListener("click", showJumpMenu, false);
+        p.appendChild(m);
     }
-
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in planet details
@@ -295,16 +370,16 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
 
-    if (buf.c1 && buf.c2 && buf.c3 && buf.c4) {
+    if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
         addGlobalStyle("@keyframes color { 0%   { background: #A00; } 50% { background: #000; } 100% { background: #A00; } }");
         addGlobalStyle(".blinkButton { animation: color 1s infinite linear }");
 
         showNotification("Make sure you actually queue your fleet.");
 
-        document.querySelector('input[name="coordinate.0"]').value = buf.c1;
-        document.querySelector('input[name="coordinate.1"]').value = buf.c2;
-        document.querySelector('input[name="coordinate.2"]').value = buf.c3;
-        document.querySelector('input[name="coordinate.3"]').value = buf.c4;
+        document.querySelector('input[name="coordinate.0"]').value = buf.c0;
+        document.querySelector('input[name="coordinate.1"]').value = buf.c1;
+        document.querySelector('input[name="coordinate.2"]').value = buf.c2;
+        document.querySelector('input[name="coordinate.3"]').value = buf.c3;
 
         buf = document.querySelector('input[name="coordinate.0"]').parentNode.parentNode.parentNode;
         buf = buf.querySelector('input[type="Submit"]');
@@ -388,6 +463,37 @@ if (location.href.includes('/fleets/')) {
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
+if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
+    improveResXfer(document.getElementById('fleetQueue'));
+}
+
+if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
+    i = JSON.parse(localStorage.getItem('fleetArray'));
+    /* By default we should add this fleet to the fleetArray */
+    p = true;
+    for (j = 0; j<i.length; j++) {
+        if (i[j].url == window.location.href) {
+            /* If we find the URL in the fleetArray, set p to FALSE and leave the for */
+            p = false;
+            break;
+        }
+        console.log(i[j]);
+    }
+
+    /* If we need to add it */
+    if (p) {
+        q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
+        q = q.trim();
+        if (q) {
+            console.log('Adding fleet ' + q + ' to the fleetArray cache');
+            i.push({'name': q, 'url': window.location.href});
+            localStorage.setItem('fleetArray', JSON.stringify(i));
+        } else {
+            console.log('Cannot find name for fleet with URL ' + window.location.href);
+        }
+    }
+}
+
 /* Fix sorting of planets */
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
@@ -446,7 +552,7 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
             if (imageContainer[imgFilename]) {
                 el[i].src = imageContainer[imgFilename];
             } else {
-                console.log('No image overide for ' + imgFilename);
+                console.log('No image override for ' + imgFilename);
             }
         }
     }
@@ -548,9 +654,9 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 	});
 }
 
-/* Add short onclick on different comms scans to select that type of scan */
-if (location.href.includes('/comms/')) {
-	k = document.getElementsByTagName('form')[0];
+if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
+    /* Add short onclick on different comms scans to select that type of scan */
+    k = document.getElementsByTagName('form')[0];
 	l = k.querySelectorAll('div.entry');
 	for (i=0; i<l.length; i++) {
 		if (l[i].className.includes('coordsInput')) {
@@ -560,19 +666,35 @@ if (location.href.includes('/comms/')) {
 			this.getElementsByTagName('input')[0].click();
 		});
 	}
+
+    /* If coordinates are set as parameters, set the coordinates for scanning */
+    buf = getQueryParams(document.location.search);
+    if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
+        document.getElementsByName('coordinate.0')[0].value = buf.c0;
+        document.getElementsByName('coordinate.1')[0].value = buf.c1;
+        document.getElementsByName('coordinate.2')[0].value = buf.c2;
+        document.getElementsByName('coordinate.3')[0].value = buf.c3;
+    }
 }
 
 /* Request confirmation when kicking people from alliance */
 if (window.location.pathname=='/alliances/') {
 	k = document.querySelectorAll('input[type=submit]');
 	for (i=0; i<=k.length; i++) {
-		if (k[i]&&k[i].value=='Kick Member') {
+		if (!k[i]) {
+            continue;
+        }
+        if (k[i].value=='Kick Member') {
 			l=k[i];
 			/* Get the player name. This is a bit ugly, but oh well... */
 			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
 			l.confirmString = "Are you sure you want to kick " + playerName + "?";
 			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
 		}
+        if (k[i].value=='Leave Alliance') {
+            l=k[i];
+            l.addEventListener('click', function(evt) { if (confirm("Are you sure you want to leave?")===false) evt.preventDefault(); });
+        }
 	}
 }
 
@@ -621,6 +743,86 @@ for (i=0; i<allForms.length; i++) {
 
 /* === START OF FEATURE FUNCTIONS === */
 
+function showWhatsNew()
+{
+    console.log("Showing whats new");
+    const main = document.getElementById('contentBox');
+
+    localStorage.setItem('cfgShowedVersion', 'v0.4.0005');
+
+    addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
+    addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
+    addGlobalStyle('.topicContent.show { display:block; }');
+    main.innerHTML = '<div class="header border pageTitle"><span>DG utilities help</span></div><div class="opacBackground ofHidden padding" id="helpBox"></div>';
+
+    const help = document.getElementById('helpBox');
+
+    help.innerHTML = '';
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0005
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent show">
+    Version 0.4.0005 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li>Added confirmation upon leaving the current alliance</li>
+      <li>Improved resource transfer on fleet actions</li>
+      <li><strong>Scan planet</strong> icon was added on each planet in Navigation. This allows shortcut for scanning the target.</li>
+      <li>Added built-in CHANGELOG</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Updated bugfix for missing images <em>(added all buildings)</em></li>
+      <li>Creating a new fleet now adds it to the fleetArray cache without having to visit the <a href="/fleets/">Fleet List</a> page</li>
+    </ul>
+    <br/>
+    <strong>Removed:</strong>
+    <ul>
+      <li>Unused input TODO/???? was removed from the configuration</li>
+    </ul>
+    <hr/><br/></div>`;
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0004
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent">
+    Version 0.4.0004 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li><strong>Move to planet</strong>icon was added in Navigation on each planet which provides handy shortcut to queue a fleet to move to that target</li>
+      <li>Overall planet statistics <em>(HTML & Markdown formatting)</em></li>
+      <li>Logistic calculator in Planet List per planet</li>
+      <li>DG utilities built in help</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Minor code cleanup</li>
+      <li>Optimization for Repeat label workaround</li>
+      <li>Optimization for colorization based on NAP/CAP filters</li>
+      <li>Added userscript icon</li>
+      <li>Implemented bugfix for missing images for destroying buildings by replacing those with local images <em>(only basic mines are added at the current time)</em></li>
+    </ul>
+    <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Colorization now applies the same effect to the border of the planet</li>
+      <li>Fixed initial configuration initialization</li>
+    </ul>
+    <br/>
+    <strong>Removed:</strong>
+    <ul>
+      <li>Some debug output was removed</li>
+    </ul>
+    <hr/><br/></div>`;
+}
+
 function showHelp()
 {
     console.log("Showing help");
@@ -630,7 +832,7 @@ function showHelp()
     localStorage.setItem('cfgShowedHelp', 'v0.4.0004');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
-    addGlobalStyle('.topicContent { display: none; padding: 10px; border-bottom: 1px solid #ddd; }');
+    addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
     addGlobalStyle('.topicContent.show { display:block; }');
     main.innerHTML = '<div class="header border pageTitle"><span>DG utilities help</span></div><div class="opacBackground ofHidden padding" id="helpBox"></div>';
 
@@ -732,8 +934,215 @@ function showHelp()
 
 }
 
+function improveResXfer(fleetQueue)
+{
+    var planetName = null;
+    var planetCoords = null;
+    var planetData = null;
+    const fmt = new Intl.NumberFormat('en-US');
+
+    if (!fleetQueue) {
+        return;
+    }
+
+    buf = fleetQueue.querySelector('div .entry');
+
+    if (!buf) {
+        return;
+    }
+
+    buf = buf.querySelector('div .nameColumn');
+
+    if (!buf) {
+        return;
+    }
+
+    buf = buf.getElementsByTagName('span');
+
+    if (!buf||(buf.length!==2&&buf.length!==4)) {
+        console.log("Warning - unexpected buf");
+        console.log(buf);
+        return;
+    }
+
+    if (buf.length==2) {
+        planetCoords = buf[0].innerText.split('.');
+        buf = buf[1];
+    }
+
+    if (buf.length==4) {
+        planetCoords = buf[2].innerText.split('.');
+        buf = buf[3];
+    }
+
+    if (planetCoords.length!==4) {
+        console.log("Unexpected coordinates " + planetCoords);
+        return;
+    } else {
+        planetCoords[0] = parseInt(planetCoords[0]);
+        planetCoords[1] = parseInt(planetCoords[1]);
+        planetCoords[2] = parseInt(planetCoords[2]);
+        planetCoords[3] = parseInt(planetCoords[3]);
+    }
+
+    if (buf.className === 'friendly') {
+        planetName = buf.innerText.trim();
+    } else {
+        /* Not friendly */
+        return;
+    }
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+        return;
+    }
+
+    for (i = 0; i<jsonPageDataCache.locationList.length; i++) {
+        /* Home planet does not have coordinates */
+        if (jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            jsonPageDataCache.locationList[i].coordinates = [0, 0, 0, 0];
+        }
+
+        if (jsonPageDataCache.locationList[i].name === planetName &&
+            JSON.stringify(jsonPageDataCache.locationList[i].coordinates) === JSON.stringify(planetCoords)) {
+            planetData = jsonPageDataCache.locationList[i];
+            break;
+        }
+    }
+
+    if (!planetData) {
+        console.log("Couldn't find the planet");
+        return;
+    }
+
+    if (!planetData.mobileUnitCount) {
+        console.log("Bad planetData structure");
+        return;
+    }
+
+    buf = document.querySelectorAll('div .left.ofHidden.lightBorder.opacDarkBackground.seperator.fleetLeftInnerSmall');
+    if (buf.length!==2) {
+        console.log("Unexpected document structure");
+        return;
+    }
+
+    buf = buf[1];
+
+    p = buf.querySelectorAll('div .title');
+    if (p.length!==2) {
+        console.log("Unexpected header structure");
+        return;
+    }
+    p[1].style.width = '70px';
+
+    p = buf.querySelector('div .tableHeader');
+    p.innerHTML += '<div class="title" style="width: 120px; text-align: right;"><a href="/planet/' + planetData.id + '">' + planetName + '</a></div>';
+
+
+    p = buf.querySelectorAll('div .transferRow');
+    for (i=0; i<p.length; i++) {
+        q = p[i].getElementsByTagName('div')[2].innerText.trim();
+        for (j=0; j<planetData.mobileUnitCount.unitList.length; j++) {
+            if (planetData.mobileUnitCount.unitList[j].name === q) {
+                // console.log(planetData);
+                k = planetData.mobileUnitCount.unitList[j].amount;
+                //console.log(planetData.mobileUnitCount.unitList[j].amount);
+                //console.log(p[i]);
+                console.log(q);
+                t = document.createElement('div');
+                t.className = 'right text ' + q.toLowerCase();
+                t.setAttribute('value', k);
+                r = getIncome(planetData, q);
+                if (r>0) {
+                    t.setAttribute('data-tooltip', "+" + fmt.format(r));
+                    t.setAttribute('data-tooltip-position', 'left');
+                }
+                t.style.cursor = 'pointer';
+                t.innerHTML = fmt.format(k);
+                t.addEventListener("click", function (k) { this.parentNode.querySelector('input').value = this.getAttribute('value'); }, false);
+                p[i].appendChild(t);
+                break;
+            }
+        }
+    }
+    console.log(planetData);
+}
+
+function getIncome(planet, type)
+{
+    var i;
+    if (!planet.upkeepUnitCount) {
+        console.log("Missing upkeepUnitCount");
+        return null;
+    }
+
+    for (i=0; i<planet.upkeepUnitCount.unitList.length; i++) {
+        if (planet.upkeepUnitCount.unitList[i].name === type) {
+            return planet.upkeepUnitCount.unitList[i].amount;
+        }
+    }
+    return null;
+}
+
+function showScanMenu(e)
+{
+    console.log("Executing showScanMenu");
+    var commsLink = [];
+    const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
+    const m = document.getElementById('dhFleetListMenu');
+
+    if (!jsonPageDataCache.locationList) {
+        console.log("Missing jsonPageDataCache.locationList");
+        return;
+    }
+
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        p = jsonPageDataCache.locationList[i];
+        for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+            if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
+                break;
+            }
+        }
+    }
+
+    if (commsLink.length === 0) {
+        window.alert('No planet with comms is detected!');
+        return;
+    }
+
+    m.style.left = e.x + 'px';
+    m.style.top = e.y + 'px';
+
+    /* The context menu is aleady populated */
+    if (m.innerHTML!='' && m.getAttribute('menuType') === 'scan') {
+        m.style.display = 'block';
+        return;
+    } else {
+        m.innerHTML = '';
+        m.setAttribute('menuType', 'scan');
+    }
+
+    /* Populate context menu prior to showing it */
+    for (var i=0; i < commsLink.length; i++) {
+        var newDiv = document.createElement('div');
+        var url = commsLink[i].url;
+        url += '?';
+        url += 'c0=' + coordinate[0];
+        url += '&c1=' + coordinate[1];
+        url += '&c2=' + coordinate[2];
+        url += '&c3=' + coordinate[3];
+
+        newDiv.className = 'contextMenuItem';
+        newDiv.innerHTML = '<a href="' + url + '">' + commsLink[i].name + '</a>';
+        m.appendChild(newDiv);
+    }
+    m.style.display = 'block';
+}
+
 function showJumpMenu(e)
 {
+    console.log("Executing showJumpMenu");
     const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
     const m = document.getElementById('dhFleetListMenu');
     const f = JSON.parse(localStorage.getItem('fleetArray'));
@@ -751,9 +1160,12 @@ function showJumpMenu(e)
     m.style.top = e.y + 'px';
 
     /* The context menu is aleady populated */
-    if (m.innerHTML!='') {
+    if (m.innerHTML!='' && m.getAttribute('menuType') === 'fleet') {
         m.style.display = 'block';
         return;
+    } else {
+        m.innerHTML = '';
+        m.setAttribute('menuType', 'fleet');
     }
 
     /* Populate context menu prior to showing it */
@@ -761,10 +1173,10 @@ function showJumpMenu(e)
         var newDiv = document.createElement('div');
         var url = f[i].url;
         url += '?';
-        url += 'c1=' + coordinate[0];
-        url += '&c2=' + coordinate[1];
-        url += '&c3=' + coordinate[2];
-        url += '&c4=' + coordinate[3];
+        url += 'c0=' + coordinate[0];
+        url += '&c1=' + coordinate[1];
+        url += '&c2=' + coordinate[2];
+        url += '&c3=' + coordinate[3];
 
         newDiv.className = 'contextMenuItem';
         newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
@@ -789,6 +1201,20 @@ function generateStats()
     const fmt = new Intl.NumberFormat('en-US');
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     console.log(total);
+
+    console.log(jsonPageDataCache);
+
+    if (0) {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            /* Ground, Orbit, Abundance */
+            console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
+            /* Resources, Workers, Occupied Workers */
+            console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
+            /* Income of Resources, Workers */
+            console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+        }
+    }
+
     for (const [key, value] of Object.entries(total)) {
          el = document.querySelectorAll("div .resource."+key);
          for (var i=0; i<el.length; i++) {
@@ -971,10 +1397,6 @@ function updatePlanetSorting()
     const homePlanet = rowsArray.shift();
     const filterDiv = table.querySelector('div.seperator');
 
-    for (i = 0; i<rows.length; i++) {
-        console.log(rows[i]);
-    }
-
     rowsArray.sort((a, b) => {
         const linkA = a.querySelector('div .planetName');
         const linkB = b.querySelector('div .planetName');
@@ -1072,10 +1494,16 @@ function copyToClipboard(base64image)
   return;
 }
 
-function generateScreenshot()
+function generateScreenshot(element)
 {
+    console.log(element);
     var hook = false;
-    const screenshotTarget = document.getElementById('contentBox');
+    var screenshotTarget;
+    if (typeof element !== 'undefined') {
+        screenshotTarget = document.getElementById(element);
+    } else {
+        screenshotTarget = document.getElementById('contentBox');
+    }
     const coord = screenshotTarget.getBoundingClientRect()
 
     if (window.event.ctrlKey) {
@@ -1161,14 +1589,14 @@ function showPluginConfiguration()
 	'	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
 	'  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+	'<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
 	'	<div class="left" style="padding-top: 2px; ">' +
 	'	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
 	'	</div>' +
 	'	<div class="left" style="line-height: 22px">????</div>' +
 	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div>' +
+	'  </div> -->' +
 	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
 	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
 	'	<div class="left" style="padding-top: 2px;">' +
@@ -1205,8 +1633,9 @@ function showPluginConfiguration()
 	'  </div>' +
         '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
 	'    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
-    '      <input type="button" name="cfgSave" id="cfgHelp" value="Help" /> ' +
-	'      <input type="button" name="cfgSave" id="cfgDump" value="Dump" /> ' +
+    '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
+    '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
+	'      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
 	'      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
 	'    </div> ' +
 	'  </div>' +
@@ -1227,6 +1656,7 @@ function showPluginConfiguration()
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 	/* Buttons */
+    document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
 	document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
 	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
 	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
