@@ -80,12 +80,26 @@ screenshotIcon.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] +
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
+
+/* Updated main menu items */
+/* Proof of concept for screenshot of specific element
+var screenshotIcon2 = document.createElement('div');
+screenshotIcon2.className = 'left relative';
+screenshotIcon2.style = 'cursor:pointer;';
+screenshotIcon2.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+screenshotIcon2.addEventListener('click', function() { generateScreenshot('foobar') }, false);
+*/
+
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
+/* Proof of concept for screenshot of specific element
+mainMenu.appendChild(screenshotIcon2);
+*/
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
@@ -955,6 +969,20 @@ function generateStats()
     const fmt = new Intl.NumberFormat('en-US');
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     console.log(total);
+
+    console.log(jsonPageDataCache);
+
+    if (0) {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            /* Ground, Orbit, Abundance */
+            console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
+            /* Resources, Workers, Occupied Workers */
+            console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
+            /* Income of Resources, Workers */
+            console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+        }
+    }
+
     for (const [key, value] of Object.entries(total)) {
          el = document.querySelectorAll("div .resource."+key);
          for (var i=0; i<el.length; i++) {
@@ -1234,10 +1262,16 @@ function copyToClipboard(base64image)
   return;
 }
 
-function generateScreenshot()
+function generateScreenshot(element)
 {
+    console.log(element);
     var hook = false;
-    const screenshotTarget = document.getElementById('contentBox');
+    var screenshotTarget;
+    if (typeof element !== 'undefined') {
+        screenshotTarget = document.getElementById(element);
+    } else {
+        screenshotTarget = document.getElementById('contentBox');
+    }
     const coord = screenshotTarget.getBoundingClientRect()
 
     if (window.event.ctrlKey) {
