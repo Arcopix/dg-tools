@@ -5,6 +5,7 @@
 1. Added confirmation upon leaving the current alliance
 1. Improved resource transfer on fleet actions
 1. Shortcut for scanning a target planet from navigation
+1. Created built-in CHANGELOG
 
 **Updates:**
 
