@@ -12,6 +12,10 @@
 1. Updated bugfix for missing images *(added all buildings)*
 1. Creating a new fleet now adds it to the fleetArray cache without having to visit the `Fleet List` page
 
+**Bug Fixes:**
+
+1. Fixed colorization in player rankings
+
 **Removed:**
 
 1. Unused input TODO/???? was removed from the configuration

@@ -159,6 +159,7 @@ for (i=0; i<coords.length; i++)
 	}
 }
 
+/* TODO: Thsi should be combined with cfgAllyCAP */
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
 if (cfgAllyNAP!='') {
 	var arrayAllyNAP = cfgAllyNAP.split(',');
@@ -175,16 +176,23 @@ if (cfgAllyNAP!='') {
 		if (e.className=="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
 			e.style.color = cfgAllyNAPcolor;
-            /* Find the Element with the entire planet */
-			p = e.parentElement.parentElement.parentElement;
-            /* Reset the border of the planet */
-            p.style.border = "1px solid " + cfgAllyNAPcolor;
-            /* Reset the color for any text */
-            p.style.color = cfgAllyNAPcolor;
-            p.querySelector("span").style.color = cfgAllyNAPcolor;
-            p.querySelector("a").style.color = cfgAllyNAPcolor;
-            /* Properly colorize the player name */
-            p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
+            /* Only for navigation */
+            if (location.href.includes('/navigation/')) {
+                /* Find the Element with the entire planet */
+                p = e.parentElement.parentElement.parentElement;
+                /* Reset the border of the planet */
+
+                p.style.border = "1px solid " + cfgAllyNAPcolor;
+
+                /* Reset the color for any text */
+                p.style.color = cfgAllyNAPcolor;
+                p.querySelector("span").style.color = cfgAllyNAPcolor;
+                if (p.querySelector("a")) {
+                    p.querySelector("a").style.color = cfgAllyNAPcolor;
+                }
+                /* Properly colorize the player name */
+                p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
+            }
 		}
 	}
 }
@@ -198,7 +206,6 @@ if (cfgAllyCAP!='') {
 	}
 
 	elems = document.getElementsByTagName("div");
-	deb=0;
 	player="";
 	for (i=0; i<elems.length; i++) {
 		e = elems[i];
@@ -208,13 +215,18 @@ if (cfgAllyCAP!='') {
             /* Find the Element with the entire planet */
 			p = e.parentElement.parentElement.parentElement;
             /* Reset the border of the planet */
-            p.style.border = "1px solid " + cfgAllyCAPcolor;
-            /* Reset the color for any text */
-            p.style.color = cfgAllyCAPcolor;
-            p.querySelector("span").style.color = cfgAllyCAPcolor;
-            p.querySelector("a").style.color = cfgAllyCAPcolor;
-            /* Properly colorize the player name */
-            p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
+            if (location.href.includes('/navigation/')) {
+                p.style.border = "1px solid " + cfgAllyCAPcolor;
+
+                /* Reset the color for any text */
+                p.style.color = cfgAllyCAPcolor;
+                p.querySelector("span").style.color = cfgAllyCAPcolor;
+                if (p.querySelector("a")) {
+                    p.querySelector("a").style.color = cfgAllyCAPcolor;
+                }
+                /* Properly colorize the player name */
+                p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
+            }
 		}
 	}
 }
@@ -780,6 +792,10 @@ function showWhatsNew()
       <li>Creating a new fleet now adds it to the fleetArray cache without having to visit the <a href="/fleets/">Fleet List</a> page</li>
     </ul>
     <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Fixed issues with NAP/CAP colorization in player rankigs</li>
+    </ul><br/>
     <strong>Removed:</strong>
     <ul>
       <li>Unused input TODO/???? was removed from the configuration</li>
@@ -840,7 +856,10 @@ function showHelp()
 
     help.innerHTML = '';
 
-    help.innerHTML += '<div class="lightBorder ofHidden opacBackground header topic" onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">DG utilties</div>';
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      DG utilties
+    </div>`;
     help.innerHTML += `<div class="topicContent show">DG utitilies are set of fixes and improvements for our belloved DarkGalaxy.<br/>
     <strong>New features:</strong>
     <ul>
@@ -869,7 +888,10 @@ function showHelp()
     </ul>
     <hr/>
     For additional information for some of the features, click on the respective section below: <br/></div>`;
-    help.innerHTML += '<div class="lightBorder ofHidden opacBackground header topic" onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">Colorization</div>';
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      Colorization
+    </div>`;
     help.innerHTML += `<div class="topicContent">
     <p>In order to use special colorization of players based on their alliance for NAP/CAP purposes,
     click on settings icon (<img style="vertical-align: middle;" src="` + imageContainer['confIcon.png'] + `"/>)
@@ -883,7 +905,10 @@ function showHelp()
     <img style="padding: 10px;" src="` + imageContainer['navExample.png'] + `"/>
     </div>`;
 
-    help.innerHTML += '<div class="lightBorder ofHidden opacBackground header topic" onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 2) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">Screenshots</div>';
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 2) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      Screenshots
+    </div>`;
     help.innerHTML += `<div class="topicContent">
     <p>DG utilities comes with integrated screenshot capabiltity. This allows the player to easily share information
     from the game to his friends, allies, and sometimes - even enemies. In order to generate a screenshot click on the
@@ -901,7 +926,10 @@ function showHelp()
     <img style="padding: 10px;" src="` + imageContainer['screenshotExample.png'] + `"/>
     </div>`;
 
-    help.innerHTML += '<div class="lightBorder ofHidden opacBackground header topic" onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 3) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">Fleet queuing</div>';
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 3) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      Fleet queuing
+    </div>`;
     help.innerHTML += `<div class="topicContent">
     <p>While browsing the in-game Navigation you can press the queue fleet icon (<img style="vertical-align: middle;" src="` + imageContainer['jumpToIcon.png'] + `"/>)
     which will pop a context menu with your current fleets.</p>
@@ -909,7 +937,10 @@ function showHelp()
     <img style="padding: 10px;" src="` + imageContainer['navigationExample.png'] + `"/>
     </div>`;
 
-    help.innerHTML += '<div class="lightBorder ofHidden opacBackground header topic " onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 4) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">Planet logistics</div>';
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic "
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 4) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      Planet logistics
+    </div>`;
     help.innerHTML += `<div class="topicContent">
     <p>Within <a href="/planets/">Planet List</a> you'll notice a "Logistics" button in the top header.
     Activating this functionality will calculate the required transport fleet in order to ship the entire
