@@ -52,6 +52,10 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
 
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
+} else {
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0005') {
+        showWhatsNew();
+    }
 }
 
 /* Global configuration */
@@ -738,6 +742,86 @@ for (i=0; i<allForms.length; i++) {
 
 /* === START OF FEATURE FUNCTIONS === */
 
+function showWhatsNew()
+{
+    console.log("Showing whats new");
+    const main = document.getElementById('contentBox');
+
+    localStorage.setItem('cfgShowedVersion', 'v0.4.0005');
+
+    addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
+    addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
+    addGlobalStyle('.topicContent.show { display:block; }');
+    main.innerHTML = '<div class="header border pageTitle"><span>DG utilities help</span></div><div class="opacBackground ofHidden padding" id="helpBox"></div>';
+
+    const help = document.getElementById('helpBox');
+
+    help.innerHTML = '';
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0005
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent show">
+    Version 0.4.0005 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li>Added confirmation upon leaving the current alliance</li>
+      <li>Improved resource transfer on fleet actions</li>
+      <li><strong>Scan planet</strong> icon was added on each planet in Navigation. This allows shortcut for scanning the target.</li>
+      <li>Added built-in CHANGELOG</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Updated bugfix for missing images <em>(added all buildings)</em></li>
+      <li>Creating a new fleet now adds it to the fleetArray cache without having to visit the <a href="/fleets/">Fleet List</a> page</li>
+    </ul>
+    <br/>
+    <strong>Removed:</strong>
+    <ul>
+      <li>Unused input TODO/???? was removed from the configuration</li>
+    </ul>
+    <hr/><br/></div>`;
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0004
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent">
+    Version 0.4.0004 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li><strong>Move to planet</strong>icon was added in Navigation on each planet which provides handy shortcut to queue a fleet to move to that target</li>
+      <li>Overall planet statistics <em>(HTML & Markdown formatting)</em></li>
+      <li>Logistic calculator in Planet List per planet</li>
+      <li>DG utilities built in help</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Minor code cleanup</li>
+      <li>Optimization for Repeat label workaround</li>
+      <li>Optimization for colorization based on NAP/CAP filters</li>
+      <li>Added userscript icon</li>
+      <li>Implemented bugfix for missing images for destroying buildings by replacing those with local images <em>(only basic mines are added at the current time)</em></li>
+    </ul>
+    <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Colorization now applies the same effect to the border of the planet</li>
+      <li>Fixed initial configuration initialization</li>
+    </ul>
+    <br/>
+    <strong>Removed:</strong>
+    <ul>
+      <li>Some debug output was removed</li>
+    </ul>
+    <hr/><br/></div>`;
+}
+
 function showHelp()
 {
     console.log("Showing help");
@@ -747,7 +831,7 @@ function showHelp()
     localStorage.setItem('cfgShowedHelp', 'v0.4.0004');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
-    addGlobalStyle('.topicContent { display: none; padding: 10px; border-bottom: 1px solid #ddd; }');
+    addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
     addGlobalStyle('.topicContent.show { display:block; }');
     main.innerHTML = '<div class="header border pageTitle"><span>DG utilities help</span></div><div class="opacBackground ofHidden padding" id="helpBox"></div>';
 
@@ -1548,8 +1632,9 @@ function showPluginConfiguration()
 	'  </div>' +
         '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
 	'    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
-    '      <input type="button" name="cfgSave" id="cfgHelp" value="Help" /> ' +
-	'      <input type="button" name="cfgSave" id="cfgDump" value="Dump" /> ' +
+    '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
+    '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
+	'      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
 	'      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
 	'    </div> ' +
 	'  </div>' +
@@ -1570,6 +1655,7 @@ function showPluginConfiguration()
 	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
 	/* Buttons */
+    document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
 	document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
 	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
 	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
