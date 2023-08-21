@@ -1,6 +1,14 @@
 ## Version 0.4.0006
 
-TBA
+**Updates:**
+
+1. Refactored generation of general statistics to be based on the provided JSON data
+1. Introduced information about population and soldier growth in the general statistics
+
+**Bug Fixes:**
+
+1. Fixed issue with the context menu for fleet orders not updating coordinates upon follow up usage
+1. Fixed issue with the context menu for scanning not updating coordinates upon follow up usage
 
 ## Version 0.4.0005
 
