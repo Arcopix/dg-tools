@@ -29,6 +29,22 @@ const logisticsCapacity = {
     "hulk": 1562500
 };
 
+const ships = {
+    "Freighter": 0,
+    "Merchant": 0,
+    "Trader": 0,
+    "Hulk": 0,
+    "Fighter": 0,
+    "Bomber": 0,
+    "Frigate": 0,
+    "Destroyer": 0,
+    "Cruiser": 0,
+    "Battleship": 0,
+    "Invasion_Ship": 0,
+    "Outpost_Ship": 0,
+    "Colony_Ship": 0
+};
+
 const RTT = [32, 24, 16];
 var curRTT = 0;
 
@@ -570,8 +586,6 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
     }
 }
 
-
-
 /* Fix sorting of radars */
 var radars, radar, fleetRow, fleetCount;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
@@ -758,6 +772,7 @@ for (i=0; i<allForms.length; i++) {
 function showWhatsNew()
 {
     console.log("Showing whats new");
+    var i = 0;
     const main = document.getElementById('contentBox');
 
     localStorage.setItem('cfgShowedVersion', 'v0.4.0005');
@@ -770,13 +785,41 @@ function showWhatsNew()
     const help = document.getElementById('helpBox');
 
     help.innerHTML = '';
-
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
-      v0.4.0005
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0006
     </div>`;
 
     help.innerHTML += `<div class="topicContent show">
+    Version 0.4.0006 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li>Nothing yet</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Refactored generation of general statistics to be based on the provided JSON data</li>
+      <li>Introduced information about population and soldier growth in the general statistics</li>
+    </ul>
+    <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Fixed issue with the context menu for fleet orders not updating coordinates upon follow up usage</li>
+      <li>Fixed issue with the context menu for scanning not updating coordinates upon follow up usage</li>
+    </ul><br/>
+    <strong>Removed:</strong>
+    <ul>
+      <li>Nothing yet</li>
+    </ul>
+    <hr/><br/></div>`;
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0005
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent">
     Version 0.4.0005 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
@@ -803,7 +846,7 @@ function showWhatsNew()
     <hr/><br/></div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       v0.4.0004
     </div>`;
 
@@ -1229,6 +1272,7 @@ function generateStats()
     var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var building = {};
 
     document.getElementById('btnStats').style.display = 'none';
     document.getElementById('btnLogst').style.display = 'none';
@@ -1262,17 +1306,31 @@ function generateStats()
         ratio.mineral += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Mineral_Abundance");
         ratio.food += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Food_Abundance");
         ratio.energy += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Energy_Abundance");
-    }
 
-    if (1) {
-        for (i=0; i<jsonPageDataCache.locationList.length-13; i++) {
-            console.log(getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground"));
+        for (j = 0; j<jsonPageDataCache.locationList[i].executingItems.unitList.length; j++) {
+            buf = jsonPageDataCache.locationList[i].executingItems.unitList[j].name;
+            if (building[buf]>0) {
+                building[buf] += jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
+            } else {
+                building[buf] = jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
+            }
+        }
+    }
+    console.log(building);
+    if (0) {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            /* General information */
+            //console.log(jsonPageDataCache.locationList[i]);
+
+            /* What are we currently building */
+            // console.log(jsonPageDataCache.locationList[i].executingItems);
+
             /* Ground, Orbit, Abundance */
-            console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
+            // console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
             /* Resources, Workers, Occupied Workers */
-            console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
+            // console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
             /* Income of Resources, Workers */
-            console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+            // console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
         }
     }
 
@@ -1310,7 +1368,7 @@ function generateStats()
 
     //buf.innerHTML = "<pre>" + genData + "</pre>";
 
-    el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%;'></div>";
+    el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%; width: 59%;'></div>";
     el = document.getElementById('resTable');
 
     el.innerHTML += "<div id='statHeader' class='lightBorder ofHidden opacBackground'></div>";
@@ -1336,6 +1394,21 @@ function generateStats()
     buf.innerHTML += "<div class='left resource' style='width: 12%;'>Abundance</div>";
     for (const [key, value] of Object.entries(ratio)) {
         buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>" + value + "%</div>";
+    }
+
+    el = document.getElementById('planetList');
+    el.innerHTML += "<div id='buildDiv' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%; width: 99%;'></div>";
+    buf = document.getElementById('buildDiv');
+    buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
+    buf = document.getElementById('innerBuildDiv');
+    buf.innerHTML = "<strong>Currently constructing:</strong><ul id='buildList'></ul>";
+    buf = document.getElementById('buildList');
+    for (const key of Object.keys(building).sort()) {
+        if (ships[key] === 0 || key === 'Soldier') {
+            buf.innerHTML += "<li>" + building[key] + " zz <em>" + key.replaceAll("_", " ") + "</em></li>";
+        } else {
+            buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
+        }
     }
 
     buf = document.querySelector('div .header.pageTitle');
