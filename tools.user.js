@@ -1145,14 +1145,10 @@ function showScanMenu(e)
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
 
-    /* The context menu is aleady populated */
-    if (m.innerHTML!='' && m.getAttribute('menuType') === 'scan') {
-        m.style.display = 'block';
-        return;
-    } else {
-        m.innerHTML = '';
-        m.setAttribute('menuType', 'scan');
-    }
+    /* Reset context menu */
+    /* Previous optimization does not work due to not changing the coordinates */
+    m.innerHTML = '';
+    m.setAttribute('menuType', 'scan');
 
     /* Populate context menu prior to showing it */
     for (var i=0; i < commsLink.length; i++) {
@@ -1190,14 +1186,10 @@ function showJumpMenu(e)
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
 
-    /* The context menu is aleady populated */
-    if (m.innerHTML!='' && m.getAttribute('menuType') === 'fleet') {
-        m.style.display = 'block';
-        return;
-    } else {
-        m.innerHTML = '';
-        m.setAttribute('menuType', 'fleet');
-    }
+    /* Reset context menu */
+    /* Previous optimization does not work due to not changing the coordinates */
+    m.innerHTML = '';
+    m.setAttribute('menuType', 'scan');
 
     /* Populate context menu prior to showing it */
     for (var i =0; i < f.length; i++) {
