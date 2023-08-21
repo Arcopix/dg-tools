@@ -1115,6 +1115,18 @@ function getIncome(planet, type)
     return null;
 }
 
+function getAmount(arr, type)
+{
+    var i;
+
+    for (i=0; i<arr.length; i++) {
+        if (arr[i].name === type) {
+            return arr[i].amount;
+        }
+    }
+    return 0;
+}
+
 function showScanMenu(e)
 {
     console.log("Executing showScanMenu");
@@ -1213,7 +1225,7 @@ function generateStats()
     var el;
     var buf;
     var plBuf;
-    var genData = { "count": 0, "worker": 0, "soldier": 0, "ground": 0, "orbit": 0};
+    var genData = { "count": 0, "worker": 0, "newWorker":0, "soldier": 0, "newSoldier": 0, "ground": 0, "orbit": 0};
     var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
@@ -1225,10 +1237,36 @@ function generateStats()
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     console.log(total);
 
-    console.log(jsonPageDataCache);
+    genData.count = jsonPageDataCache.locationList.length;
+    //console.log(jsonPageDataCache);
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        genData.ground += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
+        genData.orbit += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker");
+        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+        genData.newWorker += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+        genData.soldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
+        genData.newSoldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "CreatingSoldier");
 
-    if (0) {
-        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        total.metal += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metal");
+        total.mineral += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Mineral");
+        total.food += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Food");
+        total.energy += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Energy");
+
+        income.metal += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Metal");
+        income.mineral += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Mineral");
+        income.food += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Food");
+        income.energy += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Energy");
+
+        ratio.metal += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Metal_Abundance");
+        ratio.mineral += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Mineral_Abundance");
+        ratio.food += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Food_Abundance");
+        ratio.energy += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Energy_Abundance");
+    }
+
+    if (1) {
+        for (i=0; i<jsonPageDataCache.locationList.length-13; i++) {
+            console.log(getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground"));
             /* Ground, Orbit, Abundance */
             console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
             /* Resources, Workers, Occupied Workers */
@@ -1238,39 +1276,16 @@ function generateStats()
         }
     }
 
-    for (const [key, value] of Object.entries(total)) {
-         el = document.querySelectorAll("div .resource."+key);
-         for (var i=0; i<el.length; i++) {
-             const data = el[i].querySelector("span").innerText.split(' ');
-             /* Map:
-              * data[0] -> current storage
-              * data[1] -> current income (in brackets with a +)
-              * data[1] -> abundance ratio (with %)
-              */
-             total[key] += parseInteger(data[0]);
-             income[key] += parseInteger(data[1]);
-             ratio[key] += parseInteger(data[2]);
-         }
-    }
-
     /* Calculate avergaes for ratios */
     for (const [key, value] of Object.entries(total)) {
         total[key] = fmt.format(total[key]);
         income[key] = fmt.format(income[key]);
-        ratio[key] = fmtRatio.format(ratio[key]/el.length, 2);
+        ratio[key] = fmtRatio.format(ratio[key]/genData.count, 2);
     }
 
     /* Detect ground and orbit space, population and soldiers */
     plBuf = document.getElementsByClassName('locationWrapper');
     plBuf = Array.from(plBuf);
-    for (i=0; i<plBuf.length; i++) {
-        el = plBuf[i].getElementsByTagName('span');
-        genData.count++;
-        genData.orbit += parseInteger(el[1].innerText);
-        genData.ground += parseInteger(el[2].innerText);
-        genData.worker += parseInteger(el[4].innerText);
-        genData.soldier += parseInteger(el[3].innerText);
-    }
 
     el = document.getElementById('planetList');
     /* while testing */
@@ -1287,9 +1302,12 @@ function generateStats()
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Space</div>";
     buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + genData.ground + " / " + genData.orbit + "</div>";
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Workers</div>";
-    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.worker) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 28%; text-align: right;'>+" + fmt.format(genData.newWorker) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 30%; text-align: right;'>" + fmt.format(genData.worker) + "</div>";
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Soldiers</div>";
-    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.soldier) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 28%; text-align: right;'>+" + fmt.format(genData.newSoldier) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 30%; text-align: right;'>" + fmt.format(genData.soldier) + "</div>";
+
     //buf.innerHTML = "<pre>" + genData + "</pre>";
 
     el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%;'></div>";
@@ -1327,18 +1345,18 @@ function generateStats()
     document.getElementById('btnCopy').addEventListener("click", function (e) {
         var turn = ' turn '+ turnNumber + ' ';
         buf = "```\n";
-        buf += "---- General statistics ---------------------" + turn.padEnd(12, '-') + "\n";
-        buf += "  Planets: " + fmt.format(genData.count).padStart(12) + "\n";
-        buf += "   Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
-        buf += "    Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
-        buf += "  Workers: " + fmt.format(genData.worker).padStart(12) + "\n";
-        buf += " Soldiers: " + fmt.format(genData.soldier).padStart(12) + "\n\n";
-        buf += "---- Resources ------------------------------------------\n";
-        buf += "           " + "Storage".padStart(16) + "Income".padStart(16) + "Abundance".padStart(14) + "\n";
-        buf += "    Metal: " + total.metal.padStart(16) + income.metal.padStart(16) + ratio.metal.padStart(14) + "\n";
-        buf += "  Mineral: " + total.mineral.padStart(16) + income.mineral.padStart(16) + ratio.mineral.padStart(14) + "\n";
-        buf += "     Food: " + total.food.padStart(16) + income.food.padStart(16) + ratio.food.padStart(14) + "\n";
-        buf += "   Energy: " + total.energy.padStart(16) + income.energy.padStart(16) + ratio.energy.padStart(14) + "\n";
+        buf += "--- General statistics --------------" + turn.padEnd(13, '-') + "\n";
+        buf += " Planets: " + fmt.format(genData.count).padStart(12) + "\n";
+        buf += "  Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
+        buf += "   Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
+        buf += " Workers: " + fmt.format(genData.worker).padStart(12) + ("+" + fmt.format(genData.newWorker)).padStart(14) + "\n";
+        buf += "Soldiers: " + fmt.format(genData.soldier).padStart(12) + ("+" + fmt.format(genData.newSoldier)).padStart(14) + "\n\n";
+        buf += "--- Resources ------------------------------------\n";
+        buf += "          " + "Storage".padStart(14) + "Income".padStart(12) + "Abundance".padStart(12) + "\n";
+        buf += "   Metal: " + total.metal.padStart(14) + income.metal.padStart(12) + ratio.metal.padStart(11) + "%\n";
+        buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
+        buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
+        buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
         buf += "```"
 
         navigator.clipboard.writeText(buf);
