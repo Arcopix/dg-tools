@@ -1,3 +1,7 @@
+## Version 0.4.0006
+
+TBA
+
 ## Version 0.4.0005
 
 **New features:**
