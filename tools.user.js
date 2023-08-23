@@ -62,7 +62,7 @@ if (0 && m!==getDate()) {
 }
 
 /* Check if global configuration is set and if not - initiate defaults */
-if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=='') {
+if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')==='') {
     initializeConfig();
 }
 
@@ -88,7 +88,7 @@ var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 var confIcon = document.createElement('div');
 confIcon.className = 'left relative';
 confIcon.style = 'cursor:pointer;';
-confIcon.innerHTML = '<img src="' + imageContainer["confIcon.png"] + '"/>';
+confIcon.innerHTML = '<img alt="Configuration" src="' + imageContainer["confIcon.png"] + '"/>';
 
 confIcon.addEventListener('click', function() { showPluginConfiguration() }, false);
 
@@ -96,7 +96,7 @@ confIcon.addEventListener('click', function() { showPluginConfiguration() }, fal
 var screenshotIcon = document.createElement('div');
 screenshotIcon.className = 'left relative';
 screenshotIcon.style = 'cursor:pointer;';
-screenshotIcon.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
+screenshotIcon.innerHTML = '<img alt="Take a screenshot" src="' + imageContainer["screenshotIcon.png"] + '"/>';
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
@@ -165,7 +165,7 @@ for (i=0; i<coords.length; i++)
 	}
 
 	/* Don't bother with home planets */
-	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0.0') {
+	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText==='0.0.0.0') {
 		continue;
 	}
 
@@ -177,7 +177,7 @@ for (i=0; i<coords.length; i++)
 
 /* TODO: Thsi should be combined with cfgAllyCAP */
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
-if (cfgAllyNAP!='') {
+if (cfgAllyNAP!=='') {
 	var arrayAllyNAP = cfgAllyNAP.split(',');
 
 	for (i=0; i<arrayAllyNAP.length; i++) {
@@ -185,11 +185,10 @@ if (cfgAllyNAP!='') {
 	}
 
 	var elems = document.getElementsByTagName("div");
-	var deb=0;
 	var player="";
 	for (i=0; i<elems.length; i++) {
 		var e = elems[i];
-		if (e.className=="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
+		if (e.className==="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
 			e.style.color = cfgAllyNAPcolor;
             /* Only for navigation */
@@ -214,7 +213,7 @@ if (cfgAllyNAP!='') {
 }
 
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
-if (cfgAllyCAP!='') {
+if (cfgAllyCAP!=='') {
 	var arrayAllyCAP = cfgAllyCAP.split(',');
 
 	for (i=0; i<arrayAllyCAP.length; i++) {
@@ -225,7 +224,7 @@ if (cfgAllyCAP!='') {
 	player="";
 	for (i=0; i<elems.length; i++) {
 		e = elems[i];
-		if (e.className=="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
+		if (e.className==="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
 			e.style.color = cfgAllyCAPcolor;
             /* Find the Element with the entire planet */
@@ -251,7 +250,7 @@ if (cfgAllyCAP!='') {
 elems = document.getElementsByClassName("playerName");
 for (i=0; i<elems.length; i++) {
 	e = elems[i];
-	if (e.parentNode.className=='friendly') {
+	if (e.parentNode.className==='friendly') {
 		e.style.cursor = 'not-allowed';
 		continue;
 	}
@@ -261,9 +260,9 @@ for (i=0; i<elems.length; i++) {
 }
 
 /* If in mail module and to is set -> set the recepient */
-if (window.location.pathname=="/mail/" && window.location.search!=="") {
+if (window.location.pathname==="/mail/" && window.location.search!=="") {
 	var query = getQueryParams(document.location.search);
-	if (typeof query.to != 'undefined' && query.to != "") {
+	if (typeof query.to !== 'undefined' && query.to !== "") {
 		document.getElementsByName('to')[0].value = query.to;
 	}
 }
@@ -272,15 +271,16 @@ if (window.location.pathname=="/mail/" && window.location.search!=="") {
 elems = document.getElementsByClassName("queueRemoveButton");
 for (i=0; i<elems.length; i++) {
 	var add_confirm = 0;
-	var left, name;
+	var left;
+    var name = 'unknown';
 	e = elems[i];
 	p = e.parentElement.parentElement;
 
 	for (j=0; j<p.children.length; j++) {
-		if (p.children[j].className=="left name") {
+		if (p.children[j].className==="left name") {
 			name = p.children[j].innerText;
 		}
-		if (p.children[j].className=="left width25") {
+		if (p.children[j].className==="left width25") {
 			left = p.children[j].innerText;
 			if (left>0) {
 				add_confirm = 1;
@@ -298,7 +298,7 @@ for (i=0; i<elems.length; i++) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
 	document.addEventListener("keydown", (e) => {
-		if (document.activeElement.tagName=='input') {
+		if (document.activeElement.tagName==='input') {
 			return;
 		}
 		if (e.which === 37) {
@@ -383,7 +383,7 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 	document.addEventListener("keydown", e => {
-		if (document.activeElement.tagName=='input') {
+		if (document.activeElement.tagName==='input') {
 			return;
 		}
 		if (e.which === 37) {
@@ -420,7 +420,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
 	if (document.querySelector('.nextPrevFleet').innerText === '»') {
 		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
+			if (document.activeElement.tagName==='INPUT') {
 				return;
 			}
 			if (e.which === 39) {
@@ -430,7 +430,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 	} else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
 			   typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
 		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
+			if (document.activeElement.tagName==='INPUT') {
 				return;
 			}
 			if (e.which === 37) {
@@ -442,7 +442,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 		});
 	} else { /* In case of '«' */
 		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
+			if (document.activeElement.tagName==='INPUT') {
 				return;
 			}
 			if (e.which === 37) {
@@ -526,7 +526,8 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
     var planetSelect;
-	if (planetSelect = document.querySelector('select[name="locationId"]')) {
+    planetSelect = document.querySelector('select[name="locationId"]')
+	if (planetSelect) {
         const options = Array.from(planetSelect.options);
         const homePlanet = options.shift();
 
@@ -587,7 +588,7 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
 }
 
 /* Fix sorting of radars */
-var radars, radar, fleetRow, fleetCount;
+var radars, radar, fleetRow;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
 	/* Get and sort out each coms/radar section */
 	radars = document.getElementsByClassName('opacDarkBackground');
@@ -638,7 +639,7 @@ if (cfgRadarSorting && location.href.includes('/radar/')) {
 if (document.querySelector('input[name="coordinate.0"]')) {
 	var el = document.querySelector('input[name="coordinate.0"]');
 	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
+		if(e.which === 110 || e.which === 188 || e.which === 190) {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.1"]').value = '';
 			document.querySelector('input[name="coordinate.1"]').focus();
@@ -647,12 +648,12 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 
 	el = document.querySelector('input[name="coordinate.1"]');
 	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
+		if(e.which === 110 || e.which === 188 || e.which === 190) {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.2"]').value = '';
 			document.querySelector('input[name="coordinate.2"]').focus();
 		}
-		if (e.which == 8 && this.value=='') {
+		if (e.which === 8 && this.value==='') {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.0"]').focus();
 		}
@@ -660,12 +661,12 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 
     el = document.querySelector('input[name="coordinate.2"]');
 	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
+		if(e.which === 110 || e.which === 188 || e.which === 190) {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.3"]').value = '';
 			document.querySelector('input[name="coordinate.3"]').focus();
 		}
-		if (e.which == 8 && this.value=='') {
+		if (e.which === 8 && this.value==='') {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.1"]').focus();
 		}
@@ -673,7 +674,7 @@ if (document.querySelector('input[name="coordinate.0"]')) {
 
 	el = document.querySelector('input[name="coordinate.3"]');
 	el.addEventListener('keydown', function(e) {
-		if (e.which == 8 && this.value=='') {
+		if (e.which === 8 && this.value==='') {
 			e.preventDefault();
 			document.querySelector('input[name="coordinate.2"]').focus();
 		}
@@ -704,20 +705,20 @@ if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
 }
 
 /* Request confirmation when kicking people from alliance */
-if (window.location.pathname=='/alliances/') {
+if (window.location.pathname==='/alliances/') {
 	k = document.querySelectorAll('input[type=submit]');
 	for (i=0; i<=k.length; i++) {
 		if (!k[i]) {
             continue;
         }
-        if (k[i].value=='Kick Member') {
+        if (k[i].value==='Kick Member') {
 			l=k[i];
 			/* Get the player name. This is a bit ugly, but oh well... */
 			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
 			l.confirmString = "Are you sure you want to kick " + playerName + "?";
 			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
 		}
-        if (k[i].value=='Leave Alliance') {
+        if (k[i].value==='Leave Alliance') {
             l=k[i];
             l.addEventListener('click', function(evt) { if (confirm("Are you sure you want to leave?")===false) evt.preventDefault(); });
         }
@@ -1847,7 +1848,7 @@ function getDate()
 
 function parseBool(val)
 {
-	if (val=='true') {
+	if (val==='true') {
 		return true;
 	} else {
 		return false;
