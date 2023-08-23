@@ -4,11 +4,13 @@
 
 1. Refactored generation of general statistics to be based on the provided JSON data
 1. Introduced information about population and soldier growth in the general statistics
+1. Introduced summary information about current construction (buildings, ships and soldiers)
 
 **Bug Fixes:**
 
-1. Fixed issue with the context menu for fleet orders not updating coordinates upon follow up usage
-1. Fixed issue with the context menu for scanning not updating coordinates upon follow up usage
+1. Fixed issue with the context menu for fleet orders not updating coordinates upon follow-up usage
+1. Fixed issue with the context menu for scanning not updating coordinates upon follow-up usage
+1. Fixed issue with planet navigation using arrow keys while inputting information in an input 
 
 ## Version 0.4.0005
 
