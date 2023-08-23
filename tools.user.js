@@ -1402,15 +1402,26 @@ function generateStats()
     buf = document.getElementById('buildDiv');
     buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
     buf = document.getElementById('innerBuildDiv');
-    buf.innerHTML = "<strong>Currently constructing:</strong><ul id='buildList'></ul>";
-    buf = document.getElementById('buildList');
+    buf.innerHTML = "<div style='display: table-cell;'><strong>Currently constructing:</strong><ul id='buildList'></ul></div>";
+    buf.innerHTML += "<div style='display: table-cell; padding-left: 40px;'><strong>Currently training:</strong><ul id='trainList'></ul></div>";
+    let p = 0;
+
     for (const key of Object.keys(building).sort()) {
         if (ships[key] === 0 || key === 'Soldier') {
-            buf.innerHTML += "<li>" + building[key] + " zz <em>" + key.replaceAll("_", " ") + "</em></li>";
+            buf = document.getElementById('trainList');
         } else {
-            buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
+            buf = document.getElementById('buildList');
         }
+        buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
     }
+
+    if (document.getElementById('buildList').childElementCount === 0) {
+        document.getElementById('buildList').innerHTML += "<li><em>nothing</em></li>";
+    }
+    if (document.getElementById('trainList').childElementCount === 0) {
+        document.getElementById('trainList').innerHTML += "<li><em>nothing</em></li>";
+    }
+
 
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>Planet Statistics</span>';
