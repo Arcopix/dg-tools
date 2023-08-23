@@ -53,12 +53,12 @@ var curRTT = 0;
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (0 && m!==getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n" +
-					"Use it at your own risk\n" +
-					"\n" +
-					"This message will be displayed on once a day");
+    window.alert("WARNING, you are using development version of DG utilities.\n" +
+        "Use it at your own risk\n" +
+        "\n" +
+        "This message will be displayed on once a day");
 
-	localStorage.setItem('develWarning', getDate());
+    localStorage.setItem('develWarning', getDate());
 }
 
 /* Check if global configuration is set and if not - initiate defaults */
@@ -157,40 +157,40 @@ var coords;
 coords = document.getElementsByClassName('coords')
 for (i=0; i<coords.length; i++)
 {
-	let c = coords[i];
-	/* In planet details there is no span on the planer coordinates */
-	let __c = c.getElementsByTagName('span')[0];
-	if (__c) {
-		c = __c;
-	}
+    let c = coords[i];
+    /* In planet details there is no span on the planer coordinates */
+    let __c = c.getElementsByTagName('span')[0];
+    if (__c) {
+        c = __c;
+    }
 
-	/* Don't bother with home planets */
-	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText==='0.0.0.0') {
-		continue;
-	}
+    /* Don't bother with home planets */
+    if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText==='0.0.0.0') {
+        continue;
+    }
 
-	if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
-		let p = c.innerText.split('.');
-		c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
-	}
+    if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
+        let p = c.innerText.split('.');
+        c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
+    }
 }
 
 /* TODO: Thsi should be combined with cfgAllyCAP */
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
 if (cfgAllyNAP!=='') {
-	var arrayAllyNAP = cfgAllyNAP.split(',');
+    var arrayAllyNAP = cfgAllyNAP.split(',');
 
-	for (i=0; i<arrayAllyNAP.length; i++) {
-		arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
-	}
+    for (i=0; i<arrayAllyNAP.length; i++) {
+        arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
+    }
 
-	var elems = document.getElementsByTagName("div");
-	var player="";
-	for (i=0; i<elems.length; i++) {
-		var e = elems[i];
-		if (e.className==="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
+    var elems = document.getElementsByTagName("div");
+    var player="";
+    for (i=0; i<elems.length; i++) {
+        var e = elems[i];
+        if (e.className==="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
-			e.style.color = cfgAllyNAPcolor;
+            e.style.color = cfgAllyNAPcolor;
             /* Only for navigation */
             if (location.href.includes('/navigation/')) {
                 /* Find the Element with the entire planet */
@@ -208,27 +208,27 @@ if (cfgAllyNAP!=='') {
                 /* Properly colorize the player name */
                 p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
             }
-		}
-	}
+        }
+    }
 }
 
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
 if (cfgAllyCAP!=='') {
-	var arrayAllyCAP = cfgAllyCAP.split(',');
+    var arrayAllyCAP = cfgAllyCAP.split(',');
 
-	for (i=0; i<arrayAllyCAP.length; i++) {
-		arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
-	}
+    for (i=0; i<arrayAllyCAP.length; i++) {
+        arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
+    }
 
-	elems = document.getElementsByTagName("div");
-	player="";
-	for (i=0; i<elems.length; i++) {
-		e = elems[i];
-		if (e.className==="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
+    elems = document.getElementsByTagName("div");
+    player="";
+    for (i=0; i<elems.length; i++) {
+        e = elems[i];
+        if (e.className==="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
-			e.style.color = cfgAllyCAPcolor;
+            e.style.color = cfgAllyCAPcolor;
             /* Find the Element with the entire planet */
-			p = e.parentElement.parentElement.parentElement;
+            p = e.parentElement.parentElement.parentElement;
             /* Reset the border of the planet */
             if (location.href.includes('/navigation/')) {
                 p.style.border = "1px solid " + cfgAllyCAPcolor;
@@ -242,72 +242,72 @@ if (cfgAllyCAP!=='') {
                 /* Properly colorize the player name */
                 p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
             }
-		}
-	}
+        }
+    }
 }
 
 /* Add onclick to player names through the interface to forward to mail module */
 elems = document.getElementsByClassName("playerName");
 for (i=0; i<elems.length; i++) {
-	e = elems[i];
-	if (e.parentNode.className==='friendly') {
-		e.style.cursor = 'not-allowed';
-		continue;
-	}
-	e.addEventListener('click', function() {
-		window.location.href = "/mail/?to=" + this.innerText.trim();
-	}, false);
+    e = elems[i];
+    if (e.parentNode.className==='friendly') {
+        e.style.cursor = 'not-allowed';
+        continue;
+    }
+    e.addEventListener('click', function() {
+        window.location.href = "/mail/?to=" + this.innerText.trim();
+    }, false);
 }
 
 /* If in mail module and to is set -> set the recepient */
 if (window.location.pathname==="/mail/" && window.location.search!=="") {
-	var query = getQueryParams(document.location.search);
-	if (typeof query.to !== 'undefined' && query.to !== "") {
-		document.getElementsByName('to')[0].value = query.to;
-	}
+    var query = getQueryParams(document.location.search);
+    if (typeof query.to !== 'undefined' && query.to !== "") {
+        document.getElementsByName('to')[0].value = query.to;
+    }
 }
 
 /* Add confirmation on canceling buildings */
 elems = document.getElementsByClassName("queueRemoveButton");
 for (i=0; i<elems.length; i++) {
-	var add_confirm = 0;
-	var left;
+    var add_confirm = 0;
+    var left;
     var name = 'unknown';
-	e = elems[i];
-	p = e.parentElement.parentElement;
+    e = elems[i];
+    p = e.parentElement.parentElement;
 
-	for (j=0; j<p.children.length; j++) {
-		if (p.children[j].className==="left name") {
-			name = p.children[j].innerText;
-		}
-		if (p.children[j].className==="left width25") {
-			left = p.children[j].innerText;
-			if (left>0) {
-				add_confirm = 1;
-			}
-		}
-	}
+    for (j=0; j<p.children.length; j++) {
+        if (p.children[j].className==="left name") {
+            name = p.children[j].innerText;
+        }
+        if (p.children[j].className==="left width25") {
+            left = p.children[j].innerText;
+            if (left>0) {
+                add_confirm = 1;
+            }
+        }
+    }
 
-	if (add_confirm) {
-		e.confirmString = "Are you sure you want to cancel " + name + "?";
-		e.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
-	}
+    if (add_confirm) {
+        e.confirmString = "Are you sure you want to cancel " + name + "?";
+        e.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+    }
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in navigation
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
-	document.addEventListener("keydown", (e) => {
-		if (document.activeElement.tagName==='input') {
-			return;
-		}
-		if (e.which === 37) {
-			document.querySelector(".navigation.left").click();
-		}
-		if (e.which === 39) {
-			document.querySelector(".navigation.right").click();
-		}
-	});
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='input') {
+            return;
+        }
+        if (e.which === 37) {
+            document.querySelector(".navigation.left").click();
+        }
+        if (e.which === 39) {
+            document.querySelector(".navigation.right").click();
+        }
+    });
 }
 
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
@@ -353,7 +353,7 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         if (n.querySelector('a')) {
             n = n.querySelector('a');
         }
-      
+
         /* Actual coordinates */
         n = n.innerHTML;
 
@@ -382,17 +382,17 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
 /* Script by Mordread -> use ARROW keys to navigate in planet details
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
-	document.addEventListener("keydown", e => {
-		if (document.activeElement.tagName==='input') {
-			return;
-		}
-		if (e.which === 37) {
-			document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
-		}
-		if (e.which === 39) {
-			document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
-		}
-	});
+    document.addEventListener("keydown", e => {
+        if (document.activeElement.tagName==='INPUT') {
+            return;
+        }
+        if (e.which === 37) {
+            document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
+        }
+        if (e.which === 39) {
+            document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
+        }
+    });
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
@@ -417,39 +417,39 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
 
 /* Navigate through fleets using ARROW keys */
 if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet')) {
-	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
-	if (document.querySelector('.nextPrevFleet').innerText === '»') {
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName==='INPUT') {
-				return;
-			}
-			if (e.which === 39) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-		});
-	} else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
-			   typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName==='INPUT') {
-				return;
-			}
-			if (e.which === 37) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-			if (e.which === 39) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
-			}
-		});
-	} else { /* In case of '«' */
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName==='INPUT') {
-				return;
-			}
-			if (e.which === 37) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-		});
-	}
+    /* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
+    if (document.querySelector('.nextPrevFleet').innerText === '»') {
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 39) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+        });
+    } else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
+        typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 37) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+            if (e.which === 39) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
+            }
+        });
+    } else { /* In case of '«' */
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 37) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+        });
+    }
 }
 
 
@@ -458,7 +458,7 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
     var rows = table.querySelectorAll('.entry');
     var rowsArray = Array.from(rows);
 
-   rowsArray.sort((a, b) => {
+    rowsArray.sort((a, b) => {
         const linkA = a.querySelector('.name a');
         const linkB = b.querySelector('.name a');
         const textA = linkA ? linkA.textContent : '';
@@ -466,14 +466,14 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
         return textA.localeCompare(textB);
     });
 
-   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
-   rowsArray.forEach(row => table.appendChild(row));
+    table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+    rowsArray.forEach(row => table.appendChild(row));
 
-   rows = table.querySelectorAll('.entry');
+    rows = table.querySelectorAll('.entry');
 
-   for (i = 0; i<rows.length; i++) {
+    for (i = 0; i<rows.length; i++) {
         rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
-   }
+    }
 }
 
 /* Cache fleets for future usage */
@@ -527,7 +527,7 @@ if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
     var planetSelect;
     planetSelect = document.querySelector('select[name="locationId"]')
-	if (planetSelect) {
+    if (planetSelect) {
         const options = Array.from(planetSelect.options);
         const homePlanet = options.shift();
 
@@ -590,109 +590,109 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
 /* Fix sorting of radars */
 var radars, radar, fleetRow;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
-	/* Get and sort out each coms/radar section */
-	radars = document.getElementsByClassName('opacDarkBackground');
-	for (i=0; i<radars.length; i++) {
-		/* Skip the header */
-		if (radars[i].className.includes('paddingMid')) {
-			continue;
-		}
+    /* Get and sort out each coms/radar section */
+    radars = document.getElementsByClassName('opacDarkBackground');
+    for (i=0; i<radars.length; i++) {
+        /* Skip the header */
+        if (radars[i].className.includes('paddingMid')) {
+            continue;
+        }
 
-		radar = radars[i];
-		fleetRow = radar.getElementsByClassName('entry');
+        radar = radars[i];
+        fleetRow = radar.getElementsByClassName('entry');
 
-		/* Clone radar rows and remove the original ones */
-		let crow = [];
-		for (j=fleetRow.length-1; j>=0; j--) {
-			crow[j] = fleetRow[j];
-			fleetRow[j].parentNode.removeChild(fleetRow[j]);
-		}
+        /* Clone radar rows and remove the original ones */
+        let crow = [];
+        for (j=fleetRow.length-1; j>=0; j--) {
+            crow[j] = fleetRow[j];
+            fleetRow[j].parentNode.removeChild(fleetRow[j]);
+        }
 
-		n = 0;
-		/* For every possible TICK, reducing output the rows */
-		for (m=24; m>=0; m--) {
-			for (j=crow.length-1; j>=0; j--) {
-				if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-					if (n = ((n+1)%2)) {
-						crow[j].className = "opacBackground lightBorderBottom entry";
-					} else {
-						crow[j].className = "opacLightBackground lightBorderBottom entry";
-					}
-					//alert(crow[j].className);
-					radars[i].appendChild(crow[j]);
-					/* Nullify the row so we would not have to search it by class, text and so on */
-					crow[j] = 0;
-				}
-			}
-		}
+        n = 0;
+        /* For every possible TICK, reducing output the rows */
+        for (m=24; m>=0; m--) {
+            for (j=crow.length-1; j>=0; j--) {
+                if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                    if (n = ((n+1)%2)) {
+                        crow[j].className = "opacBackground lightBorderBottom entry";
+                    } else {
+                        crow[j].className = "opacLightBackground lightBorderBottom entry";
+                    }
+                    //alert(crow[j].className);
+                    radars[i].appendChild(crow[j]);
+                    /* Nullify the row so we would not have to search it by class, text and so on */
+                    crow[j] = 0;
+                }
+            }
+        }
 
-		/* Make sure to add any rows that are not already aded/invalidated */
-		for (j=crow.length-1; j>=0; j--) {
-			if (crow[j]) {
-				radars[i].appendChild(crow[j]);
-			}
-		}
-	}
+        /* Make sure to add any rows that are not already aded/invalidated */
+        for (j=crow.length-1; j>=0; j--) {
+            if (crow[j]) {
+                radars[i].appendChild(crow[j]);
+            }
+        }
+    }
 }
 
 /* Smart input for coords */
 if (document.querySelector('input[name="coordinate.0"]')) {
-	var el = document.querySelector('input[name="coordinate.0"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which === 110 || e.which === 188 || e.which === 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').value = '';
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
+    var el = document.querySelector('input[name="coordinate.0"]');
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').value = '';
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 
-	el = document.querySelector('input[name="coordinate.1"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which === 110 || e.which === 188 || e.which === 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').value = '';
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-		if (e.which === 8 && this.value==='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.0"]').focus();
-		}
-	});
+    el = document.querySelector('input[name="coordinate.1"]');
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.2"]').value = '';
+            document.querySelector('input[name="coordinate.2"]').focus();
+        }
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.0"]').focus();
+        }
+    });
 
     el = document.querySelector('input[name="coordinate.2"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which === 110 || e.which === 188 || e.which === 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.3"]').value = '';
-			document.querySelector('input[name="coordinate.3"]').focus();
-		}
-		if (e.which === 8 && this.value==='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.3"]').value = '';
+            document.querySelector('input[name="coordinate.3"]').focus();
+        }
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 
-	el = document.querySelector('input[name="coordinate.3"]');
-	el.addEventListener('keydown', function(e) {
-		if (e.which === 8 && this.value==='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-	});
+    el = document.querySelector('input[name="coordinate.3"]');
+    el.addEventListener('keydown', function(e) {
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.2"]').focus();
+        }
+    });
 }
 
 if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
     /* Add short onclick on different comms scans to select that type of scan */
     k = document.getElementsByTagName('form')[0];
-	l = k.querySelectorAll('div.entry');
-	for (i=0; i<l.length; i++) {
-		if (l[i].className.includes('coordsInput')) {
-			continue;
-		}
-		l[i].addEventListener('click', function(e) {
-			this.getElementsByTagName('input')[0].click();
-		});
-	}
+    l = k.querySelectorAll('div.entry');
+    for (i=0; i<l.length; i++) {
+        if (l[i].className.includes('coordsInput')) {
+            continue;
+        }
+        l[i].addEventListener('click', function(e) {
+            this.getElementsByTagName('input')[0].click();
+        });
+    }
 
     /* If coordinates are set as parameters, set the coordinates for scanning */
     buf = getQueryParams(document.location.search);
@@ -706,23 +706,23 @@ if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
 
 /* Request confirmation when kicking people from alliance */
 if (window.location.pathname==='/alliances/') {
-	k = document.querySelectorAll('input[type=submit]');
-	for (i=0; i<=k.length; i++) {
-		if (!k[i]) {
+    k = document.querySelectorAll('input[type=submit]');
+    for (i=0; i<=k.length; i++) {
+        if (!k[i]) {
             continue;
         }
         if (k[i].value==='Kick Member') {
-			l=k[i];
-			/* Get the player name. This is a bit ugly, but oh well... */
-			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
-			l.confirmString = "Are you sure you want to kick " + playerName + "?";
-			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
-		}
+            l=k[i];
+            /* Get the player name. This is a bit ugly, but oh well... */
+            let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
+            l.confirmString = "Are you sure you want to kick " + playerName + "?";
+            l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+        }
         if (k[i].value==='Leave Alliance') {
             l=k[i];
             l.addEventListener('click', function(evt) { if (confirm("Are you sure you want to leave?")===false) evt.preventDefault(); });
         }
-	}
+    }
 }
 
 /* Add <label on couple of elements */
@@ -733,24 +733,24 @@ for (i=0; i<allForms.length; i++) {
     for (j=0; j<allDivs.length; j++) {
         k = allDivs[j].innerText.trim();
         if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
-			continue;
-		}
+            continue;
+        }
         /* We've reached a div with inner text "Repeat" or "All Resources" */
         var siblings = allDivs[j].parentNode.children;
         for (m = 0; m < siblings.length; m++) {
             var sibling = siblings[m];
             /* Test out siblings to find a sibling DIV which has childen */
             if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
-				continue;
-			}
+                continue;
+            }
 
-			var children = sibling.children;
+            var children = sibling.children;
             for (n = 0; n < children.length; n++) {
                 /* Test out the siblings for CHECKBOX(es) */
-			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
+                if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
                     /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
 
-					/* All such cases do not have ID at the current time, but who knows */
+                    /* All such cases do not have ID at the current time, but who knows */
                     if (children[n].id == '') {
                         const newId = makeId(8);
                         children[n].id = newId;
@@ -758,8 +758,8 @@ for (i=0; i<allForms.length; i++) {
                         allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
                     } else {
                         /* Update the original DIV to have label with the ID of the checkbox */
-						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
-					}
+                        allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
+                    }
                 }
             }
         }
@@ -1533,80 +1533,80 @@ function updatePlanetSorting()
 
 function sendBase64ImageToDiscord(webhookUrl, base64Image)
 {
-  try {
-    // Strip data:image/png;base64,
-    base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
-    // Convert base64 image to binary
-    const binaryImage = atob(base64Image);
-    const imageLength = binaryImage.length;
-    const uint8Array = new Uint8Array(imageLength);
-    for (let i = 0; i < imageLength; i++) {
-      uint8Array[i] = binaryImage.charCodeAt(i);
-    }
-
-    // Create form data payload
-    const form = new FormData();
-    const file = new Blob([uint8Array], { type: 'image/png' });
-    form.append("content", "Screenshot from " + localStorage.getItem('cfgRulername') + " on turn " + turnNumber);
-    form.append("tts", "false");
-    form.append('file', file, '/usr/share/screenshot.png');
-
-    // Create XMLHttpRequest object
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', webhookUrl);
-
-    // Set up the request headers
-    const headers = {
-      'Accept': '*/*'
-    };
-    for (const header in headers) {
-      xhr.setRequestHeader(header, headers[header]);
-    }
-
-    // Send the request
-    xhr.send(form);
-
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          console.log('Image sent to Discord successfully!', xhr.responseText);
-        } else {
-          console.error('Error sending image to Discord:', xhr.status, xhr.responseText);
+    try {
+        // Strip data:image/png;base64,
+        base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
+        // Convert base64 image to binary
+        const binaryImage = atob(base64Image);
+        const imageLength = binaryImage.length;
+        const uint8Array = new Uint8Array(imageLength);
+        for (let i = 0; i < imageLength; i++) {
+            uint8Array[i] = binaryImage.charCodeAt(i);
         }
-      }
-    };
-  } catch (error) {
-    console.error('Error sending image to Discord:', error.message);
-  }
+
+        // Create form data payload
+        const form = new FormData();
+        const file = new Blob([uint8Array], { type: 'image/png' });
+        form.append("content", "Screenshot from " + localStorage.getItem('cfgRulername') + " on turn " + turnNumber);
+        form.append("tts", "false");
+        form.append('file', file, '/usr/share/screenshot.png');
+
+        // Create XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', webhookUrl);
+
+        // Set up the request headers
+        const headers = {
+            'Accept': '*/*'
+        };
+        for (const header in headers) {
+            xhr.setRequestHeader(header, headers[header]);
+        }
+
+        // Send the request
+        xhr.send(form);
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    console.log('Image sent to Discord successfully!', xhr.responseText);
+                } else {
+                    console.error('Error sending image to Discord:', xhr.status, xhr.responseText);
+                }
+            }
+        };
+    } catch (error) {
+        console.error('Error sending image to Discord:', error.message);
+    }
 }
 
 function imageToBlob(imageURL)
 {
-  const img = new Image;
-  const c = document.createElement("canvas");
-  const ctx = c.getContext("2d");
-  img.crossOrigin = "";
-  img.src = imageURL;
-  return new Promise(resolve => {
-    img.onload = function () {
-      c.width = this.naturalWidth;
-      c.height = this.naturalHeight;
-      ctx.drawImage(this, 0, 0);
-      c.toBlob((blob) => {
-        // here the image is a blob
-        resolve(blob)
-      }, "image/png", 1);
-    };
-  })
+    const img = new Image;
+    const c = document.createElement("canvas");
+    const ctx = c.getContext("2d");
+    img.crossOrigin = "";
+    img.src = imageURL;
+    return new Promise(resolve => {
+        img.onload = function () {
+            c.width = this.naturalWidth;
+            c.height = this.naturalHeight;
+            ctx.drawImage(this, 0, 0);
+            c.toBlob((blob) => {
+                // here the image is a blob
+                resolve(blob)
+            }, "image/png", 1);
+        };
+    })
 }
 
 function copyToClipboard(base64image)
 {
-  const blob = imageToBlob(base64image)
-  const item = new ClipboardItem({ "image/png": blob });
-  navigator.clipboard.write([item]);
-  showNotification('The screenshot was copied into the local clipboard!');
-  return;
+    const blob = imageToBlob(base64image)
+    const item = new ClipboardItem({ "image/png": blob });
+    navigator.clipboard.write([item]);
+    showNotification('The screenshot was copied into the local clipboard!');
+    return;
 }
 
 function generateScreenshot(element)
@@ -1642,139 +1642,139 @@ function generateScreenshot(element)
 
 function savePluginConfiguration()
 {
-	localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
-	localStorage.setItem('cfgAllyNAP', document.getElementById('cfgAllyNAP').value);
-	localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
-	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
-	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
-	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+    localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
+    localStorage.setItem('cfgAllyNAP', document.getElementById('cfgAllyNAP').value);
+    localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
+    localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+    localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
+    localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
-	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+    localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
 
-	showNotification("Settings saved successfully");
+    showNotification("Settings saved successfully");
 }
 
 function dumpPluginConfiguration()
 {
     showNotification('Data dumping in console');
-	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
-	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
-	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
-	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
-	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+    console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
+    console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
+    console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
+    console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+    console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
+    console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 
-	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
 }
 
 function showPluginConfiguration()
 {
-	var contentBox = document.getElementById('contentBox');
-	var pageTitle = contentBox.querySelector('.pageTitle');
-	var mainBox = document.createElement('div');
-	pageTitle.innerHTML = 'Utilities Configuration';
-	contentBox.innerHTML = '';
+    var contentBox = document.getElementById('contentBox');
+    var pageTitle = contentBox.querySelector('.pageTitle');
+    var mainBox = document.createElement('div');
+    pageTitle.innerHTML = 'Utilities Configuration';
+    contentBox.innerHTML = '';
 
-	contentBox.appendChild(pageTitle);
+    contentBox.appendChild(pageTitle);
 
-	mainBox.className = 'opacBackground ofHidden padding';
-	contentBox.appendChild(mainBox);
-	mainBox.id = 'cfgBox';
+    mainBox.className = 'opacBackground ofHidden padding';
+    contentBox.appendChild(mainBox);
+    mainBox.id = 'cfgBox';
 
-	addGlobalStyle('.input-text-cfg { width: 168px; height: 14px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
-	addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+    addGlobalStyle('.input-text-cfg { width: 168px; height: 14px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+    addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
 
-	mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
-	'  <div class="tableHeader">' +
-	'	 <div class="left title" style="padding-left: 4px">Setting</div>' +
-	'	 <div class="title right" style="width: 20px"></div>' +
-	'	 <div class="title right"></div>' +
-	'  </div>' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
-	'	<div class="left" style="padding-top: 2px;">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div>' +
-	'<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">????</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div> -->' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
-	'	<div class="left" style="padding-top: 2px;">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	  <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
-	'	</div>' +
-	'  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	  <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
-	'	</div>' +
-	'  </div>' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-  	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
-    '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
-    '  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	</div>' +
-	'  </div>' +
+    mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
+        '  <div class="tableHeader">' +
+        '	 <div class="left title" style="padding-left: 4px">Setting</div>' +
+        '	 <div class="title right" style="width: 20px"></div>' +
+        '	 <div class="title right"></div>' +
+        '  </div>' +
+        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
+        '	<div class="left" style="padding-top: 2px;">' +
+        '	  <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
+        '	</div>' +
+        '	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
+        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+        '  </div>' +
+        '<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
+        '	<div class="left" style="padding-top: 2px; ">' +
+        '	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
+        '	</div>' +
+        '	<div class="left" style="line-height: 22px">????</div>' +
+        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+        '  </div> -->' +
+        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
+        '	<div class="left" style="padding-top: 2px;">' +
+        '	  <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
+        '	</div>' +
+        '	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
+        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+        '	  <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
+        '	</div>' +
+        '  </div>' +
+        '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
+        '	<div class="left" style="padding-top: 2px; ">' +
+        '	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+        '	</div>' +
+        '	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
+        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+        '	  <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
+        '	</div>' +
+        '  </div>' +
+        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
+        '  </div>' +
+        '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
+        '	<div class="left" style="padding-top: 2px; ">' +
+        '	  <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
+        '	</div>' +
+        '	<div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
+        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+        '	</div>' +
+        '  </div>' +
         '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
-	'    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
-    '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
-    '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
-	'      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
-	'      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
-	'    </div> ' +
-	'  </div>' +
-	'</div>';
+        '    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
+        '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
+        '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
+        '      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
+        '      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
+        '    </div> ' +
+        '  </div>' +
+        '</div>';
 
-	/* Text values */
-	document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
-	document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
-	document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
-	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
-	document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
-	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    /* Text values */
+    document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
+    document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
+    document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
+    document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
+    document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
     document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
-	/* Boolean setting */
-	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
+    /* Boolean setting */
+    document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
-	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+    document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
 
-	/* Buttons */
+    /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
-	document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
-	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
-	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
+    document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
+    document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
+    document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
 }
 
 /* === END OF FEATURE FUNCTIONS === */
@@ -1784,15 +1784,15 @@ function showPluginConfiguration()
 /* function to decode URI params */
 function getQueryParams(qs)
 {
-	qs = qs.split('+').join(' ');
-	var params = {},
-		tokens,
-		re = /[?&]?([^=]+)=([^&]*)/g;
+    qs = qs.split('+').join(' ');
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
 
-	while (tokens = re.exec(qs)) {
-		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-	}
-	return params;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
 }
 
 function makeId(length)
@@ -1802,8 +1802,8 @@ function makeId(length)
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
     }
     return result;
 }
@@ -1811,48 +1811,48 @@ function makeId(length)
 /* Formatting numbers */
 function formatNumber(num)
 {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
 /* common function in css to change css style */
 function addGlobalStyle(css)
 {
-	var head, style;
-	head = document.getElementsByTagName('head')[0];
-	if (!head) {
-		return;
-	}
-	style = document.createElement('style');
-	style.type = 'text/css';
-	style.innerHTML = css;
-	head.appendChild(style);
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) {
+        return;
+    }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
 }
 
 function getDate()
 {
-	let d = new Date();
+    let d = new Date();
 
-	let month = '' + (d.getMonth() + 1);
-	let	day = '' + d.getDate();
-	let year = d.getFullYear();
+    let month = '' + (d.getMonth() + 1);
+    let	day = '' + d.getDate();
+    let year = d.getFullYear();
 
-	if (month.length < 2) {
-		month = '0' + month;
-	}
-	if (day.length < 2) {
-		day = '0' + day;
-	}
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
 
-	return [year, month, day].join('-');
+    return [year, month, day].join('-');
 }
 
 function parseBool(val)
 {
-	if (val==='true') {
-		return true;
-	} else {
-		return false;
-	}
+    if (val==='true') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function parseInteger(val)
@@ -1892,16 +1892,16 @@ function initializeConfig()
         return;
     }
 
-   	localStorage.setItem('cfgRulername', playerName);
-	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
-	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
-	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
-	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
+    localStorage.setItem('cfgRulername', playerName);
+    localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
+    localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
+    localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
+    localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
 
-	localStorage.setItem('cfgRadarSorting', 'true');
+    localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
-	localStorage.setItem('cfgPlanetSorting', 'true');
-	window.alert('Initializing config');
+    localStorage.setItem('cfgPlanetSorting', 'true');
+    window.alert('Initializing config');
 }
 
 function showNotification(message)
@@ -1926,7 +1926,7 @@ function showNotification(message)
     var nMsg = document.getElementById('dhMsg');
     nMsg.innerText = message;
 
-        setTimeout(function () {
+    setTimeout(function () {
         document.getElementById('dhNotification').style.display = 'none';
     }, 8000);
 }
