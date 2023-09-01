@@ -83,6 +83,7 @@ var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
+var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
 
 /* Updated main menu items */
 var confIcon = document.createElement('div');
@@ -1758,6 +1759,7 @@ function savePluginConfiguration()
     localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
+    localStorage.setItem('cfgShowSM', document.getElementById('cfgShowSM').checked);
 
     showNotification("Settings saved successfully");
 }
@@ -1775,6 +1777,7 @@ function dumpPluginConfiguration()
     console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
+    console.log('cfgShowSM = ' + localStorage.getItem('cfgShowSM'));
 }
 
 function showPluginConfiguration()
@@ -1836,12 +1839,16 @@ function showPluginConfiguration()
     '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
     '    </div>' +
     '  </div>' +
+    `
+  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>
+  </div>
+  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowSM" name="cfgShowSM" value=""/> <label for="cfgShowSM">Show ST/GB/JG in planet list</label></div>
+  </div>` +
     '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-      '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
-    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
-    '  </div>' +
-    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
     '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
     '    <div class="left" style="padding-top: 2px; ">' +
     '      <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
@@ -1850,7 +1857,7 @@ function showPluginConfiguration()
     '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
     '    </div>' +
     '  </div>' +
-        '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
+        '  <div class="right entry  opacBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
     '    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
     '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
     '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
@@ -1873,6 +1880,7 @@ function showPluginConfiguration()
     document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
     document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+    document.getElementById('cfgShowSM').checked = parseBool(localStorage.getItem('cfgShowSM'));
 
     /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
@@ -1937,7 +1945,7 @@ function getDate()
     let d = new Date();
 
     let month = '' + (d.getMonth() + 1);
-    let    day = '' + d.getDate();
+    let day = '' + d.getDate();
     let year = d.getFullYear();
 
     if (month.length < 2) {
@@ -2005,6 +2013,8 @@ function initializeConfig()
     localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
     localStorage.setItem('cfgPlanetSorting', 'true');
+    localStorage.setItem('cfgShowSM', 'true');
+
     window.alert('Initializing config');
 }
 
