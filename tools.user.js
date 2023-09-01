@@ -559,6 +559,28 @@ if (cfgPlanetSorting) {
     }
 }
 
+if (cfgShowSM) {
+    if (location.href.includes('/planets/')) {
+        let planetsDiv = document.querySelectorAll('div .locationWrapper');
+        for (i=0; i<planetsDiv.length; i++) {
+            let coord = planetsDiv[i].querySelector('div .coords').innerText;
+            p = getPlanetByCoord(coord);
+            /* FIXME This is a bit dirty without any checks */
+            q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+            q = q.querySelector('div');
+            if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
+            }
+            if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
+            }
+            if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
+            }
+        }
+    }
+}
+
 if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
     addGlobalStyle("svg { position: absolute; left: 0; top: 0; fill: none; stroke: #fff; stroke-dasharray: 150 480; stroke-dashoffset: 150; transition: 1s ease-in-out; }");
@@ -1150,6 +1172,23 @@ function improveResXfer(fleetQueue)
     console.log(planetData);
 }
 
+function getPlanetByCoord(coord)
+{
+    let i;
+    const c = coord.split('.');
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        /* Home planets and their special coordinates */
+        if (c[0] === '0' && jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            return jsonPageDataCache.locationList[i];
+        }
+        let pC = jsonPageDataCache.locationList[i].coordinates;
+        if (c[0] == pC[0] && c[1] == pC[1] && c[2] == pC[2] && c[3] == pC[3]) {
+            return jsonPageDataCache.locationList[i];
+        }
+    }
+    return null;
+}
+
 function getIncome(planet, type)
 {
     var i;
@@ -1564,7 +1603,7 @@ function exportPlanets()
         planet.Population = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
         planet.Soldier = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
         planet.Comms = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Comms_Satellite")>0)?"Yes":"No";
-        planet.ST = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Space Tether")>0)?"Yes":"No";
+        planet.ST = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Space_Tether")>0)?"Yes":"No";
         planet.HB = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Hyperspace_Beacon")>0)?"Yes":"No";
         planet.JG = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Jump_Gate")>0)?"Yes":"No";
         planet.Colony = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")>0)?"Yes":"No";
