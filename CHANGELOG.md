@@ -1,5 +1,9 @@
 ## Version 0.4.0006
 
+**New features:**
+
+1. Capability to export the planet list with various details to a CSV file for download
+
 **Updates:**
 
 1. Refactored generation of general statistics to be based on the provided JSON data
@@ -11,6 +15,7 @@
 1. Fixed issue with the context menu for fleet orders not updating coordinates upon follow-up usage
 1. Fixed issue with the context menu for scanning not updating coordinates upon follow-up usage
 1. Fixed issue with planet navigation using arrow keys while inputting information in an input 
+1. Fixed issue with missing coordinates within generated screenshots in some scenarios
 
 ## Version 0.4.0005
 
