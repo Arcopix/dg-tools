@@ -25,6 +25,9 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Logistics calculator per planet
 1. Improved resources transfer with fleet orders
 1. Capability to select planet for scanning from the *Navigation*
+1. Indication of speed modifiers on planet list (ST/HB/JG)
+1. Ease of transfer resources and ships by clicking the specific resource/ship
+1. Capability to export the planet list with various details to a CSV file for download
 
 *There are more features which are not listed at the moment*
 
