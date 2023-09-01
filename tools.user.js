@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name	 DG utilities v0.4 dev
+// @name     DG utilities v0.4 dev
 // @namespace    devhex
 // @version      0.4.0006
 // @description  various minor improvements of DG interface
@@ -54,9 +54,9 @@ var curRTT = 0;
 m = localStorage.getItem('develWarning');
 if (0 && m!==getDate()) {
     window.alert("WARNING, you are using development version of DG utilities.\n" +
-        "Use it at your own risk\n" +
-        "\n" +
-        "This message will be displayed on once a day");
+                    "Use it at your own risk\n" +
+                    "\n" +
+                    "This message will be displayed on once a day");
 
     localStorage.setItem('develWarning', getDate());
 }
@@ -428,7 +428,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             }
         });
     } else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
-        typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
+               typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
         document.addEventListener("keydown", e => {
             if (document.activeElement.tagName==='INPUT') {
                 return;
@@ -458,7 +458,7 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
     var rows = table.querySelectorAll('.entry');
     var rowsArray = Array.from(rows);
 
-    rowsArray.sort((a, b) => {
+   rowsArray.sort((a, b) => {
         const linkA = a.querySelector('.name a');
         const linkB = b.querySelector('.name a');
         const textA = linkA ? linkA.textContent : '';
@@ -466,14 +466,14 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
         return textA.localeCompare(textB);
     });
 
-    table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
-    rowsArray.forEach(row => table.appendChild(row));
+   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+   rowsArray.forEach(row => table.appendChild(row));
 
-    rows = table.querySelectorAll('.entry');
+   rows = table.querySelectorAll('.entry');
 
-    for (i = 0; i<rows.length; i++) {
+   for (i = 0; i<rows.length; i++) {
         rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
-    }
+   }
 }
 
 /* Cache fleets for future usage */
@@ -568,9 +568,11 @@ if (location.href.includes('/planets/')) {
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnExport" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Export</span></button>';
 
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
+    document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
 }
 
 if (window.location.href.match(/\/planet\/[0-9]+\//)) {
@@ -1275,6 +1277,7 @@ function generateStats()
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var building = {};
 
+    document.getElementById('btnExport').style.display = 'none';
     document.getElementById('btnStats').style.display = 'none';
     document.getElementById('btnLogst').style.display = 'none';
 
@@ -1492,8 +1495,7 @@ function getLogistics(res)
     res *= RTT[curRTT];
 
     const fmt = new Intl.NumberFormat('en-US');
-    console.log(res);
-    console.log(logisticsCapacity);
+
     /* If 1 freighter is sufficent, no need to continue */
     if (res < logisticsCapacity.freighter) {
         return "<span class='ofHidden metal'>1 <em>freighter</em></span>";
@@ -1513,6 +1515,93 @@ function getLogistics(res)
     /* Lastly add hulks */
     ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.hulk)) + " <em>hulk</em></span> ";
     return ret;
+}
+
+function exportPlanets()
+{
+    /* Generic counters */
+    let i = 0, j = 0;
+    var data = [];
+    /* [
+        {
+            id: 1,
+            name: "G\"eeks",
+            profession: "de\\\"veloper"
+        },
+        {
+            id: 2,
+            name: "John",
+            profession: "Tester"
+        }
+    ]; */
+    for (i = 0; i<jsonPageDataCache.locationList.length; i++) {
+        let planet = {};
+        if (jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            planet.Coordinates = '0.0.0.0';
+        } else {
+            planet.Coordinates = jsonPageDataCache.locationList[i].coordinates.join('.');
+        }
+        planet.Name = jsonPageDataCache.locationList[i].name;
+        planet.Ground = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
+        planet.Orbit = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        planet["Metal Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Metal_Abundance");
+        planet["Mineral Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Mineral_Abundance");
+        planet["Food Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Food_Abundance");
+        planet["Energy Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Energy_Abundance");
+        planet["Metal Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Metal");
+        planet["Mineral Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Mineral");
+        planet["Food Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Food");
+        planet["Energy Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Energy");
+        planet.Metal = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metal");
+        planet.Mineral = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Mineral");
+        planet.Food = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Food");
+        planet.Energy = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Energy");
+        planet.Population = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+        planet.Soldier = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
+        planet.Comms = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Comms_Satellite")>0)?"Yes":"No";
+        planet.ST = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Space Tether")>0)?"Yes":"No";
+        planet.HB = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Hyperspace_Beacon")>0)?"Yes":"No";
+        planet.JG = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Jump_Gate")>0)?"Yes":"No";
+        planet.Colony = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")>0)?"Yes":"No";
+        planet.Metropolis = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metropolis")>0)?"Yes":"No";
+
+        for (const key of Object.keys(ships)) {
+            planet[key.replaceAll('_', ' ')] = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, key);
+        }
+
+        data.push(planet);
+    }
+
+    let csvRows = [];
+    let csvData = "";
+
+    const headers = Object.keys(data[0]);
+
+    for (i = 0; i<data.length; i++) {
+        let buf = data[i];
+        let row = [];
+        for (j in headers) {
+            j = headers[j];
+
+            if (typeof buf[j] === 'string' || buf[j] instanceof String) {
+                /* First escape quotes */
+                buf[j] = buf[j].replaceAll('"', "\\\"");
+                /* Add quotes */
+                buf[j] = '"' + buf[j] + '"';
+            }
+
+            row.push(buf[j]);
+        }
+        csvRows.push(row.join(","));
+    }
+
+    csvData = headers.join(",") + "\n" + csvRows.join("\n");
+
+    let elCSV = document.createElement('a');
+
+    elCSV.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+    elCSV.download = 'planetList-' + turnNumber + '.csv';
+    elCSV.click();
 }
 
 function updatePlanetSorting()
@@ -1544,80 +1633,80 @@ function updatePlanetSorting()
 
 function sendBase64ImageToDiscord(webhookUrl, base64Image)
 {
-    try {
-        // Strip data:image/png;base64,
-        base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
-        // Convert base64 image to binary
-        const binaryImage = atob(base64Image);
-        const imageLength = binaryImage.length;
-        const uint8Array = new Uint8Array(imageLength);
-        for (let i = 0; i < imageLength; i++) {
-            uint8Array[i] = binaryImage.charCodeAt(i);
-        }
-
-        // Create form data payload
-        const form = new FormData();
-        const file = new Blob([uint8Array], { type: 'image/png' });
-        form.append("content", "Screenshot from " + localStorage.getItem('cfgRulername') + " on turn " + turnNumber);
-        form.append("tts", "false");
-        form.append('file', file, '/usr/share/screenshot.png');
-
-        // Create XMLHttpRequest object
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', webhookUrl);
-
-        // Set up the request headers
-        const headers = {
-            'Accept': '*/*'
-        };
-        for (const header in headers) {
-            xhr.setRequestHeader(header, headers[header]);
-        }
-
-        // Send the request
-        xhr.send(form);
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    console.log('Image sent to Discord successfully!', xhr.responseText);
-                } else {
-                    console.error('Error sending image to Discord:', xhr.status, xhr.responseText);
-                }
-            }
-        };
-    } catch (error) {
-        console.error('Error sending image to Discord:', error.message);
+  try {
+    // Strip data:image/png;base64,
+    base64Image = base64Image.substr(base64Image.indexOf(',') + 1);
+    // Convert base64 image to binary
+    const binaryImage = atob(base64Image);
+    const imageLength = binaryImage.length;
+    const uint8Array = new Uint8Array(imageLength);
+    for (let i = 0; i < imageLength; i++) {
+      uint8Array[i] = binaryImage.charCodeAt(i);
     }
+
+    // Create form data payload
+    const form = new FormData();
+    const file = new Blob([uint8Array], { type: 'image/png' });
+    form.append("content", "Screenshot from " + localStorage.getItem('cfgRulername') + " on turn " + turnNumber);
+    form.append("tts", "false");
+    form.append('file', file, '/usr/share/screenshot.png');
+
+    // Create XMLHttpRequest object
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', webhookUrl);
+
+    // Set up the request headers
+    const headers = {
+      'Accept': '*/*'
+    };
+    for (const header in headers) {
+      xhr.setRequestHeader(header, headers[header]);
+    }
+
+    // Send the request
+    xhr.send(form);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          console.log('Image sent to Discord successfully!', xhr.responseText);
+        } else {
+          console.error('Error sending image to Discord:', xhr.status, xhr.responseText);
+        }
+      }
+    };
+  } catch (error) {
+    console.error('Error sending image to Discord:', error.message);
+  }
 }
 
 function imageToBlob(imageURL)
 {
-    const img = new Image;
-    const c = document.createElement("canvas");
-    const ctx = c.getContext("2d");
-    img.crossOrigin = "";
-    img.src = imageURL;
-    return new Promise(resolve => {
-        img.onload = function () {
-            c.width = this.naturalWidth;
-            c.height = this.naturalHeight;
-            ctx.drawImage(this, 0, 0);
-            c.toBlob((blob) => {
-                // here the image is a blob
-                resolve(blob)
-            }, "image/png", 1);
-        };
-    })
+  const img = new Image;
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob((blob) => {
+        // here the image is a blob
+        resolve(blob)
+      }, "image/png", 1);
+    };
+  })
 }
 
 function copyToClipboard(base64image)
 {
-    const blob = imageToBlob(base64image)
-    const item = new ClipboardItem({ "image/png": blob });
-    navigator.clipboard.write([item]);
-    showNotification('The screenshot was copied into the local clipboard!');
-    return;
+  const blob = imageToBlob(base64image)
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+  showNotification('The screenshot was copied into the local clipboard!');
+  return;
 }
 
 function generateScreenshot(element)
@@ -1702,70 +1791,70 @@ function showPluginConfiguration()
     addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
 
     mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
-        '  <div class="tableHeader">' +
-        '	 <div class="left title" style="padding-left: 4px">Setting</div>' +
-        '	 <div class="title right" style="width: 20px"></div>' +
-        '	 <div class="title right"></div>' +
-        '  </div>' +
-        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
-        '	<div class="left" style="padding-top: 2px;">' +
-        '	  <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
-        '	</div>' +
-        '	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
-        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-        '  </div>' +
-        '<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
-        '	<div class="left" style="padding-top: 2px; ">' +
-        '	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
-        '	</div>' +
-        '	<div class="left" style="line-height: 22px">????</div>' +
-        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-        '  </div> -->' +
-        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
-        '	<div class="left" style="padding-top: 2px;">' +
-        '	  <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
-        '	</div>' +
-        '	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
-        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-        '	  <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
-        '	</div>' +
-        '  </div>' +
-        '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
-        '	<div class="left" style="padding-top: 2px; ">' +
-        '	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
-        '	</div>' +
-        '	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
-        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-        '	  <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
-        '	</div>' +
-        '  </div>' +
-        '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
-        '  </div>' +
-        '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-        '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
-        '	<div class="left" style="padding-top: 2px; ">' +
-        '	  <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
-        '	</div>' +
-        '	<div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
-        '	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-        '	</div>' +
-        '  </div>' +
+    '  <div class="tableHeader">' +
+    '     <div class="left title" style="padding-left: 4px">Setting</div>' +
+    '     <div class="title right" style="width: 20px"></div>' +
+    '     <div class="title right"></div>' +
+    '  </div>' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+    '      <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+    '  </div>' +
+    '<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="TODO" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">????</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+    '  </div> -->' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+    '      <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
+    '    </div>' +
+    '  </div>' +
+    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
+    '    </div>' +
+    '  </div>' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
+      '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
+    '  </div>' +
+    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '    </div>' +
+    '  </div>' +
         '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
-        '    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
-        '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
-        '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
-        '      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
-        '      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
-        '    </div> ' +
-        '  </div>' +
-        '</div>';
+    '    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
+    '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
+    '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
+    '      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
+    '      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
+    '    </div> ' +
+    '  </div>' +
+    '</div>';
 
     /* Text values */
     document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
@@ -1813,8 +1902,8 @@ function makeId(length)
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        counter += 1;
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
     }
     return result;
 }
@@ -1844,7 +1933,7 @@ function getDate()
     let d = new Date();
 
     let month = '' + (d.getMonth() + 1);
-    let	day = '' + d.getDate();
+    let    day = '' + d.getDate();
     let year = d.getFullYear();
 
     if (month.length < 2) {
@@ -1903,7 +1992,7 @@ function initializeConfig()
         return;
     }
 
-    localStorage.setItem('cfgRulername', playerName);
+       localStorage.setItem('cfgRulername', playerName);
     localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
     localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
     localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
