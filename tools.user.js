@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name	 DG utilities v0.4
+// @name     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0005
+// @version      0.4.0006
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0005-a1
+// @require      https://github.com/Arcopix/dg-tools/raw/master/resources.js?v=0.4.0006
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -29,6 +29,22 @@ const logisticsCapacity = {
     "hulk": 1562500
 };
 
+const ships = {
+    "Freighter": 0,
+    "Merchant": 0,
+    "Trader": 0,
+    "Hulk": 0,
+    "Fighter": 0,
+    "Bomber": 0,
+    "Frigate": 0,
+    "Destroyer": 0,
+    "Cruiser": 0,
+    "Battleship": 0,
+    "Invasion_Ship": 0,
+    "Outpost_Ship": 0,
+    "Colony_Ship": 0
+};
+
 const RTT = [32, 24, 16];
 var curRTT = 0;
 
@@ -37,23 +53,23 @@ var curRTT = 0;
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (0 && m!==getDate()) {
-	window.alert("WARNING, you are using development version of DG utilities.\n" +
-					"Use it at your own risk\n" +
-					"\n" +
-					"This message will be displayed on once a day");
+    window.alert("WARNING, you are using development version of DG utilities.\n" +
+                    "Use it at your own risk\n" +
+                    "\n" +
+                    "This message will be displayed on once a day");
 
-	localStorage.setItem('develWarning', getDate());
+    localStorage.setItem('develWarning', getDate());
 }
 
 /* Check if global configuration is set and if not - initiate defaults */
-if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=='') {
+if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')==='') {
     initializeConfig();
 }
 
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
 } else {
-    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0005') {
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0006') {
         showWhatsNew();
     }
 }
@@ -67,12 +83,13 @@ var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
+var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
 
 /* Updated main menu items */
 var confIcon = document.createElement('div');
 confIcon.className = 'left relative';
 confIcon.style = 'cursor:pointer;';
-confIcon.innerHTML = '<img src="' + imageContainer["confIcon.png"] + '"/>';
+confIcon.innerHTML = '<img alt="Configuration" src="' + imageContainer["confIcon.png"] + '"/>';
 
 confIcon.addEventListener('click', function() { showPluginConfiguration() }, false);
 
@@ -80,7 +97,7 @@ confIcon.addEventListener('click', function() { showPluginConfiguration() }, fal
 var screenshotIcon = document.createElement('div');
 screenshotIcon.className = 'left relative';
 screenshotIcon.style = 'cursor:pointer;';
-screenshotIcon.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
+screenshotIcon.innerHTML = '<img alt="Take a screenshot" src="' + imageContainer["screenshotIcon.png"] + '"/>';
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
@@ -141,41 +158,44 @@ var coords;
 coords = document.getElementsByClassName('coords')
 for (i=0; i<coords.length; i++)
 {
-	let c = coords[i];
-	/* In planet details there is no span on the planer coordinates */
-	let __c = c.getElementsByTagName('span')[0];
-	if (__c) {
-		c = __c;
-	}
+    let c = coords[i];
+    /* In planet details there is no span on the planer coordinates */
+    let __c = c.getElementsByTagName('span')[0];
+    if (__c) {
+        c = __c;
+    }
 
-	/* Don't bother with home planets */
-	if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText=='0.0.0.0') {
-		continue;
-	}
+    /* Don't bother with home planets */
+    if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText==='0.0.0.0') {
+        continue;
+    }
 
-	if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
-		let p = c.innerText.split('.');
-		c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
-	}
+    if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
+        let p = c.innerText.split('.');
+        if (c.innerHTML === c.innerText) {
+            c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
+        } else {
+            c.innerHTML = c.innerHTML.replace(c.innerText, '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerText + '</a>');
+        }
+    }
 }
 
 /* TODO: Thsi should be combined with cfgAllyCAP */
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
-if (cfgAllyNAP!='') {
-	var arrayAllyNAP = cfgAllyNAP.split(',');
+if (cfgAllyNAP!=='') {
+    var arrayAllyNAP = cfgAllyNAP.split(',');
 
-	for (i=0; i<arrayAllyNAP.length; i++) {
-		arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
-	}
+    for (i=0; i<arrayAllyNAP.length; i++) {
+        arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
+    }
 
-	var elems = document.getElementsByTagName("div");
-	var deb=0;
-	var player="";
-	for (i=0; i<elems.length; i++) {
-		var e = elems[i];
-		if (e.className=="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
+    var elems = document.getElementsByTagName("div");
+    var player="";
+    for (i=0; i<elems.length; i++) {
+        var e = elems[i];
+        if (e.className==="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
-			e.style.color = cfgAllyNAPcolor;
+            e.style.color = cfgAllyNAPcolor;
             /* Only for navigation */
             if (location.href.includes('/navigation/')) {
                 /* Find the Element with the entire planet */
@@ -193,27 +213,27 @@ if (cfgAllyNAP!='') {
                 /* Properly colorize the player name */
                 p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
             }
-		}
-	}
+        }
+    }
 }
 
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
-if (cfgAllyCAP!='') {
-	var arrayAllyCAP = cfgAllyCAP.split(',');
+if (cfgAllyCAP!=='') {
+    var arrayAllyCAP = cfgAllyCAP.split(',');
 
-	for (i=0; i<arrayAllyCAP.length; i++) {
-		arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
-	}
+    for (i=0; i<arrayAllyCAP.length; i++) {
+        arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
+    }
 
-	elems = document.getElementsByTagName("div");
-	player="";
-	for (i=0; i<elems.length; i++) {
-		e = elems[i];
-		if (e.className=="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
+    elems = document.getElementsByTagName("div");
+    player="";
+    for (i=0; i<elems.length; i++) {
+        e = elems[i];
+        if (e.className==="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
-			e.style.color = cfgAllyCAPcolor;
+            e.style.color = cfgAllyCAPcolor;
             /* Find the Element with the entire planet */
-			p = e.parentElement.parentElement.parentElement;
+            p = e.parentElement.parentElement.parentElement;
             /* Reset the border of the planet */
             if (location.href.includes('/navigation/')) {
                 p.style.border = "1px solid " + cfgAllyCAPcolor;
@@ -227,71 +247,72 @@ if (cfgAllyCAP!='') {
                 /* Properly colorize the player name */
                 p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
             }
-		}
-	}
+        }
+    }
 }
 
 /* Add onclick to player names through the interface to forward to mail module */
 elems = document.getElementsByClassName("playerName");
 for (i=0; i<elems.length; i++) {
-	e = elems[i];
-	if (e.parentNode.className=='friendly') {
-		e.style.cursor = 'not-allowed';
-		continue;
-	}
-	e.addEventListener('click', function() {
-		window.location.href = "/mail/?to=" + this.innerText.trim();
-	}, false);
+    e = elems[i];
+    if (e.parentNode.className==='friendly') {
+        e.style.cursor = 'not-allowed';
+        continue;
+    }
+    e.addEventListener('click', function() {
+        window.location.href = "/mail/?to=" + this.innerText.trim();
+    }, false);
 }
 
 /* If in mail module and to is set -> set the recepient */
-if (window.location.pathname=="/mail/" && window.location.search!=="") {
-	var query = getQueryParams(document.location.search);
-	if (typeof query.to != 'undefined' && query.to != "") {
-		document.getElementsByName('to')[0].value = query.to;
-	}
+if (window.location.pathname==="/mail/" && window.location.search!=="") {
+    var query = getQueryParams(document.location.search);
+    if (typeof query.to !== 'undefined' && query.to !== "") {
+        document.getElementsByName('to')[0].value = query.to;
+    }
 }
 
 /* Add confirmation on canceling buildings */
 elems = document.getElementsByClassName("queueRemoveButton");
 for (i=0; i<elems.length; i++) {
-	var add_confirm = 0;
-	var left, name;
-	e = elems[i];
-	p = e.parentElement.parentElement;
+    var add_confirm = 0;
+    var left;
+    var name = 'unknown';
+    e = elems[i];
+    p = e.parentElement.parentElement;
 
-	for (j=0; j<p.children.length; j++) {
-		if (p.children[j].className=="left name") {
-			name = p.children[j].innerText;
-		}
-		if (p.children[j].className=="left width25") {
-			left = p.children[j].innerText;
-			if (left>0) {
-				add_confirm = 1;
-			}
-		}
-	}
+    for (j=0; j<p.children.length; j++) {
+        if (p.children[j].className==="left name") {
+            name = p.children[j].innerText;
+        }
+        if (p.children[j].className==="left width25") {
+            left = p.children[j].innerText;
+            if (left>0) {
+                add_confirm = 1;
+            }
+        }
+    }
 
-	if (add_confirm) {
-		e.confirmString = "Are you sure you want to cancel " + name + "?";
-		e.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
-	}
+    if (add_confirm) {
+        e.confirmString = "Are you sure you want to cancel " + name + "?";
+        e.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+    }
 }
 
 /* Script by Mordread -> use ARROW keys to navigate in navigation
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
-	document.addEventListener("keydown", (e) => {
-		if (document.activeElement.tagName=='input') {
-			return;
-		}
-		if (e.which === 37) {
-			document.querySelector(".navigation.left").click();
-		}
-		if (e.which === 39) {
-			document.querySelector(".navigation.right").click();
-		}
-	});
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='input') {
+            return;
+        }
+        if (e.which === 37) {
+            document.querySelector(".navigation.left").click();
+        }
+        if (e.which === 39) {
+            document.querySelector(".navigation.right").click();
+        }
+    });
 }
 
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
@@ -337,7 +358,7 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
         if (n.querySelector('a')) {
             n = n.querySelector('a');
         }
-      
+
         /* Actual coordinates */
         n = n.innerHTML;
 
@@ -366,17 +387,17 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
 /* Script by Mordread -> use ARROW keys to navigate in planet details
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
-	document.addEventListener("keydown", e => {
-		if (document.activeElement.tagName=='input') {
-			return;
-		}
-		if (e.which === 37) {
-			document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
-		}
-		if (e.which === 39) {
-			document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
-		}
-	});
+    document.addEventListener("keydown", e => {
+        if (document.activeElement.tagName==='INPUT') {
+            return;
+        }
+        if (e.which === 37) {
+            document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
+        }
+        if (e.which === 39) {
+            document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
+        }
+    });
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
@@ -401,39 +422,39 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
 
 /* Navigate through fleets using ARROW keys */
 if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet')) {
-	/* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
-	if (document.querySelector('.nextPrevFleet').innerText === '»') {
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
-				return;
-			}
-			if (e.which === 39) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-		});
-	} else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
-			   typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
-				return;
-			}
-			if (e.which === 37) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-			if (e.which === 39) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
-			}
-		});
-	} else { /* In case of '«' */
-		document.addEventListener("keydown", e => {
-			if (document.activeElement.tagName=='INPUT') {
-				return;
-			}
-			if (e.which === 37) {
-				document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
-			}
-		});
-	}
+    /* If we have only RIGHT fleet, meaning we are only at first one, activate RIGHT ARROW ONLY */
+    if (document.querySelector('.nextPrevFleet').innerText === '»') {
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 39) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+        });
+    } else if (typeof (document.querySelectorAll('.nextPrevFleet')[0]) !== 'undefined' &&
+               typeof (document.querySelectorAll('.nextPrevFleet')[1]) !== 'undefined') {
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 37) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+            if (e.which === 39) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
+            }
+        });
+    } else { /* In case of '«' */
+        document.addEventListener("keydown", e => {
+            if (document.activeElement.tagName==='INPUT') {
+                return;
+            }
+            if (e.which === 37) {
+                document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
+            }
+        });
+    }
 }
 
 
@@ -476,7 +497,11 @@ if (location.href.includes('/fleets/')) {
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
-    improveResXfer(document.getElementById('fleetQueue'));
+    improveResXferPlanner(document.getElementById('fleetQueue'));
+}
+
+if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0-9]+[\/]?$/)) {
+    improveResXfer();
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
@@ -510,7 +535,8 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
     var planetSelect;
-	if (planetSelect = document.querySelector('select[name="locationId"]')) {
+    planetSelect = document.querySelector('select[name="locationId"]')
+    if (planetSelect) {
         const options = Array.from(planetSelect.options);
         const homePlanet = options.shift();
 
@@ -537,6 +563,29 @@ if (cfgPlanetSorting) {
     }
 }
 
+if (cfgShowSM) {
+    if (location.href.includes('/planets/')) {
+        let planetsDiv = document.querySelectorAll('div .locationWrapper');
+        for (i=0; i<planetsDiv.length; i++) {
+            let coord = planetsDiv[i].querySelector('div .coords').innerText;
+            p = getPlanetByCoord(coord);
+            /* FIXME This is a bit dirty without any checks */
+            q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+            q = q.querySelector('div');
+
+            if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
+            }
+            if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
+            }
+            if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
+            }
+        }
+    }
+}
+
 if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
     addGlobalStyle("svg { position: absolute; left: 0; top: 0; fill: none; stroke: #fff; stroke-dasharray: 150 480; stroke-dashoffset: 150; transition: 1s ease-in-out; }");
@@ -551,9 +600,11 @@ if (location.href.includes('/planets/')) {
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnExport" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Export</span></button>';
 
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
+    document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
 }
 
 if (window.location.href.match(/\/planet\/[0-9]+\//)) {
@@ -570,114 +621,112 @@ if (window.location.href.match(/\/planet\/[0-9]+\//)) {
     }
 }
 
-
-
 /* Fix sorting of radars */
-var radars, radar, fleetRow, fleetCount;
+var radars, radar, fleetRow;
 if (cfgRadarSorting && location.href.includes('/radar/')) {
-	/* Get and sort out each coms/radar section */
-	radars = document.getElementsByClassName('opacDarkBackground');
-	for (i=0; i<radars.length; i++) {
-		/* Skip the header */
-		if (radars[i].className.includes('paddingMid')) {
-			continue;
-		}
+    /* Get and sort out each coms/radar section */
+    radars = document.getElementsByClassName('opacDarkBackground');
+    for (i=0; i<radars.length; i++) {
+        /* Skip the header */
+        if (radars[i].className.includes('paddingMid')) {
+            continue;
+        }
 
-		radar = radars[i];
-		fleetRow = radar.getElementsByClassName('entry');
+        radar = radars[i];
+        fleetRow = radar.getElementsByClassName('entry');
 
-		/* Clone radar rows and remove the original ones */
-		let crow = [];
-		for (j=fleetRow.length-1; j>=0; j--) {
-			crow[j] = fleetRow[j];
-			fleetRow[j].parentNode.removeChild(fleetRow[j]);
-		}
+        /* Clone radar rows and remove the original ones */
+        let crow = [];
+        for (j=fleetRow.length-1; j>=0; j--) {
+            crow[j] = fleetRow[j];
+            fleetRow[j].parentNode.removeChild(fleetRow[j]);
+        }
 
-		n = 0;
-		/* For every possible TICK, reducing output the rows */
-		for (m=24; m>=0; m--) {
-			for (j=crow.length-1; j>=0; j--) {
-				if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-					if (n = ((n+1)%2)) {
-						crow[j].className = "opacBackground lightBorderBottom entry";
-					} else {
-						crow[j].className = "opacLightBackground lightBorderBottom entry";
-					}
-					//alert(crow[j].className);
-					radars[i].appendChild(crow[j]);
-					/* Nullify the row so we would not have to search it by class, text and so on */
-					crow[j] = 0;
-				}
-			}
-		}
+        n = 0;
+        /* For every possible TICK, reducing output the rows */
+        for (m=24; m>=0; m--) {
+            for (j=crow.length-1; j>=0; j--) {
+                if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
+                    if (n = ((n+1)%2)) {
+                        crow[j].className = "opacBackground lightBorderBottom entry";
+                    } else {
+                        crow[j].className = "opacLightBackground lightBorderBottom entry";
+                    }
+                    //alert(crow[j].className);
+                    radars[i].appendChild(crow[j]);
+                    /* Nullify the row so we would not have to search it by class, text and so on */
+                    crow[j] = 0;
+                }
+            }
+        }
 
-		/* Make sure to add any rows that are not already aded/invalidated */
-		for (j=crow.length-1; j>=0; j--) {
-			if (crow[j]) {
-				radars[i].appendChild(crow[j]);
-			}
-		}
-	}
+        /* Make sure to add any rows that are not already aded/invalidated */
+        for (j=crow.length-1; j>=0; j--) {
+            if (crow[j]) {
+                radars[i].appendChild(crow[j]);
+            }
+        }
+    }
 }
 
 /* Smart input for coords */
 if (document.querySelector('input[name="coordinate.0"]')) {
-	var el = document.querySelector('input[name="coordinate.0"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').value = '';
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
+    var el = document.querySelector('input[name="coordinate.0"]');
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').value = '';
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 
-	el = document.querySelector('input[name="coordinate.1"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').value = '';
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.0"]').focus();
-		}
-	});
+    el = document.querySelector('input[name="coordinate.1"]');
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.2"]').value = '';
+            document.querySelector('input[name="coordinate.2"]').focus();
+        }
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.0"]').focus();
+        }
+    });
 
     el = document.querySelector('input[name="coordinate.2"]');
-	el.addEventListener('keydown', function(e) {
-		if(e.which == 110 || e.which == 188 || e.which == 190) {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.3"]').value = '';
-			document.querySelector('input[name="coordinate.3"]').focus();
-		}
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.1"]').focus();
-		}
-	});
+    el.addEventListener('keydown', function(e) {
+        if(e.which === 110 || e.which === 188 || e.which === 190) {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.3"]').value = '';
+            document.querySelector('input[name="coordinate.3"]').focus();
+        }
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.1"]').focus();
+        }
+    });
 
-	el = document.querySelector('input[name="coordinate.3"]');
-	el.addEventListener('keydown', function(e) {
-		if (e.which == 8 && this.value=='') {
-			e.preventDefault();
-			document.querySelector('input[name="coordinate.2"]').focus();
-		}
-	});
+    el = document.querySelector('input[name="coordinate.3"]');
+    el.addEventListener('keydown', function(e) {
+        if (e.which === 8 && this.value==='') {
+            e.preventDefault();
+            document.querySelector('input[name="coordinate.2"]').focus();
+        }
+    });
 }
 
 if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
     /* Add short onclick on different comms scans to select that type of scan */
     k = document.getElementsByTagName('form')[0];
-	l = k.querySelectorAll('div.entry');
-	for (i=0; i<l.length; i++) {
-		if (l[i].className.includes('coordsInput')) {
-			continue;
-		}
-		l[i].addEventListener('click', function(e) {
-			this.getElementsByTagName('input')[0].click();
-		});
-	}
+    l = k.querySelectorAll('div.entry');
+    for (i=0; i<l.length; i++) {
+        if (l[i].className.includes('coordsInput')) {
+            continue;
+        }
+        l[i].addEventListener('click', function(e) {
+            this.getElementsByTagName('input')[0].click();
+        });
+    }
 
     /* If coordinates are set as parameters, set the coordinates for scanning */
     buf = getQueryParams(document.location.search);
@@ -690,24 +739,24 @@ if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
 }
 
 /* Request confirmation when kicking people from alliance */
-if (window.location.pathname=='/alliances/') {
-	k = document.querySelectorAll('input[type=submit]');
-	for (i=0; i<=k.length; i++) {
-		if (!k[i]) {
+if (window.location.pathname==='/alliances/') {
+    k = document.querySelectorAll('input[type=submit]');
+    for (i=0; i<=k.length; i++) {
+        if (!k[i]) {
             continue;
         }
-        if (k[i].value=='Kick Member') {
-			l=k[i];
-			/* Get the player name. This is a bit ugly, but oh well... */
-			let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
-			l.confirmString = "Are you sure you want to kick " + playerName + "?";
-			l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
-		}
-        if (k[i].value=='Leave Alliance') {
+        if (k[i].value==='Kick Member') {
+            l=k[i];
+            /* Get the player name. This is a bit ugly, but oh well... */
+            let playerName = l.parentNode.parentNode.parentNode.querySelector('div.name').innerText;
+            l.confirmString = "Are you sure you want to kick " + playerName + "?";
+            l.addEventListener('click', function(evt) { if (confirm(evt.currentTarget.confirmString)===false) evt.preventDefault(); });
+        }
+        if (k[i].value==='Leave Alliance') {
             l=k[i];
             l.addEventListener('click', function(evt) { if (confirm("Are you sure you want to leave?")===false) evt.preventDefault(); });
         }
-	}
+    }
 }
 
 /* Add <label on couple of elements */
@@ -718,24 +767,24 @@ for (i=0; i<allForms.length; i++) {
     for (j=0; j<allDivs.length; j++) {
         k = allDivs[j].innerText.trim();
         if (k !== "Repeat:" && k !== "Repeat" && k !== "All Resources:" && k !== "All Resources") {
-			continue;
-		}
+            continue;
+        }
         /* We've reached a div with inner text "Repeat" or "All Resources" */
         var siblings = allDivs[j].parentNode.children;
         for (m = 0; m < siblings.length; m++) {
             var sibling = siblings[m];
             /* Test out siblings to find a sibling DIV which has childen */
             if (sibling === allDivs[j] && !(sibling.tagName === 'DIV' && sibling.children)) {
-				continue;
-			}
+                continue;
+            }
 
-			var children = sibling.children;
+            var children = sibling.children;
             for (n = 0; n < children.length; n++) {
                 /* Test out the siblings for CHECKBOX(es) */
-			    if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
+                if (children[n].tagName === 'INPUT' && children[n].type === 'checkbox') {
                     /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
 
-					/* All such cases do not have ID at the current time, but who knows */
+                    /* All such cases do not have ID at the current time, but who knows */
                     if (children[n].id == '') {
                         const newId = makeId(8);
                         children[n].id = newId;
@@ -743,8 +792,8 @@ for (i=0; i<allForms.length; i++) {
                         allDivs[j].innerHTML = "<label for='" + newId + "'>" + k + "</label>";
                     } else {
                         /* Update the original DIV to have label with the ID of the checkbox */
-						allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
-					}
+                        allDivs[j].innerHTML = "<label for='" + children[n].id + "'>" + k + "</label>";
+                    }
                 }
             }
         }
@@ -758,9 +807,10 @@ for (i=0; i<allForms.length; i++) {
 function showWhatsNew()
 {
     console.log("Showing whats new");
+    var i = 0;
     const main = document.getElementById('contentBox');
 
-    localStorage.setItem('cfgShowedVersion', 'v0.4.0005');
+    localStorage.setItem('cfgShowedVersion', 'v0.4.0006');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
     addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
@@ -770,13 +820,42 @@ function showWhatsNew()
     const help = document.getElementById('helpBox');
 
     help.innerHTML = '';
-
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 0) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
-      v0.4.0005
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0006
     </div>`;
 
     help.innerHTML += `<div class="topicContent show">
+    Version 0.4.0006 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li>Capability to export the planet list with various details to a CSV file for download</li>
+      <li>Showing speed modifier buildings (ST/HB/JG) in planet list</li>
+      <li>During fleet transfers, available resources units and ships are automatically inputed by clicking on the appropriate resource/ship.</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Refactored generation of general statistics to be based on the provided JSON data</li>
+      <li>Introduced information about population and soldier growth in the general statistics</li>
+      <li>Introduced summary information about current construction (buildings, ships and soldiers)</li>
+    </ul>
+    <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Fixed issue with the context menu for fleet orders not updating coordinates upon follow up usage</li>
+      <li>Fixed issue with the context menu for scanning not updating coordinates upon follow up usage</li>
+      <li>Fixed issue with planet navigation using arrow keys while inputting information in an input</li>
+      <li>Fixed issue with missing coordinates within generated screenshots in some scenarios</li>
+    </ul><br/>
+    <hr/><br/></div>`;
+
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.4.0005
+    </div>`;
+
+    help.innerHTML += `<div class="topicContent">
     Version 0.4.0005 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
@@ -803,7 +882,7 @@ function showWhatsNew()
     <hr/><br/></div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 1) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       v0.4.0004
     </div>`;
 
@@ -965,7 +1044,27 @@ function showHelp()
 
 }
 
-function improveResXfer(fleetQueue)
+function improveResXfer()
+{
+    /* Generic counters */
+    let i = 0, j = 0;
+    let rows = document.querySelectorAll("div .transferRow");
+
+    console.log('here comes johny');
+
+    for (i=0; i<rows.length; i++) {
+        if (rows[i].children.length <= 2) {
+            continue;
+        }
+        j = parseInteger(rows[i].querySelector('div .left.text').innerText.trim());
+
+        rows[i].querySelector('div .left.text').value = j;
+        rows[i].querySelector('div .left.text').style.cursor = 'pointer';
+        rows[i].querySelector('div .left.text').addEventListener("click", function(e) { e.srcElement.parentElement.querySelector("input").value = e.srcElement.value; }, false);
+    }
+}
+
+function improveResXferPlanner(fleetQueue)
 {
     var planetName = null;
     var planetCoords = null;
@@ -1099,6 +1198,23 @@ function improveResXfer(fleetQueue)
     console.log(planetData);
 }
 
+function getPlanetByCoord(coord)
+{
+    let i;
+    const c = coord.split('.');
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        /* Home planets and their special coordinates */
+        if (c[0] === '0' && jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            return jsonPageDataCache.locationList[i];
+        }
+        let pC = jsonPageDataCache.locationList[i].coordinates;
+        if (c[0] == pC[0] && c[1] == pC[1] && c[2] == pC[2] && c[3] == pC[3]) {
+            return jsonPageDataCache.locationList[i];
+        }
+    }
+    return null;
+}
+
 function getIncome(planet, type)
 {
     var i;
@@ -1113,6 +1229,18 @@ function getIncome(planet, type)
         }
     }
     return null;
+}
+
+function getAmount(arr, type)
+{
+    var i;
+
+    for (i=0; i<arr.length; i++) {
+        if (arr[i].name === type) {
+            return arr[i].amount;
+        }
+    }
+    return 0;
 }
 
 function showScanMenu(e)
@@ -1145,14 +1273,10 @@ function showScanMenu(e)
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
 
-    /* The context menu is aleady populated */
-    if (m.innerHTML!='' && m.getAttribute('menuType') === 'scan') {
-        m.style.display = 'block';
-        return;
-    } else {
-        m.innerHTML = '';
-        m.setAttribute('menuType', 'scan');
-    }
+    /* Reset context menu */
+    /* Previous optimization does not work due to not changing the coordinates */
+    m.innerHTML = '';
+    m.setAttribute('menuType', 'scan');
 
     /* Populate context menu prior to showing it */
     for (var i=0; i < commsLink.length; i++) {
@@ -1190,14 +1314,10 @@ function showJumpMenu(e)
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
 
-    /* The context menu is aleady populated */
-    if (m.innerHTML!='' && m.getAttribute('menuType') === 'fleet') {
-        m.style.display = 'block';
-        return;
-    } else {
-        m.innerHTML = '';
-        m.setAttribute('menuType', 'fleet');
-    }
+    /* Reset context menu */
+    /* Previous optimization does not work due to not changing the coordinates */
+    m.innerHTML = '';
+    m.setAttribute('menuType', 'scan');
 
     /* Populate context menu prior to showing it */
     for (var i =0; i < f.length; i++) {
@@ -1221,11 +1341,13 @@ function generateStats()
     var el;
     var buf;
     var plBuf;
-    var genData = { "count": 0, "worker": 0, "soldier": 0, "ground": 0, "orbit": 0};
+    var genData = { "count": 0, "worker": 0, "newWorker":0, "soldier": 0, "newSoldier": 0, "ground": 0, "orbit": 0};
     var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var building = {};
 
+    document.getElementById('btnExport').style.display = 'none';
     document.getElementById('btnStats').style.display = 'none';
     document.getElementById('btnLogst').style.display = 'none';
 
@@ -1233,52 +1355,69 @@ function generateStats()
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     console.log(total);
 
-    console.log(jsonPageDataCache);
+    genData.count = jsonPageDataCache.locationList.length;
+    //console.log(jsonPageDataCache);
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        genData.ground += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
+        genData.orbit += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker");
+        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+        genData.newWorker += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+        genData.soldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
+        genData.newSoldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "CreatingSoldier");
 
-    if (0) {
-        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
-            /* Ground, Orbit, Abundance */
-            console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
-            /* Resources, Workers, Occupied Workers */
-            console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
-            /* Income of Resources, Workers */
-            console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+        total.metal += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metal");
+        total.mineral += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Mineral");
+        total.food += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Food");
+        total.energy += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Energy");
+
+        income.metal += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Metal");
+        income.mineral += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Mineral");
+        income.food += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Food");
+        income.energy += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Energy");
+
+        ratio.metal += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Metal_Abundance");
+        ratio.mineral += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Mineral_Abundance");
+        ratio.food += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Food_Abundance");
+        ratio.energy += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Energy_Abundance");
+
+        for (j = 0; j<jsonPageDataCache.locationList[i].executingItems.unitList.length; j++) {
+            buf = jsonPageDataCache.locationList[i].executingItems.unitList[j].name;
+            if (building[buf]>0) {
+                building[buf] += jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
+            } else {
+                building[buf] = jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
+            }
         }
     }
+    console.log(building);
+    if (0) {
+        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+            /* General information */
+            //console.log(jsonPageDataCache.locationList[i]);
 
-    for (const [key, value] of Object.entries(total)) {
-         el = document.querySelectorAll("div .resource."+key);
-         for (var i=0; i<el.length; i++) {
-             const data = el[i].querySelector("span").innerText.split(' ');
-             /* Map:
-              * data[0] -> current storage
-              * data[1] -> current income (in brackets with a +)
-              * data[1] -> abundance ratio (with %)
-              */
-             total[key] += parseInteger(data[0]);
-             income[key] += parseInteger(data[1]);
-             ratio[key] += parseInteger(data[2]);
-         }
+            /* What are we currently building */
+            // console.log(jsonPageDataCache.locationList[i].executingItems);
+
+            /* Ground, Orbit, Abundance */
+            // console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
+            /* Resources, Workers, Occupied Workers */
+            // console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
+            /* Income of Resources, Workers */
+            // console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+        }
     }
 
     /* Calculate avergaes for ratios */
     for (const [key, value] of Object.entries(total)) {
         total[key] = fmt.format(total[key]);
         income[key] = fmt.format(income[key]);
-        ratio[key] = fmtRatio.format(ratio[key]/el.length, 2);
+        ratio[key] = fmtRatio.format(ratio[key]/genData.count, 2);
     }
 
     /* Detect ground and orbit space, population and soldiers */
     plBuf = document.getElementsByClassName('locationWrapper');
     plBuf = Array.from(plBuf);
-    for (i=0; i<plBuf.length; i++) {
-        el = plBuf[i].getElementsByTagName('span');
-        genData.count++;
-        genData.orbit += parseInteger(el[1].innerText);
-        genData.ground += parseInteger(el[2].innerText);
-        genData.worker += parseInteger(el[4].innerText);
-        genData.soldier += parseInteger(el[3].innerText);
-    }
 
     el = document.getElementById('planetList');
     /* while testing */
@@ -1295,12 +1434,15 @@ function generateStats()
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Space</div>";
     buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + genData.ground + " / " + genData.orbit + "</div>";
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Workers</div>";
-    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.worker) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 28%; text-align: right;'>+" + fmt.format(genData.newWorker) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 30%; text-align: right;'>" + fmt.format(genData.worker) + "</div>";
     buf.innerHTML += "<div class='left resource' style='width: 35%; text-align: right;'>Soldiers</div>";
-    buf.innerHTML += "<div class='left resource' style='width: 60%; text-align: right;'>" + fmt.format(genData.soldier) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 28%; text-align: right;'>+" + fmt.format(genData.newSoldier) + "</div>";
+    buf.innerHTML += "<div class='left resource' style='width: 30%; text-align: right;'>" + fmt.format(genData.soldier) + "</div>";
+
     //buf.innerHTML = "<pre>" + genData + "</pre>";
 
-    el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%;'></div>";
+    el.innerHTML += "<div id='resTable' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%; width: 59%;'></div>";
     el = document.getElementById('resTable');
 
     el.innerHTML += "<div id='statHeader' class='lightBorder ofHidden opacBackground'></div>";
@@ -1328,6 +1470,32 @@ function generateStats()
         buf.innerHTML += "<div class='left resource " + key + "' style='width: 20%; text-align: right;'>" + value + "%</div>";
     }
 
+    el = document.getElementById('planetList');
+    el.innerHTML += "<div id='buildDiv' class='opacDarkBackground lightBorder paddingMid ofHidden' style='height: 100%; width: 99%;'></div>";
+    buf = document.getElementById('buildDiv');
+    buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
+    buf = document.getElementById('innerBuildDiv');
+    buf.innerHTML = "<div style='display: table-cell;'><strong>Currently constructing:</strong><ul id='buildList'></ul></div>";
+    buf.innerHTML += "<div style='display: table-cell; padding-left: 40px;'><strong>Currently training:</strong><ul id='trainList'></ul></div>";
+    let p = 0;
+
+    for (const key of Object.keys(building).sort()) {
+        if (ships[key] === 0 || key === 'Soldier') {
+            buf = document.getElementById('trainList');
+        } else {
+            buf = document.getElementById('buildList');
+        }
+        buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
+    }
+
+    if (document.getElementById('buildList').childElementCount === 0) {
+        document.getElementById('buildList').innerHTML += "<li><em>nothing</em></li>";
+    }
+    if (document.getElementById('trainList').childElementCount === 0) {
+        document.getElementById('trainList').innerHTML += "<li><em>nothing</em></li>";
+    }
+
+
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>Planet Statistics</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
@@ -1335,18 +1503,18 @@ function generateStats()
     document.getElementById('btnCopy').addEventListener("click", function (e) {
         var turn = ' turn '+ turnNumber + ' ';
         buf = "```\n";
-        buf += "---- General statistics ---------------------" + turn.padEnd(12, '-') + "\n";
-        buf += "  Planets: " + fmt.format(genData.count).padStart(12) + "\n";
-        buf += "   Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
-        buf += "    Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
-        buf += "  Workers: " + fmt.format(genData.worker).padStart(12) + "\n";
-        buf += " Soldiers: " + fmt.format(genData.soldier).padStart(12) + "\n\n";
-        buf += "---- Resources ------------------------------------------\n";
-        buf += "           " + "Storage".padStart(16) + "Income".padStart(16) + "Abundance".padStart(14) + "\n";
-        buf += "    Metal: " + total.metal.padStart(16) + income.metal.padStart(16) + ratio.metal.padStart(14) + "\n";
-        buf += "  Mineral: " + total.mineral.padStart(16) + income.mineral.padStart(16) + ratio.mineral.padStart(14) + "\n";
-        buf += "     Food: " + total.food.padStart(16) + income.food.padStart(16) + ratio.food.padStart(14) + "\n";
-        buf += "   Energy: " + total.energy.padStart(16) + income.energy.padStart(16) + ratio.energy.padStart(14) + "\n";
+        buf += "--- General statistics --------------" + turn.padEnd(13, '-') + "\n";
+        buf += " Planets: " + fmt.format(genData.count).padStart(12) + "\n";
+        buf += "  Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
+        buf += "   Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
+        buf += " Workers: " + fmt.format(genData.worker).padStart(12) + ("+" + fmt.format(genData.newWorker)).padStart(14) + "\n";
+        buf += "Soldiers: " + fmt.format(genData.soldier).padStart(12) + ("+" + fmt.format(genData.newSoldier)).padStart(14) + "\n\n";
+        buf += "--- Resources ------------------------------------\n";
+        buf += "          " + "Storage".padStart(14) + "Income".padStart(12) + "Abundance".padStart(12) + "\n";
+        buf += "   Metal: " + total.metal.padStart(14) + income.metal.padStart(12) + ratio.metal.padStart(11) + "%\n";
+        buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
+        buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
+        buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
         buf += "```"
 
         navigator.clipboard.writeText(buf);
@@ -1397,8 +1565,7 @@ function getLogistics(res)
     res *= RTT[curRTT];
 
     const fmt = new Intl.NumberFormat('en-US');
-    console.log(res);
-    console.log(logisticsCapacity);
+
     /* If 1 freighter is sufficent, no need to continue */
     if (res < logisticsCapacity.freighter) {
         return "<span class='ofHidden metal'>1 <em>freighter</em></span>";
@@ -1418,6 +1585,93 @@ function getLogistics(res)
     /* Lastly add hulks */
     ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.hulk)) + " <em>hulk</em></span> ";
     return ret;
+}
+
+function exportPlanets()
+{
+    /* Generic counters */
+    let i = 0, j = 0;
+    var data = [];
+    /* [
+        {
+            id: 1,
+            name: "G\"eeks",
+            profession: "de\\\"veloper"
+        },
+        {
+            id: 2,
+            name: "John",
+            profession: "Tester"
+        }
+    ]; */
+    for (i = 0; i<jsonPageDataCache.locationList.length; i++) {
+        let planet = {};
+        if (jsonPageDataCache.locationList[i].coordinates.length === 0) {
+            planet.Coordinates = '0.0.0.0';
+        } else {
+            planet.Coordinates = jsonPageDataCache.locationList[i].coordinates.join('.');
+        }
+        planet.Name = jsonPageDataCache.locationList[i].name;
+        planet.Ground = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
+        planet.Orbit = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        planet["Metal Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Metal_Abundance");
+        planet["Mineral Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Mineral_Abundance");
+        planet["Food Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Food_Abundance");
+        planet["Energy Abnd"] = getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Energy_Abundance");
+        planet["Metal Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Metal");
+        planet["Mineral Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Mineral");
+        planet["Food Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Food");
+        planet["Energy Inc"] = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Energy");
+        planet.Metal = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metal");
+        planet.Mineral = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Mineral");
+        planet.Food = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Food");
+        planet.Energy = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Energy");
+        planet.Population = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+        planet.Soldier = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
+        planet.Comms = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Comms_Satellite")>0)?"Yes":"No";
+        planet.ST = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Space_Tether")>0)?"Yes":"No";
+        planet.HB = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Hyperspace_Beacon")>0)?"Yes":"No";
+        planet.JG = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Jump_Gate")>0)?"Yes":"No";
+        planet.Colony = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")>0)?"Yes":"No";
+        planet.Metropolis = (getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metropolis")>0)?"Yes":"No";
+
+        for (const key of Object.keys(ships)) {
+            planet[key.replaceAll('_', ' ')] = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, key);
+        }
+
+        data.push(planet);
+    }
+
+    let csvRows = [];
+    let csvData = "";
+
+    const headers = Object.keys(data[0]);
+
+    for (i = 0; i<data.length; i++) {
+        let buf = data[i];
+        let row = [];
+        for (j in headers) {
+            j = headers[j];
+
+            if (typeof buf[j] === 'string' || buf[j] instanceof String) {
+                /* First escape quotes */
+                buf[j] = buf[j].replaceAll('"', "\\\"");
+                /* Add quotes */
+                buf[j] = '"' + buf[j] + '"';
+            }
+
+            row.push(buf[j]);
+        }
+        csvRows.push(row.join(","));
+    }
+
+    csvData = headers.join(",") + "\n" + csvRows.join("\n");
+
+    let elCSV = document.createElement('a');
+
+    elCSV.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+    elCSV.download = 'planetList-' + turnNumber + '.csv';
+    elCSV.click();
 }
 
 function updatePlanetSorting()
@@ -1558,139 +1812,146 @@ function generateScreenshot(element)
 
 function savePluginConfiguration()
 {
-	localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
-	localStorage.setItem('cfgAllyNAP', document.getElementById('cfgAllyNAP').value);
-	localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
-	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
-	localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
-	localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+    localStorage.setItem('cfgRulername', document.getElementById('cfgRulername').value);
+    localStorage.setItem('cfgAllyNAP', document.getElementById('cfgAllyNAP').value);
+    localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
+    localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+    localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
+    localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
-	localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+    localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
+    localStorage.setItem('cfgShowSM', document.getElementById('cfgShowSM').checked);
 
-	showNotification("Settings saved successfully");
+    showNotification("Settings saved successfully");
 }
 
 function dumpPluginConfiguration()
 {
     showNotification('Data dumping in console');
-	console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
-	console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
-	console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
-	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
-	console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
-	console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+    console.log('cfgRulername = ' + localStorage.getItem('cfgRulername'));
+    console.log('cfgAllyNAP = ' + localStorage.getItem('cfgAllyNAP'));
+    console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
+    console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+    console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
+    console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 
-	console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
+    console.log('cfgShowSM = ' + localStorage.getItem('cfgShowSM'));
 }
 
 function showPluginConfiguration()
 {
-	var contentBox = document.getElementById('contentBox');
-	var pageTitle = contentBox.querySelector('.pageTitle');
-	var mainBox = document.createElement('div');
-	pageTitle.innerHTML = 'Utilities Configuration';
-	contentBox.innerHTML = '';
+    var contentBox = document.getElementById('contentBox');
+    var pageTitle = contentBox.querySelector('.pageTitle');
+    var mainBox = document.createElement('div');
+    pageTitle.innerHTML = 'Utilities Configuration';
+    contentBox.innerHTML = '';
 
-	contentBox.appendChild(pageTitle);
+    contentBox.appendChild(pageTitle);
 
-	mainBox.className = 'opacBackground ofHidden padding';
-	contentBox.appendChild(mainBox);
-	mainBox.id = 'cfgBox';
+    mainBox.className = 'opacBackground ofHidden padding';
+    contentBox.appendChild(mainBox);
+    mainBox.id = 'cfgBox';
 
-	addGlobalStyle('.input-text-cfg { width: 168px; height: 14px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
-	addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+    addGlobalStyle('.input-text-cfg { width: 168px; height: 14px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
+    addGlobalStyle('.input-text-cfg-color { width: 72px; height:18px; font-size: 12px; margin-right: 10px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff; }');
 
-	mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
-	'  <div class="tableHeader">' +
-	'	 <div class="left title" style="padding-left: 4px">Setting</div>' +
-	'	 <div class="title right" style="width: 20px"></div>' +
-	'	 <div class="title right"></div>' +
-	'  </div>' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
-	'	<div class="left" style="padding-top: 2px;">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div>' +
-	'<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="TODO" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">????</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
-	'  </div> -->' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
-	'	<div class="left" style="padding-top: 2px;">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	  <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
-	'	</div>' +
-	'  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	  <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
-	'	</div>' +
-	'  </div>' +
-	'  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>' +
-  	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>' +
-    '	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>' +
+    mainBox.innerHTML = '<div style="overflow: hidden; padding: 0px" class="lightBorder opacDarkBackground"> ' +
+    '  <div class="tableHeader">' +
+    '     <div class="left title" style="padding-left: 4px">Setting</div>' +
+    '     <div class="title right" style="width: 20px"></div>' +
+    '     <div class="title right"></div>' +
     '  </div>' +
-	'  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
-	'	<div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
-	'	<div class="left" style="padding-top: 2px; ">' +
-	'	  <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
-	'	</div>' +
-	'	<div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
-	'	<div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
-	'	</div>' +
-	'  </div>' +
-        '  <div class="right entry  opacLightBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
-	'    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Rulername</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+    '      <input type="text" class="input-text-cfg" id="cfgRulername" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Copy of your rulername (used in various messaging)</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+    '  </div>' +
+    '<!--  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">???</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="TODO" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">????</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;"></div>' +
+    '  </div> -->' +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">NAP list</div>' +
+    '    <div class="left" style="padding-top: 2px;">' +
+    '      <input type="text" class="input-text-cfg" id="cfgAllyNAP" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as NAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyNAPcolor" value="#ff8080" />' +
+    '    </div>' +
+    '  </div>' +
+    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">CAP list</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="cfgAllyCAP" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as CAP</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
+    '    </div>' +
+    '  </div>' +
+    `
+  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>
+  </div>
+  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowSM" name="cfgShowSM" value=""/> <label for="cfgShowSM">Show ST/GB/JG in planet list</label></div>
+  </div>` +
+    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Place discord token in order to enable sharing of screenshots</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '    </div>' +
+    '  </div>' +
+        '  <div class="right entry  opacBackground coordsInput" style="border-left: 1px solid #545454; padding: 4px"> ' +
+    '    <div class="right" style="line-height: 22px; padding-left: 6px"> ' +
     '      <input type="button" name="cfgVers" id="cfgVers" value="ChangeLog" /> ' +
     '      <input type="button" name="cfgHelp" id="cfgHelp" value="Help" /> ' +
-	'      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
-	'      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
-	'    </div> ' +
-	'  </div>' +
-	'</div>';
+    '      <input type="button" name="cfgDump" id="cfgDump" value="Dump" /> ' +
+    '      <input type="button" name="cfgSave" id="cfgSave" value="Save" /> ' +
+    '    </div> ' +
+    '  </div>' +
+    '</div>';
 
-	/* Text values */
-	document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
-	document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
-	document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
-	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
-	document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
-	document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    /* Text values */
+    document.getElementById('cfgRulername').value = localStorage.getItem('cfgRulername');
+    document.getElementById('cfgAllyNAP').value = localStorage.getItem('cfgAllyNAP');
+    document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
+    document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
+    document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
     document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
-	/* Boolean setting */
-	document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
+    /* Boolean setting */
+    document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
-	document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+    document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+    document.getElementById('cfgShowSM').checked = parseBool(localStorage.getItem('cfgShowSM'));
 
-	/* Buttons */
+    /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
-	document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
-	document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
-	document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
+    document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
+    document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
+    document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
 }
 
 /* === END OF FEATURE FUNCTIONS === */
@@ -1700,15 +1961,15 @@ function showPluginConfiguration()
 /* function to decode URI params */
 function getQueryParams(qs)
 {
-	qs = qs.split('+').join(' ');
-	var params = {},
-		tokens,
-		re = /[?&]?([^=]+)=([^&]*)/g;
+    qs = qs.split('+').join(' ');
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
 
-	while (tokens = re.exec(qs)) {
-		params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-	}
-	return params;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
 }
 
 function makeId(length)
@@ -1727,48 +1988,48 @@ function makeId(length)
 /* Formatting numbers */
 function formatNumber(num)
 {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
 /* common function in css to change css style */
 function addGlobalStyle(css)
 {
-	var head, style;
-	head = document.getElementsByTagName('head')[0];
-	if (!head) {
-		return;
-	}
-	style = document.createElement('style');
-	style.type = 'text/css';
-	style.innerHTML = css;
-	head.appendChild(style);
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) {
+        return;
+    }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
 }
 
 function getDate()
 {
-	let d = new Date();
+    let d = new Date();
 
-	let month = '' + (d.getMonth() + 1);
-	let	day = '' + d.getDate();
-	let year = d.getFullYear();
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
 
-	if (month.length < 2) {
-		month = '0' + month;
-	}
-	if (day.length < 2) {
-		day = '0' + day;
-	}
+    if (month.length < 2) {
+        month = '0' + month;
+    }
+    if (day.length < 2) {
+        day = '0' + day;
+    }
 
-	return [year, month, day].join('-');
+    return [year, month, day].join('-');
 }
 
 function parseBool(val)
 {
-	if (val=='true') {
-		return true;
-	} else {
-		return false;
-	}
+    if (val==='true') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function parseInteger(val)
@@ -1808,16 +2069,18 @@ function initializeConfig()
         return;
     }
 
-   	localStorage.setItem('cfgRulername', playerName);
-	localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
-	localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
-	localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
-	localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
+       localStorage.setItem('cfgRulername', playerName);
+    localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
+    localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
+    localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
+    localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
 
-	localStorage.setItem('cfgRadarSorting', 'true');
+    localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
-	localStorage.setItem('cfgPlanetSorting', 'true');
-	window.alert('Initializing config');
+    localStorage.setItem('cfgPlanetSorting', 'true');
+    localStorage.setItem('cfgShowSM', 'true');
+
+    window.alert('Initializing config');
 }
 
 function showNotification(message)
@@ -1842,8 +2105,8 @@ function showNotification(message)
     var nMsg = document.getElementById('dhMsg');
     nMsg.innerText = message;
 
-        setTimeout(function () {
+    setTimeout(function () {
         document.getElementById('dhNotification').style.display = 'none';
     }, 8000);
 }
-/* === END OF GENERIC FUNCTIONS === */
+/* === END OF GENERIC FUNCTIONS === */
