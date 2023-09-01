@@ -568,14 +568,15 @@ if (cfgShowSM) {
             /* FIXME This is a bit dirty without any checks */
             q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
             q = q.querySelector('div');
-            if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
-                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
+
+            if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
             }
             if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
                 q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
             }
-            if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
-                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
+            if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
+                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
             }
         }
     }

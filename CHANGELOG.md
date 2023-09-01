@@ -3,6 +3,7 @@
 **New features:**
 
 1. Capability to export the planet list with various details to a CSV file for download
+1. Showing speed modifier buildings (ST/HB/JG) in planet list
 
 **Updates:**
 
