@@ -4,6 +4,7 @@
 
 1. Capability to export the planet list with various details to a CSV file for download
 1. Showing speed modifier buildings (ST/HB/JG) in planet list
+1. During fleet transfers, available resources units and ships are automatically inputed by clicking on the appropriate resource/ship.
 
 **Updates:**
 

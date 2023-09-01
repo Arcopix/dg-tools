@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name     DG utilities v0.4 dev
+// @name     DG utilities v0.4
 // @namespace    devhex
 // @version      0.4.0006
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0005-a1
+// @require      https://github.com/Arcopix/dg-tools/raw/master/resources.js?v=0.4.0006
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -69,7 +69,7 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
 } else {
-    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0005') {
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0006') {
         showWhatsNew();
     }
 }
@@ -500,6 +500,10 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     improveResXferPlanner(document.getElementById('fleetQueue'));
 }
 
+if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0-9]+[\/]?$/)) {
+    improveResXfer();
+}
+
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     i = JSON.parse(localStorage.getItem('fleetArray'));
     /* By default we should add this fleet to the fleetArray */
@@ -806,7 +810,7 @@ function showWhatsNew()
     var i = 0;
     const main = document.getElementById('contentBox');
 
-    localStorage.setItem('cfgShowedVersion', 'v0.4.0005');
+    localStorage.setItem('cfgShowedVersion', 'v0.4.0006');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
     addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
@@ -825,24 +829,25 @@ function showWhatsNew()
     Version 0.4.0006 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
-      <li>Nothing yet</li>
+      <li>Capability to export the planet list with various details to a CSV file for download</li>
+      <li>Showing speed modifier buildings (ST/HB/JG) in planet list</li>
+      <li>During fleet transfers, available resources units and ships are automatically inputed by clicking on the appropriate resource/ship.</li>
     </ul>
     <br/>
     <strong>Updates:</strong>
     <ul>
       <li>Refactored generation of general statistics to be based on the provided JSON data</li>
       <li>Introduced information about population and soldier growth in the general statistics</li>
+      <li>Introduced summary information about current construction (buildings, ships and soldiers)</li>
     </ul>
     <br/>
     <strong>Bug Fixes:</strong>
     <ul>
       <li>Fixed issue with the context menu for fleet orders not updating coordinates upon follow up usage</li>
       <li>Fixed issue with the context menu for scanning not updating coordinates upon follow up usage</li>
+      <li>Fixed issue with planet navigation using arrow keys while inputting information in an input</li>
+      <li>Fixed issue with missing coordinates within generated screenshots in some scenarios</li>
     </ul><br/>
-    <strong>Removed:</strong>
-    <ul>
-      <li>Nothing yet</li>
-    </ul>
     <hr/><br/></div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
@@ -1037,6 +1042,26 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
+}
+
+function improveResXfer()
+{
+    /* Generic counters */
+    let i = 0, j = 0;
+    let rows = document.querySelectorAll("div .transferRow");
+
+    console.log('here comes johny');
+
+    for (i=0; i<rows.length; i++) {
+        if (rows[i].children.length <= 2) {
+            continue;
+        }
+        j = parseInteger(rows[i].querySelector('div .left.text').innerText.trim());
+
+        rows[i].querySelector('div .left.text').value = j;
+        rows[i].querySelector('div .left.text').style.cursor = 'pointer';
+        rows[i].querySelector('div .left.text').addEventListener("click", function(e) { e.srcElement.parentElement.querySelector("input").value = e.srcElement.value; }, false);
+    }
 }
 
 function improveResXferPlanner(fleetQueue)
@@ -2084,4 +2109,4 @@ function showNotification(message)
         document.getElementById('dhNotification').style.display = 'none';
     }, 8000);
 }
-/* === END OF GENERIC FUNCTIONS === */
+/* === END OF GENERIC FUNCTIONS === */
