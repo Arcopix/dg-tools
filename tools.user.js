@@ -497,7 +497,7 @@ if (location.href.includes('/fleets/')) {
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
-    improveResXfer(document.getElementById('fleetQueue'));
+    improveResXferPlanner(document.getElementById('fleetQueue'));
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
@@ -1039,7 +1039,7 @@ function showHelp()
 
 }
 
-function improveResXfer(fleetQueue)
+function improveResXferPlanner(fleetQueue)
 {
     var planetName = null;
     var planetCoords = null;
