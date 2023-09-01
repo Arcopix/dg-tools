@@ -171,7 +171,12 @@ for (i=0; i<coords.length; i++)
 
     if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
         let p = c.innerText.split('.');
-        c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
+        if (c.innerHTML === c.innerText) {
+            c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
+        } else {
+            c.innerHTML = c.innerHTML.replace(c.innerText, '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerText + '</a>');
+            console.log(c.innerHTML);
+        }
     }
 }
 
