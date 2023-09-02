@@ -840,7 +840,7 @@ function showWhatsNew()
     <br/>
     <strong>Updates:</strong>
     <ul>
-      <li>Added ships descriptions in the on-hover tips with basic targeting information, capacity, some tips and some flavor text where appropariate.</li>
+      <li>Added ships descriptions in the on-hover tips with basic targeting information, capacity, some tips and some flavor text where appropriate.</li>
       <li></li>
     </ul>
     <br/>

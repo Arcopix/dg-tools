@@ -1,3 +1,16 @@
+## Version 0.4.0007
+**New features:**
+
+1. Nothing yet
+
+**Updates:**
+
+1. Added ships descriptions in the on-hover tips with basic targeting information, capacity, some tips and some flavor text where appropariate
+
+**Bug Fixes:**
+
+1. Nothing yet
+
 ## Version 0.4.0006
 
 **New features:**
