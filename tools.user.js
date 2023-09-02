@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name     DG utilities v0.4 dev
+// @name     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0007
+// @version      0.4.0006
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0007
+// @require      https://github.com/Arcopix/dg-tools/raw/master/resources.js?v=0.4.0006
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -531,12 +531,6 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     }
 }
 
-/* Fix ships description */
-/* Outposts have the least amount of requirements, and have id of 115 */
-if (document.getElementById('unit-115')) {
-    addShipsDescriptions();
-}
-
 /* Fix sorting of planets */
 if (cfgPlanetSorting) {
     /* Sort planets in select drop down in Fleet command */
@@ -828,34 +822,10 @@ function showWhatsNew()
     help.innerHTML = '';
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
-      v0.4.0007
-    </div>`;
-
-    help.innerHTML += `<div class="topicContent show">
-    Version 0.4.0007 comes with the following changes:<br/><br/>
-    <strong>New features:</strong>
-    <ul>
-      <li></li>
-    </ul>
-    <br/>
-    <strong>Updates:</strong>
-    <ul>
-      <li>Added ships descriptions in the on-hover tips with basic targeting information, capacity, some tips and some flavor text where appropriate.</li>
-      <li></li>
-    </ul>
-    <br/>
-    <strong>Bug Fixes:</strong>
-    <ul>
-      <li></li>
-    </ul><br/>
-    <hr/><br/></div>`;
-
-    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       v0.4.0006
     </div>`;
 
-    help.innerHTML += `<div class="topicContent">
+    help.innerHTML += `<div class="topicContent show">
     Version 0.4.0006 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
@@ -1072,75 +1042,6 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
-}
-
-function addShipsDescriptions()
-{
-    let buf = null;
-    /* 109 fighter */
-    if (buf = document.getElementById('unit-109')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Fighters are good for intercepting Bombers and other Fighters. Usually used for dump for your excess metal.<br/><hr/><strong>Targeting:</strong> Bomber-&gt;Fighter-&gt;Destroyer`;
-    }
-    /* 110 bomber */
-    if (buf = document.getElementById('unit-110')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Bombers are good for dealing with those pesky Frigates and Destroyers. In high numbers they are capable of dealing with single digit Battleships.<br/><hr/><strong>Targeting:</strong> Destroyer-&gt;Frigate-&gt;Battleship`;
-    }
-    /* 111 frigate */
-    if (buf = document.getElementById('unit-111')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Frigates are the go to ship to deal with Cruisers and Fighters. Occasionally useful against Destroyers.<br/><hr/><strong>Targeting:</strong> Cruiser-&gt;Fighter-&gt;Destroyer`;
-    }
-    /* 112 destroyer */
-    if (buf = document.getElementById('unit-112')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Destroyers are arguably the only cost effective way to manage the enemy Battleships. Second to that, they're good at dealing with Cruisers.<br/><hr/><strong>Targeting:</strong> Battleship-&gt;Cruiser-&gt;Destroyer`;
-    }
-    /* 113 cruiser */
-    if (buf = document.getElementById('unit-113')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Send these bad boys in and watch the enemy Bomber burn. Known to use fighters for target practice when bored<br/><hr/><strong>Targeting:</strong> Fighter-&gt;Bomber-&gt;Frigate`;
-    }
-    /* 114 battleship */
-    if (buf = document.getElementById('unit-114')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `If your enemy has these and you don't, you might want to start rebuilding your fleet before it crashes and burn. Effective against all ship types although relatively weak against destroyers.<br/><hr/><strong>Targeting:</strong> Frigate-&gt;Cruiser-&gt;Battleship`;
-    }
-    /* Civilian stuff */
-    /* 115 outpost */
-    if (buf = document.getElementById('unit-115')) {
-        buf.querySelector('div .title').innerHTML = 'Outpost Ship';
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Used in the early and mid-game to colonize unihabited planets.<br/><hr/><strong>Tip:</strong> Scan with <img src='/images/units/main/structures/comms_satellite.jpg' width="16" height="16"/> Comms Satellite if available.`;
-    }
-    /* 116 colony ship ? */
-    /* 117 invasion */
-    if (buf = document.getElementById('unit-117')) {
-        buf.querySelector('div .title').innerHTML = 'Invasion Ship';
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `The only ship capable of transporting soldiers. Oh, and capable of performing invasions.<br/><hr/><strong>Tip:</strong> Scan with <img src='/images/units/main/structures/comms_satellite.jpg' width="16" height="16"/> Comms Satellite prior to invading.<br/><hr/><strong>Tip:</strong> Unsucessful invasions will cause the invasions ships to vanish from your fleet.`;
-    }
-    /* 118 invasion */
-    if (buf = document.getElementById('unit-118')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `The bread and butter of your early game economy. Used for transfers of resources and colonists.<br/><hr/><strong>Capacity:</strong> 100,000`;
-    }
-    /* 119 merchant */
-    if (buf = document.getElementById('unit-119')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `A slightly advanced version of the Freighter. Good balance between cargo space and build time.<br/><hr/><strong>Capacity:</strong> 250,000`;
-    }
-    /* 120 trader */
-    if (buf = document.getElementById('unit-120')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `An excellent choice if you want to move an entire planet resource production and have spare cargo space for passengers.<br/><hr/><strong>Capacity:</strong> 625,000`;
-    }
-    /* 121 hulk */
-    if (buf = document.getElementById('unit-121')) {
-        buf = buf.querySelector('div .desc');
-        buf.innerHTML = `Meet the heavy weight champion of the galaxy. Pilot's favorite jokes starts with "Your mama is so big"...<br/><hr/><strong>Capacity:</strong> 1,562,500`;
-    }
 }
 
 function improveResXfer()
@@ -2168,7 +2069,7 @@ function initializeConfig()
         return;
     }
 
-    localStorage.setItem('cfgRulername', playerName);
+       localStorage.setItem('cfgRulername', playerName);
     localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
     localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
     localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
