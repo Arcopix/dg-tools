@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DarkGalaxy Plus",
-  "version": "0.5.0001",
-
+  "version": "0.5.0002",
   "action": {
     "default_icon": {
       "16": "images/icon16.png",
@@ -11,15 +10,16 @@
     }
   },
   "description": "Set of improvements for DarkGalaxy",
-   "icons": {
+  "icons": {
     "16": "images/icon16.png",
     "32": "images/icon32.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-
   "author": "stefan.lekov@devhex.org",
-  "permissions": [ "clipboardWrite" ],
+  "permissions": [
+    "clipboardWrite"
+  ],
   "content_scripts": [
     {
       "js": [
@@ -33,7 +33,7 @@
       ],
       "exclude_matches": [
         "https://darkgalaxy.com/*",
-	"https://www.darkgalaxy.com/*",
+        "https://www.darkgalaxy.com/*",
         "https://manual.darkgalaxy.com/*"
       ],
       "run_at": "document_end"
