@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DarkGalaxy Plus",
-  "version": "0.5.0000",
+  "version": "0.5.0001",
 
   "action": {
     "default_icon": {
@@ -20,8 +20,6 @@
 
   "author": "stefan.lekov@devhex.org",
   
-  "background": {},
-  "commands": {},
   "content_scripts": [
     {
       "js": [
@@ -43,10 +41,7 @@
   "file_browser_handlers": [],
   "file_system_provider_capabilities": {},
   "homepage_url": "https://github.com/Arcopix/dg-tools",
-  "host_permissions": [],
-  "incognito": "spanning",
   "minimum_chrome_version": "107",
   "short_name": "DG Plus",
-  "version_name": "development",
-  "web_accessible_resources": []
+  "version_name": "alpha"
 }
