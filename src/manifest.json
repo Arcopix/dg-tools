@@ -8,50 +8,45 @@
       "16": "images/icon16.png",
       "24": "images/icon24.png",
       "32": "images/icon32.png"
-    },
+    }
   },
-  "default_locale": "en",
   "description": "Set of improvements for DarkGalaxy",
-  "icons": {...},
+   "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
 
   "author": "stefan.lekov@devhex.org",
   
-  "background": {...},
-  "chrome_settings_overrides": {...},
-  "chrome_url_overrides": {...},
-  "commands": {...},
-  "content_scripts": [{...}],
-  "content_security_policy": {...},
-  "cross_origin_embedder_policy": {...},
-  "cross_origin_opener_policy": {...},
-  "declarative_net_request": {...},
+  "background": {},
+  "commands": {},
+  "content_scripts": [
+    {
+      "js": [
+        "html2canvas.min.js",
+        "resources.js",
+        "tools.user.js"
+      ],
+      "matches": [
+        "https://*.darkgalaxy.com/",
+        "https://*.darkgalaxy.com/*"
+      ],
+      "exclude_matches": [
+        "https://manual.darkgalaxy.com/*"
+      ],
+      "run_at": "document_end"
+    }
+  ],
   "devtools_page": "devtools.html",
-  "event_rules": [{...}],
-  "export": {...},
-  "externally_connectable": {...},
-  "file_browser_handlers": [...],
-  "file_system_provider_capabilities": {...},
+  "file_browser_handlers": [],
+  "file_system_provider_capabilities": {},
   "homepage_url": "https://github.com/Arcopix/dg-tools",
-  "host_permissions": [...],
-  "import": [{...}],
+  "host_permissions": [],
   "incognito": "spanning",
-  "input_components": [{...}],
-  "key": "publicKey",
   "minimum_chrome_version": "107",
-  "oauth2": {...},
-  "omnibox": {...},
-  "optional_host_permissions": ["..."],
-  "optional_permissions": ["..."],
-  "options_page": "options.html",
-  "options_ui": {...},
-  "permissions": ["..."],
-  "requirements": {...},
-  "sandbox": {...},
-  "short_name": "Short Name",
-  "side_panel": {...},
-  "storage": {...},
-  "tts_engine": {...},
-  "update_url": "https://path/to/updateInfo.xml",
-  "version_name": "1.0 beta",
-  "web_accessible_resources": [...]
+  "short_name": "DG Plus",
+  "version_name": "development",
+  "web_accessible_resources": []
 }
