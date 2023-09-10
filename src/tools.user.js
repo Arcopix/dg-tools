@@ -85,6 +85,8 @@ var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
 
+
+
 /* Updated main menu items */
 var confIcon = document.createElement('div');
 confIcon.className = 'left relative';
@@ -101,26 +103,12 @@ screenshotIcon.innerHTML = '<img alt="Take a screenshot" src="' + imageContainer
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
-
-/* Updated main menu items */
-/* Proof of concept for screenshot of specific element
-var screenshotIcon2 = document.createElement('div');
-screenshotIcon2.className = 'left relative';
-screenshotIcon2.style = 'cursor:pointer;';
-screenshotIcon2.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
-
-screenshotIcon2.addEventListener('click', function() { generateScreenshot('foobar') }, false);
-*/
-
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
-/* Proof of concept for screenshot of specific element
-mainMenu.appendChild(screenshotIcon2);
-*/
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
