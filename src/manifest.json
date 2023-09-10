@@ -19,7 +19,7 @@
   },
 
   "author": "stefan.lekov@devhex.org",
-  
+  "permissions": [ "clipboardWrite" ],
   "content_scripts": [
     {
       "js": [
