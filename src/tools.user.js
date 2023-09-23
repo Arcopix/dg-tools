@@ -115,13 +115,24 @@ mainMenu.appendChild(p);
 var turnNumber = document.getElementById('turnNumber').innerText;
 var jsonPageDataCache = null;
 
-if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) {
-    console.log("Setting jsonPageData to cache");
-    localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
-    jsonPageDataCache = jsonPageData;
+q = document.head.querySelectorAll('script');
+for (i=0; i<q.length; i++) {
+	if (q[i].innerHTML.match(/let jsonPageData/g)) {
+		data = q[i].innerHTML;
+		data = data.replace("let jsonPageData =", "");
+		data = data.replace(/;$/, "");
+		data = data.trim();
+		jsonPageData = JSON.parse(data);
+	}
+}
+
+if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) { 
+	console.log("Setting jsonPageData to cache");
+	localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
+	jsonPageDataCache = jsonPageData;
 } else {
-    console.log("Fetching jsonPageData to cache");
-    jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
+	console.log("Fetching jsonPageData from cache");
+	jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
 }
 
 addGlobalStyle('[data-tooltip] { display: inline-block; position: relative; cursor: help;  padding: 4px; }');
