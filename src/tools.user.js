@@ -1019,6 +1019,7 @@ function showHelp()
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 2) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       Screenshots
     </div>`;
+	let imgSrc = chrome.runtime.getURL("images/screenshotExample.png");
     help.innerHTML += `<div class="topicContent">
     <p>DG utilities comes with integrated screenshot capabiltity. This allows the player to easily share information
     from the game to his friends, allies, and sometimes - even enemies. In order to generate a screenshot click on the
@@ -1033,7 +1034,7 @@ function showHelp()
     </div><br/>
     Here's an example:
     </p>
-    <img style="padding: 10px;" src="` + imageContainer['screenshotExample.png'] + `"/>
+    <img style="padding: 10px;" src="`+imgSrc+`"/>
     </div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
