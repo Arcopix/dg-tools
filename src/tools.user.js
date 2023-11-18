@@ -20,6 +20,8 @@
 var i, j, k, l, m, n, p, r, q, s, t;
 var buf;
 
+var browser="chrome";
+
 /* Common data */
 
 const logisticsCapacity = {
@@ -949,6 +951,13 @@ function showWhatsNew()
     <hr/><br/></div>`;
 }
 
+function getImageURL(file)
+{
+    window.alert(browser + " " + file);
+    return chrome.runtime.getURL("images/"+ file);
+
+}
+
 function showHelp()
 {
     console.log("Showing help");
@@ -1019,7 +1028,8 @@ function showHelp()
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 2) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       Screenshots
     </div>`;
-	let imgSrc = chrome.runtime.getURL("images/screenshotExample.png");
+	let imgSrc = getImageURL("screenshotExample.png");
+
     help.innerHTML += `<div class="topicContent">
     <p>DG utilities comes with integrated screenshot capabiltity. This allows the player to easily share information
     from the game to his friends, allies, and sometimes - even enemies. In order to generate a screenshot click on the
