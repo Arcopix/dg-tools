@@ -478,7 +478,19 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
     }
 }
 
+/* Convert any friendly planets to link to the targeted planet instead of navigation */
+buf = document.querySelectorAll(".friendly");
+for (i=0; i<buf.length; i++) {
+    let p = getPlanetByName(buf[i].innerText);
+    if (!p) {
+        continue;
+    }
+    let plLink = buf[i].querySelector('a');
+    plLink.href = "/planet/"+p.id+"/"
+}
+
 if (location.href.includes('/fleets/')) {
+    /* Page filtering based on the input in the search box */
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
     buf.innerHTML += '<input type="text" id="filterFleet" class="fleet-filter large-input" placeholder="Filter fleets">';
@@ -1373,7 +1385,7 @@ function improveResXferPlanner(fleetQueue)
 
 function getPlanetByCoord(coord)
 {
-    let i;
+    let i=0;
     const c = coord.split('.');
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         /* Home planets and their special coordinates */
@@ -1382,6 +1394,17 @@ function getPlanetByCoord(coord)
         }
         let pC = jsonPageDataCache.locationList[i].coordinates;
         if (c[0] == pC[0] && c[1] == pC[1] && c[2] == pC[2] && c[3] == pC[3]) {
+            return jsonPageDataCache.locationList[i];
+        }
+    }
+    return null;
+}
+
+function getPlanetByName(name)
+{
+    let i=0;
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        if (jsonPageDataCache.locationList[i].name === name) {
             return jsonPageDataCache.locationList[i];
         }
     }
