@@ -1139,8 +1139,13 @@ function filterFleet(f)
 function fixBackground(element, selector)
 {
     rows = element.querySelectorAll(selector);
+    j = 0;
     for (i = 0; i<rows.length; i++) {
-        rows[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
+        /* If the row is hidden -> skip it */
+        if (rows[i].style.display==='none') {
+            continue;
+        }
+        rows[i].className = (j++%2?'opacBackground entry':'opacLightBackground entry');
     }
 }
 function addShipsDescriptions()
