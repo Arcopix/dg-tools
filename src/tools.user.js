@@ -460,6 +460,8 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 
 
 if (cfgFleetSorting && location.href.includes('/fleets/')) {
+
+    /* Sort the table based on fleet name */
     const table = document.getElementById("fleetList");
     var rows = table.querySelectorAll('.entry');
     var rowsArray = Array.from(rows);
@@ -475,8 +477,8 @@ if (cfgFleetSorting && location.href.includes('/fleets/')) {
    table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
    rowsArray.forEach(row => table.appendChild(row));
 
+   /* Fix backgrounds due to resorting */
    rows = table.querySelectorAll('.entry');
-
    for (i = 0; i<rows.length; i++) {
         rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
    }
