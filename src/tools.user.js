@@ -459,8 +459,11 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 }
 
 
-if (cfgFleetSorting && location.href.includes('/fleets/')) {
-    sortFleets();
+if (location.href.includes('/fleets/')) {
+
+    if (cfgFleetSorting) {
+        sortFleets();
+    }
 }
 
 /* Cache fleets for future usage */
@@ -1086,12 +1089,16 @@ function sortFleets()
     rowsArray.forEach(row => table.appendChild(row));
 
     /* Fix backgrounds due to resorting */
-    rows = table.querySelectorAll('.entry');
+    fixBackground('.entry');
+}
+
+function fixBackground(selector)
+{
+    rows = table.querySelectorAll(selector);
     for (i = 0; i<rows.length; i++) {
         rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
     }
 }
-
 function addShipsDescriptions()
 {
     let buf = null;
