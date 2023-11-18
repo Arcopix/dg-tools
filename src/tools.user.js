@@ -1089,14 +1089,14 @@ function sortFleets()
     rowsArray.forEach(row => table.appendChild(row));
 
     /* Fix backgrounds due to resorting */
-    fixBackground('.entry');
+    fixBackground(table,'.entry');
 }
 
-function fixBackground(selector)
+function fixBackground(element, selector)
 {
-    rows = table.querySelectorAll(selector);
+    rows = element.querySelectorAll(selector);
     for (i = 0; i<rows.length; i++) {
-        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
+        rows[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
     }
 }
 function addShipsDescriptions()
