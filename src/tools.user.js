@@ -327,10 +327,10 @@ if (document.querySelector(".navigation.left")) {
         if (document.activeElement.tagName==='input') {
             return;
         }
-        if (e.which === 37) {
+        if (e.which === 37 && !e.altKey && !e.ctrlKey) {
             document.querySelector(".navigation.left").click();
         }
-        if (e.which === 39) {
+        if (e.which === 39 && !e.altKey && !e.ctrlKey) {
             document.querySelector(".navigation.right").click();
         }
     });
