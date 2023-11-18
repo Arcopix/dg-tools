@@ -460,28 +460,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 
 
 if (cfgFleetSorting && location.href.includes('/fleets/')) {
-
-    /* Sort the table based on fleet name */
-    const table = document.getElementById("fleetList");
-    var rows = table.querySelectorAll('.entry');
-    var rowsArray = Array.from(rows);
-
-   rowsArray.sort((a, b) => {
-        const linkA = a.querySelector('.name a');
-        const linkB = b.querySelector('.name a');
-        const textA = linkA ? linkA.textContent : '';
-        const textB = linkB ? linkB.textContent : '';
-        return textA.localeCompare(textB);
-    });
-
-   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
-   rowsArray.forEach(row => table.appendChild(row));
-
-   /* Fix backgrounds due to resorting */
-   rows = table.querySelectorAll('.entry');
-   for (i = 0; i<rows.length; i++) {
-        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
-   }
+    sortFleets();
 }
 
 /* Cache fleets for future usage */
@@ -1086,6 +1065,31 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
+}
+
+function sortFleets()
+{
+    /* Sort the table based on fleet name */
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+    rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('.name a');
+        const linkB = b.querySelector('.name a');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+    table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+    rowsArray.forEach(row => table.appendChild(row));
+
+    /* Fix backgrounds due to resorting */
+    rows = table.querySelectorAll('.entry');
+    for (i = 0; i<rows.length; i++) {
+        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
+    }
 }
 
 function addShipsDescriptions()
