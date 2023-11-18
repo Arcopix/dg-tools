@@ -52,6 +52,26 @@ var curRTT = 0;
 
 /* End of common data, variables */
 
+/* Global CSS */
+addGlobalStyle(`
+.large-input {
+  background-color: #4a4a4a;
+  border: 1px solid #7a7a7a;
+  color: #fff;
+  }
+.large-input::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+.fleet-filter {
+  float: right;
+  width: 200px;
+  height: 20px;
+  margin-top: 4px;
+  margin-right: 20px;   
+}
+`);
+
 /* Development warning */
 m = localStorage.getItem('develWarning');
 if (0 && m!==getDate()) {
@@ -458,8 +478,11 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
     }
 }
 
-
 if (location.href.includes('/fleets/')) {
+    buf = document.querySelector('div .header.pageTitle');
+    buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
+    buf.innerHTML += '<input type="text" id="filterFleet" class="fleet-filter large-input" placeholder="Filter fleets">';
+    document.getElementById('filterFleet').addEventListener("keyup", filterFleet, false);
 
     if (cfgFleetSorting) {
         sortFleets();
@@ -1088,6 +1111,27 @@ function sortFleets()
     table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
     rowsArray.forEach(row => table.appendChild(row));
 
+    /* Fix backgrounds due to resorting */
+    fixBackground(table,'.entry');
+}
+
+function filterFleet(f)
+{
+    data = document.getElementById('filterFleet').value;
+    /* Filter the data only to the entries matching data */
+    var re = new RegExp(".*" + data + ".*", "i");
+
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+    for (i=0; i<rowsArray.length; i++) {
+        if (!re.exec(rowsArray[i].innerText)) {
+            rowsArray[i].style.display = 'none';
+        } else {
+            rowsArray[i].style.display = '';
+        }
+    }
     /* Fix backgrounds due to resorting */
     fixBackground(table,'.entry');
 }
