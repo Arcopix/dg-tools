@@ -412,10 +412,10 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
         if (document.activeElement.tagName==='INPUT') {
             return;
         }
-        if (e.which === 37) {
+        if (e.which === 37 && !e.altKey && !e.ctrlKey) {
             document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
         }
-        if (e.which === 39) {
+        if (e.which === 39 && !e.altKey && !e.ctrlKey) {
             document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
         }
     });
@@ -449,7 +449,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 39) {
+            if (e.which === 39 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
         });
@@ -459,10 +459,10 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 37) {
+            if (e.which === 37 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
-            if (e.which === 39) {
+            if (e.which === 39 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
             }
         });
@@ -471,7 +471,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 37) {
+            if (e.which === 37 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
         });
