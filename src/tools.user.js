@@ -25,26 +25,26 @@ var browser="chrome";
 /* Common data */
 
 const logisticsCapacity = {
-    "freighter": 100000,
-    "merchant": 250000,
-    "trader": 625000,
-    "hulk": 1562500
+    "Freighter": 100000,
+    "Merchant": 250000,
+    "Trader": 625000,
+    "Hulk": 1562500
 };
 
 const ships = {
-    "Freighter": 0,
-    "Merchant": 0,
-    "Trader": 0,
-    "Hulk": 0,
-    "Fighter": 0,
-    "Bomber": 0,
-    "Frigate": 0,
-    "Destroyer": 0,
-    "Cruiser": 0,
-    "Battleship": 0,
-    "Invasion_Ship": 0,
-    "Outpost_Ship": 0,
-    "Colony_Ship": 0
+    "Freighter": 3.84,
+    "Merchant": 7.68,
+    "Trader": 11.52,
+    "Hulk": 19.2,
+    "Fighter": 0.24,
+    "Bomber": 0.72,
+    "Frigate": 2.88,
+    "Destroyer": 12,
+    "Cruiser": 25.2,
+    "Battleship": 144,
+    "Invasion_Ship": 4.16,
+    "Outpost_Ship": 4.8,
+    "Colony_Ship": 105
 };
 
 const RTT = [32, 24, 16];
@@ -495,6 +495,26 @@ if (location.href.includes('/fleets/')) {
     buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
     buf.innerHTML += '<input type="text" id="filterFleet" class="fleet-filter large-input" placeholder="Filter fleets">';
     document.getElementById('filterFleet').addEventListener("keyup", filterFleet, false);
+
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='input') {
+            return;
+        }
+        if (e.which === 70 && e.ctrlKey) {
+            document.getElementById("filterFleet").focus();
+            console.log('Focusing on filterFleet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+        if (e.which === 191) {
+            document.getElementById("filterFleet").focus();
+            console.log('Focusing on filterFleet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+    });
 
     if (cfgFleetSorting) {
         sortFleets();
@@ -1212,17 +1232,17 @@ function addShipsDescriptions()
         buf = buf.querySelector('div .desc');
         buf.innerHTML = `The bread and butter of your early game economy. Used for transfers of resources and colonists.<br/><hr/><strong>Capacity:</strong> 100,000`;
     }
-    /* 119 merchant */
+    /* 119 Merchant */
     if (buf = document.getElementById('unit-119')) {
         buf = buf.querySelector('div .desc');
         buf.innerHTML = `A slightly advanced version of the Freighter. Good balance between cargo space and build time.<br/><hr/><strong>Capacity:</strong> 250,000`;
     }
-    /* 120 trader */
+    /* 120 Trader */
     if (buf = document.getElementById('unit-120')) {
         buf = buf.querySelector('div .desc');
         buf.innerHTML = `An excellent choice if you want to move an entire planet resource production and have spare cargo space for passengers.<br/><hr/><strong>Capacity:</strong> 625,000`;
     }
-    /* 121 hulk */
+    /* 121 Hulk */
     if (buf = document.getElementById('unit-121')) {
         buf = buf.querySelector('div .desc');
         buf.innerHTML = `Meet the heavy weight champion of the galaxy. Pilot's favorite jokes starts with "Your mama is so big"...<br/><hr/><strong>Capacity:</strong> 1,562,500`;
@@ -1541,6 +1561,7 @@ function generateStats()
     var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var reinfData = {};
     var building = {};
 
     document.getElementById('btnExport').style.display = 'none';
@@ -1585,8 +1606,31 @@ function generateStats()
                 building[buf] = jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
             }
         }
+        c = jsonPageDataCache.locationList[i].coordinates.join('.');
+        if (c === '') {
+            c = '0.0.0.0';
+        }
+        n = 0;
+        for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
+            t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
+            q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
+            if ((ships[t] || t === 'Soldier') && !logisticsCapacity[t]) {
+                /* Skip soldiers less than 1000 */
+                if (t === 'Soldier' && q<1000) {
+                    continue;
+                }
+                if (!reinfData[c]) {
+                    reinfData[c] = [];
+                }
+                reinfData[c][n] = {amount: q, type: t};
+                console.log(n);
+                n++;
+                console.log(q + " " + t);
+            }
+        }
+
     }
-    console.log(building);
+
     if (0) {
         for (i=0; i<jsonPageDataCache.locationList.length; i++) {
             /* General information */
@@ -1598,7 +1642,12 @@ function generateStats()
             /* Ground, Orbit, Abundance */
             // console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
             /* Resources, Workers, Occupied Workers */
-            // console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
+            //m = jsonPageDataCache.locationList[i].mobileUnitCount.unitList;
+            //for (j=0; j<m.length; j++) {
+            //    console.log(m[j].name);
+            //}
+                //if (ships[key] === 0 || key === 'Soldier') {
+            //console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
             /* Income of Resources, Workers */
             // console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
         }
@@ -1671,18 +1720,20 @@ function generateStats()
     buf = document.getElementById('buildDiv');
     buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
     buf = document.getElementById('innerBuildDiv');
-    buf.innerHTML = "<div style='display: table-cell;'><strong>Currently constructing:</strong><ul id='buildList'></ul></div>";
-    buf.innerHTML += "<div style='display: table-cell; padding-left: 40px;'><strong>Currently training:</strong><ul id='trainList'></ul></div>";
+    buf.innerHTML = "<div style='display: table-cell; width: 20%;'><div class='header border' style='font-size: 18px; background-image: none;'>Currently constructing:</div><ul id='buildList'></ul></div>";
+    buf.innerHTML += "<div style='display: table-cell; width: 20%;'><div class='header border' style='font-size: 18px; background-image: none;'>Currently training:</div><ul id='trainList'></ul></div>";
+    buf.innerHTML += "<div style='display: table-cell; width: 25%;'><div class='header border' style='font-size: 18px; background-image: none;'>Available reinforcements:</div><ul id='reinfList'></ul></div>";
     let p = 0;
 
     for (const key of Object.keys(building).sort()) {
-        if (ships[key] === 0 || key === 'Soldier') {
+        if (ships[key] >= 0 || key === 'Soldier') {
             buf = document.getElementById('trainList');
         } else {
             buf = document.getElementById('buildList');
         }
         buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
     }
+
 
     if (document.getElementById('buildList').childElementCount === 0) {
         document.getElementById('buildList').innerHTML += "<li><em>nothing</em></li>";
@@ -1691,10 +1742,26 @@ function generateStats()
         document.getElementById('trainList').innerHTML += "<li><em>nothing</em></li>";
     }
 
+    if (Object.keys(reinfData).length === 0) {
+        document.getElementById('reinfList').innerHTML += "<li><em>nothing</em></li>";
+    } else {
+        buf = document.getElementById('reinfList');
+        for ([c, data] of Object.entries(reinfData)) {
+            p = getPlanetByCoord(c);
+            a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
+            a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
+            buf.innerHTML += "<div style='margin-left: -20px;'><strong>" + a + "</strong></div>";
+            for (i=0; i<data.length; i++) {
+                buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
+            }
+            console.log(data);
+        }
+    }
 
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>Planet Statistics</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopyPartial" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Partial Copy</span></button>';
 
     document.getElementById('btnCopy').addEventListener("click", function (e) {
         var turn = ' turn '+ turnNumber + ' ';
@@ -1716,8 +1783,8 @@ function generateStats()
             buf += "  -- nothing --\n";
         } else {
             for (const key of Object.keys(building).sort()) {
-                if (ships[key] !== 0 && key !== 'Soldier') {
-                    buf += "  " + building[key] + "x " + key.replaceAll("_", " ") + "\n";
+                if (!ships[key] && key !== 'Soldier') {
+                    buf += (building[key]).toString().padStart(8, ' ') + "x " + key.replaceAll("_", " ") + "\n";
                 }
             }
         }
@@ -1726,9 +1793,22 @@ function generateStats()
             buf += "  -- nothing --\n";
         } else {
             for (const key of Object.keys(building).sort()) {
-                if (ships[key] === 0 || key === 'Soldier') {
-                    buf += (building[key]).toString().padStart(6, ' ') + "x " + key.replaceAll("_", " ") + "\n";
+                if (ships[key] >= 0 || key === 'Soldier') {
+                    buf += (building[key]).toString().padStart(8, ' ') + "x " + key.replaceAll("_", " ") + "\n";
                 }
+            }
+        }
+        buf += "--- Reinforcements -------------------------------\n";
+        if (Object.keys(reinfData).length === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for ([c, data] of Object.entries(reinfData)) {
+                p = getPlanetByCoord(c);
+                buf += " ** " + c + " " + p.name + "\n";
+                for (i=0; i<data.length; i++) {
+                    buf += (data[i].amount).toString().padStart(8, ' ') + "x " + data[i].type.replaceAll("_", " ") + "\n";
+                }
+                console.log(data);
             }
         }
         buf += "```"
@@ -1782,24 +1862,24 @@ function getLogistics(res)
 
     const fmt = new Intl.NumberFormat('en-US');
 
-    /* If 1 freighter is sufficent, no need to continue */
-    if (res < logisticsCapacity.freighter) {
-        return "<span class='ofHidden metal'>1 <em>freighter</em></span>";
+    /* If 1 Freighter is sufficent, no need to continue */
+    if (res < logisticsCapacity.Freighter) {
+        return "<span class='ofHidden metal'>1 <em>Freighter</em></span>";
     }
 
-    ret += "<span class='ofHidden metal'>" + fmt.format(Math.ceil(res / logisticsCapacity.freighter)) + " <em>freighter</em></span> ";
-    ret += " OR <span class='ofHidden population'>" + fmt.format(Math.ceil(res / logisticsCapacity.merchant)) + " <em>merchant</em></span> ";
+    ret += "<span class='ofHidden metal'>" + fmt.format(Math.ceil(res / logisticsCapacity.Freighter)) + " <em>Freighter</em></span> ";
+    ret += " OR <span class='ofHidden population'>" + fmt.format(Math.ceil(res / logisticsCapacity.Merchant)) + " <em>Merchant</em></span> ";
     /* If 1 merchent is sufficent, no need to continue */
-    if (Math.ceil(res / logisticsCapacity.merchant) == 1) {
+    if (Math.ceil(res / logisticsCapacity.Merchant) == 1) {
         return ret;
     }
-    ret += " OR <span class='ofHidden food'>" + fmt.format(Math.ceil(res / logisticsCapacity.trader)) + " <em>trader</em></span> ";
-    /* If 1 trader is sufficent, no need to continue */
-    if (Math.ceil(res / logisticsCapacity.trader) == 1) {
+    ret += " OR <span class='ofHidden food'>" + fmt.format(Math.ceil(res / logisticsCapacity.Trader)) + " <em>Trader</em></span> ";
+    /* If 1 Trader is sufficent, no need to continue */
+    if (Math.ceil(res / logisticsCapacity.Trader) == 1) {
         return ret;
     }
-    /* Lastly add hulks */
-    ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.hulk)) + " <em>hulk</em></span> ";
+    /* Lastly add Hulks */
+    ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.Hulk)) + " <em>Hulk</em></span> ";
     return ret;
 }
 
