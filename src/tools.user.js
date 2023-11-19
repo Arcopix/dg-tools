@@ -1711,6 +1711,26 @@ function generateStats()
         buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
         buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
         buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
+        buf += "--- Constructing ---------------------------------\n";
+        if (document.getElementById('buildList').childElementCount === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for (const key of Object.keys(building).sort()) {
+                if (ships[key] !== 0 && key !== 'Soldier') {
+                    buf += "  " + building[key] + "x " + key.replaceAll("_", " ") + "\n";
+                }
+            }
+        }
+        buf += "--- Training -------------------------------------\n";
+        if (document.getElementById('trainList').childElementCount === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for (const key of Object.keys(building).sort()) {
+                if (ships[key] === 0 || key === 'Soldier') {
+                    buf += (building[key]).toString().padStart(6, ' ') + "x " + key.replaceAll("_", " ") + "\n";
+                }
+            }
+        }
         buf += "```"
 
         navigator.clipboard.writeText(buf);
