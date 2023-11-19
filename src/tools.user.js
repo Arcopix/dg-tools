@@ -549,7 +549,7 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     /* By default we should add this fleet to the fleetArray */
     p = true;
     for (j = 0; j<i.length; j++) {
-        if (i[j].url == window.location.href) {
+        if (i[j].url === window.location.href) {
             /* If we find the URL in the fleetArray, set p to FALSE and leave the for */
             p = false;
             break;
@@ -693,7 +693,7 @@ if (cfgRadarSorting && location.href.includes('/radar/')) {
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
                 if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-                    if (n = ((n+1)%2)) {
+                    if (n++%2===0)) {
                         crow[j].className = "opacBackground lightBorderBottom entry";
                     } else {
                         crow[j].className = "opacLightBackground lightBorderBottom entry";
@@ -831,7 +831,7 @@ for (i=0; i<allForms.length; i++) {
                     /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
 
                     /* All such cases do not have ID at the current time, but who knows */
-                    if (children[n].id == '') {
+                    if (children[n].id === '') {
                         const newId = makeId(8);
                         children[n].id = newId;
                         /* Update the original DIV to have label with the newId of the checkbox */
