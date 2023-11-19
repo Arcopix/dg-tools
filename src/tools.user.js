@@ -700,13 +700,13 @@ if (cfgRadarSorting && location.href.includes('/radar/')) {
                     }
                     //alert(crow[j].className);
                     radars[i].appendChild(crow[j]);
-                    /* Nullify the row so we would not have to search it by class, text and so on */
+                    /* Nullify the row, so we would not have to search it by class, text and so on */
                     crow[j] = 0;
                 }
             }
         }
 
-        /* Make sure to add any rows that are not already aded/invalidated */
+        /* Make sure to add any rows that are not already added/invalidated */
         for (j=crow.length-1; j>=0; j--) {
             if (crow[j]) {
                 radars[i].appendChild(crow[j]);
