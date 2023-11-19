@@ -693,7 +693,7 @@ if (cfgRadarSorting && location.href.includes('/radar/')) {
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
                 if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-                    if (n++%2===0)) {
+                    if (n++%2===0) {
                         crow[j].className = "opacBackground lightBorderBottom entry";
                     } else {
                         crow[j].className = "opacLightBackground lightBorderBottom entry";
