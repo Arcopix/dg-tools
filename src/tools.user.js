@@ -1433,6 +1433,21 @@ function getPlanetByName(name)
     return null;
 }
 
+function getResource(planet, type)
+{
+    var i;
+    if (!planet.mobileUnitCount.unitList) {
+        console.log("Missing mobileUnitCount");
+        return null;
+    }
+    for (i=0; i<planet.mobileUnitCount.unitList.length; i++) {
+        if (planet.mobileUnitCount.unitList[i].name === type) {
+            return planet.mobileUnitCount.unitList[i];
+        }
+    }
+    return null;
+}
+
 function getIncome(planet, type)
 {
     var i;
@@ -1465,6 +1480,7 @@ function showScanMenu(e)
 {
     console.log("Executing showScanMenu");
     var commsLink = [];
+    var energy;
     const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
     const m = document.getElementById('dhFleetListMenu');
 
@@ -1477,16 +1493,23 @@ function showScanMenu(e)
         p = jsonPageDataCache.locationList[i];
         for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
             if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
-                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
+                energy = getResource(p, 'Energy').amount;
+                /* Do not add planets with insufficent energy for anything */
+                if (energy >= 500) {
+                    commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy });
+                }
                 break;
             }
         }
     }
 
     if (commsLink.length === 0) {
-        window.alert('No planet with comms is detected!');
+        window.alert('No planet with Comms and sufficient energy was detected!');
         return;
     }
+
+    /* Sort by Energy descending-ly as we want the planet with most energy on the top */
+    commsLink.sort(function(a,b) {return (a.energy > b.energy) ? -1 : 1;} );
 
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
