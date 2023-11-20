@@ -1491,14 +1491,12 @@ function showScanMenu(e)
 
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         p = jsonPageDataCache.locationList[i];
-        for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
-            if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
-                energy = getResource(p, 'Energy').amount;
-                /* Do not add planets with insufficent energy for anything */
-                if (energy >= 500) {
-                    commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy });
-                }
-                break;
+        c = getResource(p, 'Comms_Satellite');
+        if (c && c.amount ===1 ) {
+            energy = getResource(p, 'Energy').amount;
+            /* Do not add planets with insufficent energy for anything */
+            if (energy >= 500) {
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy });
             }
         }
     }
