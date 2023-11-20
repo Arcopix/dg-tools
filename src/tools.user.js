@@ -166,6 +166,8 @@ if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' &
 	jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
 }
 
+jsonFleetCache = JSON.parse(localStorage.getItem('fleetArray'));
+
 addGlobalStyle('[data-tooltip] { display: inline-block; position: relative; cursor: help;  padding: 4px; }');
 addGlobalStyle('[data-tooltip]:before { content: attr(data-tooltip); display: none; position: absolute; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 4px 8px; font-size: 14px; line-height: 1.4; min-width: 100px; text-align: center; border-radius: 4px; }');
 addGlobalStyle('[data-tooltip-position="top"]:before, [data-tooltip-position="bottom"]:before { left: 50%; -ms-transform: translateX(-50%); -moz-transform: translateX(-50%); -webkit-transform: translateX(-50%); transform: translateX(-50%); }');
@@ -530,17 +532,7 @@ if (location.href.includes('/fleets/')) {
     }
 
     /* Cache fleets for future usage */
-    var fleetArray = [];
-    const table = document.getElementById("fleetList");
-    rows = table.querySelectorAll('.entry');
-    rowsArray = Array.from(rows);
-
-    for (i = 0; i<rowsArray.length; i++) {
-        const link = rowsArray[i].querySelector('.name a');
-        var fleet = { name: link.text, url: link.href };
-        fleetArray.push(fleet);
-    }
-    localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+    cacheFleets();
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
@@ -1130,6 +1122,45 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
+}
+
+function cacheFleets()
+{
+    var fleetArray = [];
+    const table = document.getElementById("fleetList");
+    const idRegex = /\/fleet\/([0-9]+)/;
+
+    rows = table.querySelectorAll('.entry');
+    rowsArray = Array.from(rows);
+
+    console.log("Caching fleets");
+
+    for (i = 0; i<rowsArray.length; i++) {
+        const link = rowsArray[i].querySelector('.name a');
+        const linkId = link.href.match(idRegex);
+        const fleetData = getFleetById(parseInt(linkId[1]));
+        if (!fleetData.composition) {
+            composition = null;
+        } else {
+            composition = fleetData.composition;
+        }
+        console.log(fleetData);
+        var fleet = { id: parseInt(linkId[1]), name: link.text, url: link.href, composition: composition };
+        fleetArray.push(fleet);
+    }
+    console.log(fleetArray);
+    localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+}
+
+function getFleetById(id)
+{
+    for (i=0; i<jsonFleetCache.length; i++) {
+        if (jsonFleetCache[i].id === id) {
+            return jsonFleetCache[i];
+        }
+    }
+    console.log(`Cannot find fleet by ID ${id}`);
+    return null;
 }
 
 function sortFleets()
