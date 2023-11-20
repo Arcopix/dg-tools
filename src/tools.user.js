@@ -72,6 +72,13 @@ addGlobalStyle(`
   margin-top: 4px;
   margin-right: 20px;   
 }
+.smallHeader {
+  padding: 4px;
+  font-family: DarkGalaxy, sans-serif;
+  font-size: 18px;
+  line-height: 22px;
+  color: #fff;
+}
 `);
 
 /* Development warning */
@@ -1772,9 +1779,11 @@ function generateStats()
     buf = document.getElementById('buildDiv');
     buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
     buf = document.getElementById('innerBuildDiv');
-    buf.innerHTML = "<div style='display: table-cell; width: 20%;'><div class='header border' style='font-size: 18px; background-image: none;'>Currently constructing:</div><ul id='buildList'></ul></div>";
-    buf.innerHTML += "<div style='display: table-cell; width: 20%;'><div class='header border' style='font-size: 18px; background-image: none;'>Currently training:</div><ul id='trainList'></ul></div>";
-    buf.innerHTML += "<div style='display: table-cell; width: 25%;'><div class='header border' style='font-size: 18px; background-image: none;'>Available reinforcements:</div><ul id='reinfList'></ul></div>";
+
+    buf.innerHTML =  "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently constructing:</div><ul id='buildList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently training:</div><ul id='trainList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Available reinforcements:</div><ul id='reinfList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'><!--Reserved:--></div><ul id='tbaList'></ul></div>";
     let p = 0;
 
     for (const key of Object.keys(building).sort()) {
