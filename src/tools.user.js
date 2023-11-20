@@ -528,10 +528,8 @@ if (location.href.includes('/fleets/')) {
     if (cfgFleetSorting) {
         sortFleets();
     }
-}
 
-/* Cache fleets for future usage */
-if (location.href.includes('/fleets/')) {
+    /* Cache fleets for future usage */
     var fleetArray = [];
     const table = document.getElementById("fleetList");
     rows = table.querySelectorAll('.entry');
