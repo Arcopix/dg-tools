@@ -20,6 +20,8 @@
 var i, j, k, l, m, n, p, r, q, s, t;
 var buf;
 
+var __HIDE_MENU_INSTRUCTION__ = false;
+
 var browser="chrome";
 
 /* Common data */
@@ -1508,6 +1510,7 @@ function showScanMenu(e)
         newDiv.innerHTML = '<a href="' + url + '">' + commsLink[i].name + '</a>';
         m.appendChild(newDiv);
     }
+    implementContextMenu();
     m.style.display = 'block';
 }
 
@@ -1549,7 +1552,35 @@ function showJumpMenu(e)
         newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
         m.appendChild(newDiv);
     }
+    implementContextMenu();
     m.style.display = 'block';
+}
+
+function implementContextMenu()
+{
+    const m = document.getElementById('dhFleetListMenu');
+    if (!__HIDE_MENU_INSTRUCTION__) {
+        document.addEventListener("click", function (e) {
+            console.log('Click click');
+            if (e.composedPath().includes(m)) {
+                return;
+            }
+            q = document.querySelectorAll(".scanIcon");
+            for (i=0; i<q.length;i++) {
+                if (e.composedPath().includes(q[i])) {
+                    return;
+                }
+            }
+            q = document.querySelectorAll(".jumpTo");
+            for (i=0; i<q.length;i++) {
+                if (e.composedPath().includes(q[i])) {
+                    return;
+                }
+            }
+            m.style.display = 'none';
+        });
+        __HIDE_MENU_INSTRUCTION__ = true;
+    }
 }
 
 function generateStats()
