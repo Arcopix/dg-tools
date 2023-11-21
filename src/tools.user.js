@@ -568,6 +568,11 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
             console.log('Cannot find name for fleet with URL ' + window.location.href);
         }
     }
+
+    q = document.querySelectorAll('.structureImage');
+    for(i=0; i<q.length; i++) {
+        console.log(q[i].parentNode);
+    }
 }
 
 /* Fix ships description */
@@ -1529,10 +1534,14 @@ function showScanMenu(e)
         p = jsonPageDataCache.locationList[i];
         c = getResource(p, 'Comms_Satellite');
         if (c && c.amount ===1 ) {
-            energy = getResource(p, 'Energy').amount;
+            energy = getResource(p, 'Energy');
+            /* Out of energy */
+            if (!energy) {
+                continue;
+            }
             /* Do not add planets with insufficent energy for anything */
-            if (energy >= 500) {
-                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy });
+            if (energy.amount >= 500) {
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy.amount });
             }
         }
     }
