@@ -1149,19 +1149,15 @@ function cacheFleets()
 		if (!fleetData) {
 			composition = null;
 		} else {
-			console.log(fleetData);
-			
 			if (!fleetData.composition) {
 			    composition = null;
 			} else {
 			    composition = fleetData.composition;
             }
 		}
-        console.log(fleetData);
         var fleet = { id: parseInt(linkId[1]), name: link.text, url: link.href, composition: composition };
         fleetArray.push(fleet);
     }
-    console.log(fleetArray);
     localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 }
 
