@@ -544,11 +544,34 @@ if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
-    i = JSON.parse(localStorage.getItem('fleetArray'));
-	j = window.location.href.match(/\/fleet\/([0-9]+)[\/]?$/);
-	j = j[1];
+    parseFleet();
+}
+
+function parseFleet()
+{
+	var fleetArray = JSON.parse(localStorage.getItem('fleetArray'));
+	var fleetID = window.location.href.match(/\/fleet\/([0-9]+)[\/]?$/);
+	fleetID = parseInt(fleetID[1]);
+	var composition = {};
+	var s;
 	
-	p = getFleetById(parseInt(j));
+	p = getFleetById(fleetID);
+	
+	/* Parse fleet composition */
+    q = document.querySelectorAll('.structureImage');
+    for (i=0; i<q.length; i++) {
+		s = [];
+		t = q[i].parentNode.querySelectorAll('div');
+		if (t[1]) {
+			t = t[1].innerText.trim();
+			console.log(t);
+			s[1] = parseInt(t.split(' ', 1)[0].replace('x', ''));
+			s[0] = t.slice(t.indexOf(' ')).trim().replaceAll(' ', '_');
+			composition[s[0]] = s[1];
+		} else {
+			console.log("Cannot find node");
+		}
+    }
 	
     /* If we need to add it */
     if (!p) {
@@ -556,17 +579,23 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
         q = q.trim();
         if (q) {
             console.log('Adding fleet ' + q + ' to the fleetArray cache');
-            i.push({'id': j, 'name': q, 'url': window.location.href, 'composition': null});
-            localStorage.setItem('fleetArray', JSON.stringify(i));
+            fleetArray.push({'id': fleetID, 'name': q, 'url': window.location.href, 'composition': composition});
+            localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
         } else {
             console.log('Cannot find name for fleet with URL ' + window.location.href);
+			return;
         }
-    }
-
-    q = document.querySelectorAll('.structureImage');
-    for (i=0; i<q.length; i++) {
-        console.log(q[i].parentNode);
-    }
+    } else {
+		for (i=0; i<fleetArray.length; i++) {
+			if (fleetArray[i].id === fleetID) {
+				fleetArray[i].composition = composition;
+				break;
+			}
+		}
+		localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+	}
+	
+	console.log(composition);
 }
 
 /* Fix ships description */
