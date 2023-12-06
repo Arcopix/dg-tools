@@ -545,24 +545,18 @@ if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     i = JSON.parse(localStorage.getItem('fleetArray'));
-    /* By default we should add this fleet to the fleetArray */
-    p = true;
-    for (j = 0; j<i.length; j++) {
-        if (i[j].url === window.location.href) {
-            /* If we find the URL in the fleetArray, set p to FALSE and leave the for */
-            p = false;
-            break;
-        }
-        console.log(i[j]);
-    }
-
+	j = window.location.href.match(/\/fleet\/([0-9]+)[\/]?$/);
+	j = j[1];
+	
+	p = getFleetById(parseInt(j));
+	
     /* If we need to add it */
-    if (p) {
+    if (!p) {
         q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
         q = q.trim();
         if (q) {
             console.log('Adding fleet ' + q + ' to the fleetArray cache');
-            i.push({'name': q, 'url': window.location.href});
+            i.push({'id': j, 'name': q, 'url': window.location.href, 'composition': null});
             localStorage.setItem('fleetArray', JSON.stringify(i));
         } else {
             console.log('Cannot find name for fleet with URL ' + window.location.href);
@@ -570,7 +564,7 @@ if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     }
 
     q = document.querySelectorAll('.structureImage');
-    for(i=0; i<q.length; i++) {
+    for (i=0; i<q.length; i++) {
         console.log(q[i].parentNode);
     }
 }
