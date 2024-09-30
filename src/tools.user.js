@@ -1687,6 +1687,7 @@ function generateStats()
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var reinfData = {};
+	var transData = {};
     var building = {};
 
     document.getElementById('btnExport').style.display = 'none';
@@ -1736,24 +1737,33 @@ function generateStats()
             c = '0.0.0.0';
         }
         n = 0;
+		m = 0;
         for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
             t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
             q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
-            if ((ships[t] || t === 'Soldier') && !logisticsCapacity[t]) {
-                /* Skip soldiers less than 1000 */
-                if (t === 'Soldier' && q<1000) {
-                    continue;
-                }
-                if (!reinfData[c]) {
-                    reinfData[c] = [];
-                }
-                reinfData[c][n] = {amount: q, type: t};
-                console.log(n);
-                n++;
-                console.log(q + " " + t);
-            }
-        }
+			
+			if (!ships[t] && t !== 'Soldier') {
+				continue;
+			}
 
+			if (logisticsCapacity[t]) {
+				if (!transData[c]) {
+                    transData[c] = [];
+                }
+                transData[c][m] = {amount: q, type: t};
+                m++;
+			} else {
+				/* Skip soldiers less than 1000 */
+				if (t === 'Soldier' && q<1000) {
+					continue;
+				}
+				if (!reinfData[c]) {
+					reinfData[c] = [];
+				}
+				reinfData[c][n] = {amount: q, type: t};
+				n++;
+			}
+        }
     }
 
     if (0) {
@@ -1849,7 +1859,7 @@ function generateStats()
     buf.innerHTML =  "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently constructing:</div><ul id='buildList'></ul></div>";
     buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently training:</div><ul id='trainList'></ul></div>";
     buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Available reinforcements:</div><ul id='reinfList'></ul></div>";
-    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'><!--Reserved:--></div><ul id='tbaList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Parked transports:</div><ul id='transportList'></ul></div>";
     let p = 0;
 
     for (const key of Object.keys(building).sort()) {
@@ -1873,7 +1883,26 @@ function generateStats()
         document.getElementById('reinfList').innerHTML += "<li><em>nothing</em></li>";
     } else {
         buf = document.getElementById('reinfList');
+		console.log(reinfData);
         for ([c, data] of Object.entries(reinfData)) {
+            p = getPlanetByCoord(c);
+            a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
+            a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
+            buf.innerHTML += "<div style='margin-left: -20px;'><strong>" + a + "</strong></div>";
+			console.log(data);
+            for (i=0; i<data.length; i++) {
+                buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
+            }
+            console.log(data);
+        }
+    }
+	
+	if (Object.keys(transData).length === 0) {
+        document.getElementById('transportList').innerHTML += "<li><em>nothing</em></li>";
+    } else {
+        buf = document.getElementById('transportList');
+		console.log(transData);
+        for ([c, data] of Object.entries(transData)) {
             p = getPlanetByCoord(c);
             a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
             a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
