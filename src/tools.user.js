@@ -1700,7 +1700,6 @@ function generateStats()
 
     const fmt = new Intl.NumberFormat('en-US');
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    console.log(total);
 
     genData.count = jsonPageDataCache.locationList.length;
     //console.log(jsonPageDataCache);
@@ -1794,28 +1793,6 @@ function generateStats()
 				reinfData[c][n] = {amount: q, type: t};
 				n++;
 			}
-        }
-    }
-
-    if (0) {
-        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
-            /* General information */
-            //console.log(jsonPageDataCache.locationList[i]);
-
-            /* What are we currently building */
-            // console.log(jsonPageDataCache.locationList[i].executingItems);
-
-            /* Ground, Orbit, Abundance */
-            // console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
-            /* Resources, Workers, Occupied Workers */
-            //m = jsonPageDataCache.locationList[i].mobileUnitCount.unitList;
-            //for (j=0; j<m.length; j++) {
-            //    console.log(m[j].name);
-            //}
-                //if (ships[key] === 0 || key === 'Soldier') {
-            //console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
-            /* Income of Resources, Workers */
-            // console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
         }
     }
 
@@ -1914,17 +1891,14 @@ function generateStats()
         document.getElementById('reinfList').innerHTML += "<li><em>nothing</em></li>";
     } else {
         buf = document.getElementById('reinfList');
-		console.log(reinfData);
         for ([c, data] of Object.entries(reinfData)) {
             p = getPlanetByCoord(c);
             a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
             a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
             buf.innerHTML += "<div style='margin-left: -20px;'><strong>" + a + "</strong></div>";
-			console.log(data);
             for (i=0; i<data.length; i++) {
                 buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
             }
-            console.log(data);
         }
     }
 	
@@ -1932,7 +1906,6 @@ function generateStats()
         document.getElementById('transportList').innerHTML += "<li><em>nothing</em></li>";
     } else {
         buf = document.getElementById('transportList');
-		console.log(transData);
         for ([c, data] of Object.entries(transData)) {
             p = getPlanetByCoord(c);
             a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
@@ -1941,7 +1914,6 @@ function generateStats()
             for (i=0; i<data.length; i++) {
                 buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
             }
-            console.log(data);
         }
     }
 
