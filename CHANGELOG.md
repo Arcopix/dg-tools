@@ -1,3 +1,20 @@
+## Version 0.5.0007
+
+**New features:**
+
+1. Planet statistics now has _"Partial Copy"_ button which only copies the income
+1. Planet statistics now has _"Available reinforcements"_ which lists any available warships, invasions and soldiers
+1. Planet statistics now has _"Parked transports"_ which lists any available transport ships
+
+**Updates:**
+
+1. Planet statistics output received an update in order to have better output
+
+**Bug Fixes:**
+
+1. Now workers statistics is now taking into consideration "available living space" on each planet, thus providing accurate information.
+
+
 ## Version 0.4.0007
 **New features:**
 
