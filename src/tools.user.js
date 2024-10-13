@@ -1687,8 +1687,12 @@ function generateStats()
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var reinfData = {};
-	var transData = {};
+    var transData = {};
     var building = {};
+    var localWorker = 0;
+    var newWorker = 0;
+    var maxWorker = 0;
+
 
     document.getElementById('btnExport').style.display = 'none';
     document.getElementById('btnStats').style.display = 'none';
@@ -1703,9 +1707,36 @@ function generateStats()
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         genData.ground += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
         genData.orbit += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        localWorker = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + 
+			getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+
         genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker");
-        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
-        genData.newWorker += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+        genData.worker += localWorker;
+	
+        /* Calculate max living space fot the current planet */
+        maxWorker = 50000 + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")*100000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metropolis")*200000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Living_Quarters")*50000 + 
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Habitat")*100000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Orbital_Ring")*1500000;
+	
+       	/* Copy newWorker to a local variable (for shortness) */
+        newWorker = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+    
+        /* If maxWorker == localWorker (at max storage level OR
+         * somehow maxWorker less than localWorker (should not be possible */
+    	if (maxWorker <= localWorker) {
+            /* No new workers will be produced */
+            newWorker = 0;
+        } else {
+            if (localWorker + newWorker > maxWorker) {
+                /* Available space is less than max living space, limit it */
+                newWorker = maxWorker - localWorker;
+            }
+        }
+        
+        genData.newWorker += newWorker;
+	
         genData.soldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
         genData.newSoldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "CreatingSoldier");
 
