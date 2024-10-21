@@ -763,6 +763,31 @@ if (location.href.includes('/planets/')) {
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
     document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
+    
+    buf.innerHTML += '<input type="text" id="filterPlanet" class="fleet-filter large-input" style="margin-top: 6px;" placeholder="Filter planets">';
+    
+    document.getElementById('filterPlanet').addEventListener("keyup", filterPlanet, false);
+
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='input') {
+            return;
+        }
+        if (e.which === 70 && e.ctrlKey) {
+            document.getElementById("filterPlanet").focus();
+            console.log('Focusing on filterPlanet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+        if (e.which === 191) {
+            document.getElementById("filterPlanet").focus();
+            console.log('Focusing on filterPlanet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+    });
+
 }
 
 if (window.location.href.match(/\/planet\/[0-9]+\//)) {
@@ -1299,6 +1324,27 @@ function sortFleets()
     table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
     rowsArray.forEach(row => table.appendChild(row));
 
+    /* Fix backgrounds due to resorting */
+    fixBackground(table,'.entry');
+}
+
+function filterPlanet(f)
+{
+    data = document.getElementById('filterPlanet').value;
+    /* Filter the data only to the entries matching data */
+    var re = new RegExp(".*" + data + ".*", "i");
+    
+    const table = document.getElementById("planetList");
+    var rows = table.querySelectorAll('.locationWrapper');
+    var rowsArray = Array.from(rows);
+
+    for (i=0; i<rowsArray.length; i++) {
+        if (!re.exec(rowsArray[i].innerText)) {
+            rowsArray[i].style.display = 'none';
+        } else {
+            rowsArray[i].style.display = '';
+        }
+    }
     /* Fix backgrounds due to resorting */
     fixBackground(table,'.entry');
 }
