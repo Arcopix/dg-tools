@@ -692,7 +692,13 @@ if (cfgShowAS) {
 			t = document.createElement('div');
 			t.className = 'planetHeadSection';
 			t.style.marginTop = '2px';
-			t.innerHTML = `<div class="lightBorder ofHidden opacBackground"><span class="fleet" style="font-weight: bold">Landed ships: </span>${ship_str}</div>`;
+			t.innerHTML = `
+<div class="lightBorder ofHidden opacBackground padding fleetList">
+  <div class="left">
+    <span class="fleet" style="font-weight: bold">Landed ships: </span>
+    <span class="fleet">${ship_str}</span>
+  </div>
+</div>`;
 /*
         for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
             t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
@@ -739,7 +745,7 @@ buf += "--- Reinforcements -------------------------------\n";
 			console.log("Adding blh");
 		}
 	}
-} else console.log("not enabled");
+}
 
 if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
