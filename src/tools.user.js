@@ -671,22 +671,44 @@ if (cfgShowAS) {
 			
 			q = q.querySelector('div');
 			
+			shipBuf = [];
+			wfShipStr = "";
+			trShipStr = "";
 			
-			ship_str = "";
-			
-			for(j=0; j<p.mobileUnitCount.unitList.length; j++) {
+			for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
 				t = p.mobileUnitCount.unitList[j].name;
 				q = p.mobileUnitCount.unitList[j].amount;
 				
 				if (!ships[t]) {
 					continue;
 				}
-				ship_str = ship_str + " <em>" + q + "x</em> " + t.replaceAll('_', ' ');
-				console.log(p.mobileUnitCount.unitList[j]);
+				
+				shipBuf[t] = q;
 			}
 			
-			if (ship_str==="") {
+			for ([t, q] of Object.entries(ships)) {
+				/* If not set - no such ships continue */
+				if (typeof shipBuf[t] === 'undefined') {
+					continue;
+				}
+				
+				if (logisticsCapacity[t]) {
+					trShipStr = trShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+				} else {
+					wfShipStr = wfShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+				}
+			}
+			
+			/* Nothing landed - skip */
+			if (trShipStr==="" && wfShipStr==="") {
 				continue;
+			}
+			
+			/* Both are set */
+			if (trShipStr!=="" && wfShipStr!=="") {
+				shipStr = wfShipStr + " | " + trShipStr;
+			} else {
+				shipStr = wfShipStr + trShipStr;
 			}
 			
 			t = document.createElement('div');
@@ -696,51 +718,9 @@ if (cfgShowAS) {
 <div class="lightBorder ofHidden opacBackground padding fleetList">
   <div class="left">
     <span class="fleet" style="font-weight: bold">Landed ships: </span>
-    <span class="fleet">${ship_str}</span>
+    <span class="fleet">${shipStr}</span>
   </div>
 </div>`;
-/*
-        for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
-            t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
-            q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
-			
-			if (!ships[t] && t !== 'Soldier') {
-				continue;
-			}
-
-			if (logisticsCapacity[t]) {
-				if (!transData[c]) {
-                    transData[c] = [];
-                }
-                transData[c][m] = {amount: q, type: t};
-                m++;
-			} else {
-				if (t === 'Soldier' && q<1000) {
-					continue;
-				}
-				if (!reinfData[c]) {
-					reinfData[c] = [];
-				}
-				reinfData[c][n] = {amount: q, type: t};
-				n++;
-			}
-        }
-*/
-        /* 
-buf += "--- Reinforcements -------------------------------\n";
-        if (Object.keys(reinfData).length === 0) {
-            buf += "  -- nothing --\n";
-        } else {
-            for ([c, data] of Object.entries(reinfData)) {
-                p = getPlanetByCoord(c);
-                buf += " ** " + c + " " + p.name + "\n";
-                for (i=0; i<data.length; i++) {
-                    buf += (data[i].amount).toString().padStart(8, ' ') + "x " + data[i].type.replaceAll("_", " ") + "\n";
-                }
-                console.log(data);
-            }
-        }
-*/
 			planetsDiv[i].querySelector('div').appendChild(t);
 			console.log("Adding blh");
 		}
