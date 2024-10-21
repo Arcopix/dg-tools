@@ -115,6 +115,7 @@ var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
 var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
+var cfgShowAS = (localStorage.getItem('cfgShowAS')!=='')?parseBool(localStorage.getItem('cfgShowAS')):true;
 
 
 
@@ -658,6 +659,87 @@ if (cfgShowSM) {
         }
     }
 }
+
+if (cfgShowAS) {
+	if (location.href.includes('/planets/')) {
+		let planetsDiv = document.querySelectorAll('div .locationWrapper');
+		for (i=0; i<planetsDiv.length; i++) {
+			let coord = planetsDiv[i].querySelector('div .coords').innerText;
+			p = getPlanetByCoord(coord);
+			/* FIXME This is a bit dirty without any checks */
+			q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+			
+			q = q.querySelector('div');
+			
+			
+			ship_str = "";
+			
+			for(j=0; j<p.mobileUnitCount.unitList.length; j++) {
+				t = p.mobileUnitCount.unitList[j].name;
+				q = p.mobileUnitCount.unitList[j].amount;
+				
+				if (!ships[t]) {
+					continue;
+				}
+				ship_str = ship_str + " <em>" + q + "x</em> " + t.replaceAll('_', ' ');
+				console.log(p.mobileUnitCount.unitList[j]);
+			}
+			
+			if (ship_str==="") {
+				continue;
+			}
+			
+			t = document.createElement('div');
+			t.className = 'planetHeadSection';
+			t.style.marginTop = '2px';
+			t.innerHTML = `<div class="lightBorder ofHidden opacBackground"><span class="fleet" style="font-weight: bold">Landed ships: </span>${ship_str}</div>`;
+/*
+        for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
+            t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
+            q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
+			
+			if (!ships[t] && t !== 'Soldier') {
+				continue;
+			}
+
+			if (logisticsCapacity[t]) {
+				if (!transData[c]) {
+                    transData[c] = [];
+                }
+                transData[c][m] = {amount: q, type: t};
+                m++;
+			} else {
+				if (t === 'Soldier' && q<1000) {
+					continue;
+				}
+				if (!reinfData[c]) {
+					reinfData[c] = [];
+				}
+				reinfData[c][n] = {amount: q, type: t};
+				n++;
+			}
+        }
+*/
+        /* 
+buf += "--- Reinforcements -------------------------------\n";
+        if (Object.keys(reinfData).length === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for ([c, data] of Object.entries(reinfData)) {
+                p = getPlanetByCoord(c);
+                buf += " ** " + c + " " + p.name + "\n";
+                for (i=0; i<data.length; i++) {
+                    buf += (data[i].amount).toString().padStart(8, ' ') + "x " + data[i].type.replaceAll("_", " ") + "\n";
+                }
+                console.log(data);
+            }
+        }
+*/
+			planetsDiv[i].querySelector('div').appendChild(t);
+			console.log("Adding blh");
+		}
+	}
+} else console.log("not enabled");
 
 if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
@@ -2280,6 +2362,7 @@ function savePluginConfiguration()
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
     localStorage.setItem('cfgShowSM', document.getElementById('cfgShowSM').checked);
+    localStorage.setItem('cfgShowAS', document.getElementById('cfgShowAS').checked);
 
     showNotification("Settings saved successfully");
 }
@@ -2298,6 +2381,7 @@ function dumpPluginConfiguration()
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
     console.log('cfgShowSM = ' + localStorage.getItem('cfgShowSM'));
+    console.log('cfgShowAS = ' + localStorage.getItem('cfgShowAS'));
 }
 
 function showPluginConfiguration()
@@ -2367,6 +2451,7 @@ function showPluginConfiguration()
   </div>
   <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowSM" name="cfgShowSM" value=""/> <label for="cfgShowSM">Show ST/GB/JG in planet list</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowAS" name="cfgShowAS" value=""/> <label for="cfgShowAS">Show available ships in planet list</label></div>
   </div>` +
     '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
     '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
@@ -2401,6 +2486,7 @@ function showPluginConfiguration()
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
     document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
     document.getElementById('cfgShowSM').checked = parseBool(localStorage.getItem('cfgShowSM'));
+    document.getElementById('cfgShowAS').checked = parseBool(localStorage.getItem('cfgShowAS'));
 
     /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
@@ -2542,6 +2628,7 @@ function initializeConfig()
     localStorage.setItem('cfgFleetSorting', 'true');
     localStorage.setItem('cfgPlanetSorting', 'true');
     localStorage.setItem('cfgShowSM', 'true');
+    localStorage.setItem('cfgShowAS', 'true');
 
     window.alert('Initializing config');
 }
