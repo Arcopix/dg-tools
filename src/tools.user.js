@@ -336,7 +336,7 @@ for (i=0; i<elems.length; i++) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
     document.addEventListener("keydown", (e) => {
-        if (document.activeElement.tagName==='input') {
+        if (document.activeElement.tagName==='INPUT') {
             return;
         }
         if (e.which === 37 && !e.altKey && !e.ctrlKey) {
@@ -513,7 +513,7 @@ if (location.href.includes('/fleets/')) {
     document.getElementById('filterFleet').addEventListener("keyup", filterFleet, false);
 
     document.addEventListener("keydown", (e) => {
-        if (document.activeElement.tagName==='input') {
+        if (document.activeElement.tagName==='INPUT') {
             return;
         }
         if (e.which === 70 && e.ctrlKey) {
@@ -769,7 +769,7 @@ if (location.href.includes('/planets/')) {
     document.getElementById('filterPlanet').addEventListener("keyup", filterPlanet, false);
 
     document.addEventListener("keydown", (e) => {
-        if (document.activeElement.tagName==='input') {
+        if (document.activeElement.tagName==='INPUT') {
             return;
         }
         if (e.which === 70 && e.ctrlKey) {
