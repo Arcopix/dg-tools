@@ -493,6 +493,10 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 /* Convert any friendly planets to link to the targeted planet instead of navigation */
 buf = document.querySelectorAll(".friendly");
 for (i=0; i<buf.length; i++) {
+    /* If it is link to a fleet -> do not replace as the fleet is named after the planet */
+    if (buf[i].querySelector('a').href.includes('/fleet/')) {
+        continue;
+    }
     let p = getPlanetByName(buf[i].innerText);
     if (!p) {
         continue;
@@ -1267,7 +1271,7 @@ function cacheFleets()
 
 function getFleetById(id)
 {
-	var i;
+    var i;
     for (i=0; i<jsonFleetCache.length; i++) {
         if (jsonFleetCache[i].id === id) {
             return jsonFleetCache[i];
