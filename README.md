@@ -36,8 +36,8 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 1. Download/install Tampermonkey plugin for your browser (https://www.tampermonkey.net/).
 1. Enable Tampermonkey plugin
 1. Open the link depending on the version
-  * Stable https://github.com/Arcopix/dg-tools/raw/master/tools.user.js
-  * Development https://github.com/Arcopix/dg-tools/raw/dg-tools-v4-dev/tools.user.js
+  * Stable https://github.com/Arcopix/dg-tools/raw/master/src/tools.user.js
+  * Development *(currently defunct)* https://github.com/Arcopix/dg-tools/raw/dg-tools-v4-dev/tools.user.js
 
 **Special thanks**
 
