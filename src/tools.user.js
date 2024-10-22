@@ -579,6 +579,9 @@ if (location.href.includes('/fleets/')) {
 
     document.addEventListener("keydown", (e) => {
         if (document.activeElement.tagName==='INPUT') {
+            if (e.which === 27) {
+                document.getElementById('filterFleet').value = '';
+            }
             return;
         }
         if (e.which === 70 && e.ctrlKey) {
@@ -824,17 +827,20 @@ if (location.href.includes('/planets/')) {
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnExport" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Export</span></button>';
+    buf.innerHTML += '<input type="text" id="filterPlanet" class="fleet-filter large-input" style="margin-top: 6px;" placeholder="Filter planets">';
 
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
     document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
     
-    buf.innerHTML += '<input type="text" id="filterPlanet" class="fleet-filter large-input" style="margin-top: 6px;" placeholder="Filter planets">';
     
     document.getElementById('filterPlanet').addEventListener("keyup", filterPlanet, false);
 
     document.addEventListener("keydown", (e) => {
         if (document.activeElement.tagName==='INPUT') {
+            if (e.which === 27) {
+                document.getElementById('filterPlanet').value = '';
+            }
             return;
         }
         if (e.which === 70 && e.ctrlKey) {
