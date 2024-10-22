@@ -22,7 +22,8 @@ var buf;
 
 var __HIDE_MENU_INSTRUCTION__ = false;
 
-var browser="chrome";
+var browser = identifyPluginRuntime();
+console.log(`Running on browser "${browser}"`);
 
 /* Common data */
 
@@ -70,7 +71,7 @@ addGlobalStyle(`
   width: 200px;
   height: 20px;
   margin-top: 4px;
-  margin-right: 20px;   
+  margin-right: 20px;
 }
 .smallHeader {
   padding: 4px;
@@ -158,7 +159,7 @@ for (i=0; i<q.length; i++) {
 	}
 }
 
-if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) { 
+if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) {
 	console.log("Setting jsonPageData to cache");
 	localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
 	jsonPageDataCache = jsonPageData;
@@ -435,7 +436,7 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
-    
+
     if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
         addGlobalStyle("@keyframes color { 0%   { background: #A00; } 50% { background: #000; } 100% { background: #A00; } }");
         addGlobalStyle(".blinkButton { animation: color 1s infinite linear }");
@@ -451,21 +452,21 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
         buf = buf.querySelector('input[type="Submit"]');
         buf.className = 'blinkButton';
     }
-    
+
     if (document.getElementById('fleetQueue')) {
         buf = document.getElementById('fleetQueue');
         p = buf.querySelector('div .header.border');
-        
+
         var screenshotIcon = document.createElement('div');
         screenshotIcon.className = 'right relative';
         screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
         screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
 
         screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
-        
+
         p.appendChild(screenshotIcon);
     }
-    
+
     q = document.querySelector('div .fleetRight');
     if (q) {
         q = q.querySelectorAll('div .fleetRight');
@@ -473,24 +474,24 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
             buf = q[i];
             p = buf.querySelector('div .header.border');
             currentTab = '';
-            
+
             if (p.innerText.trim()==='Current Action') {
                 currentTab = 'currentAction';
             }
-            
+
             if (p.innerText.trim()==='Fleet Composition') {
                 currentTab = 'fleetComposition';
             }
-            
+
             if (currentTab==='') {
                 continue;
             }
-            
+
             var screenshotIcon = document.createElement('div');
             screenshotIcon.className = 'right relative';
             screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
             screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
-            
+
             /* The div is missing ID */
             buf.id = currentTab;
             if (p.innerText.trim()==='Current Action') {
@@ -499,20 +500,20 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
             if (p.innerText.trim()==='Fleet Composition') {
                 screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetComposition') }, false);
             }
-            
+
             p.appendChild(screenshotIcon);
         }
 /*
         buf = document.getElementById('fleetQueue');
         p = buf.querySelector('div .header.border');
-        
+
         var screenshotIcon = document.createElement('div');
         screenshotIcon.className = 'right relative';
         screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
         screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
 
         screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
-        
+
         p.appendChild(screenshotIcon);
 */
     }
@@ -627,9 +628,9 @@ function parseFleet()
 	fleetID = parseInt(fleetID[1]);
 	var composition = {};
 	var s;
-	
+
 	p = getFleetById(fleetID);
-	
+
 	/* Parse fleet composition */
     q = document.querySelectorAll('.structureImage');
     for (i=0; i<q.length; i++) {
@@ -645,7 +646,7 @@ function parseFleet()
 			console.log("Cannot find node");
 		}
     }
-	
+
     /* If we need to add it */
     if (!p) {
         q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
@@ -667,7 +668,7 @@ function parseFleet()
 		}
 		localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
 	}
-	
+
 	console.log(composition);
 }
 
@@ -683,11 +684,11 @@ if (cfgPlanetSorting!=='') {
         options.sort((a, b) => {
             const textA = a.text;
             const textB = b.text;
-            
+
             if (cfgPlanetSorting==='name') {
                 return textA.localeCompare(textB);
             }
-            
+
             if (cfgPlanetSorting==='pop') {
                 const p1 = getPlanetByName(textA.trim());
                 const p2 = getPlanetByName(textB.trim());
@@ -748,49 +749,49 @@ if (cfgShowAS) {
 			p = getPlanetByCoord(coord);
 			/* FIXME This is a bit dirty without any checks */
 			q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
-			
+
 			q = q.querySelector('div');
-			
+
 			shipBuf = [];
 			wfShipStr = "";
 			trShipStr = "";
-			
+
 			for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
 				t = p.mobileUnitCount.unitList[j].name;
 				q = p.mobileUnitCount.unitList[j].amount;
-				
+
 				if (!ships[t]) {
 					continue;
 				}
-				
+
 				shipBuf[t] = q;
 			}
-			
+
 			for ([t, q] of Object.entries(ships)) {
 				/* If not set - no such ships continue */
 				if (typeof shipBuf[t] === 'undefined') {
 					continue;
 				}
-				
+
 				if (logisticsCapacity[t]) {
 					trShipStr = trShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
 				} else {
 					wfShipStr = wfShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
 				}
 			}
-			
+
 			/* Nothing landed - skip */
 			if (trShipStr==="" && wfShipStr==="") {
 				continue;
 			}
-			
+
 			/* Both are set */
 			if (trShipStr!=="" && wfShipStr!=="") {
 				shipStr = wfShipStr + " | " + trShipStr;
 			} else {
 				shipStr = wfShipStr + trShipStr;
 			}
-			
+
 			t = document.createElement('div');
 			t.className = 'planetHeadSection';
 			t.style.marginTop = '2px';
@@ -826,8 +827,8 @@ if (location.href.includes('/planets/')) {
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
     document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
-    
-    
+
+
     document.getElementById('filterPlanet').addEventListener("keyup", filterPlanet, false);
 
     document.addEventListener("keydown", (e) => {
@@ -1168,11 +1169,23 @@ function showWhatsNew()
     <hr/><br/></div>`;
 }
 
+function identifyPluginRuntime()
+{
+    // Code running in a Chrome extension (content script, background page, etc.)
+    if (window.chrome && chrome.runtime && chrome.runtime.id) {
+        return "chrome";
+    }
+
+    return "unknown";
+}
+
 function getImageURL(file)
 {
-    window.alert(browser + " " + file);
-    return chrome.runtime.getURL("images/"+ file);
+    if (browser === "chrome") {
+        return chrome.runtime.getURL("images/"+ file);
+    }
 
+    return imageContainer[file];
 }
 
 function showHelp()
@@ -1374,7 +1387,7 @@ function filterPlanet(f)
     data = document.getElementById('filterPlanet').value;
     /* Filter the data only to the entries matching data */
     var re = new RegExp(".*" + data + ".*", "i");
-    
+
     const table = document.getElementById("planetList");
     var rows = table.querySelectorAll('.locationWrapper');
     var rowsArray = Array.from(rows);
@@ -1881,17 +1894,17 @@ function generateStats()
         localWorker = getPopulationOfPlanet(jsonPageDataCache.locationList[i]);
 
         genData.worker += localWorker;
-	
+
         /* Calculate max living space fot the current planet */
         maxWorker = 50000 + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")*100000 +
                 getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metropolis")*200000 +
-                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Living_Quarters")*50000 + 
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Living_Quarters")*50000 +
                 getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Habitat")*100000 +
                 getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Orbital_Ring")*1500000;
-	
+
        	/* Copy newWorker to a local variable (for shortness) */
         newWorker = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
-    
+
         /* If maxWorker == localWorker (at max storage level OR
          * somehow maxWorker less than localWorker (should not be possible */
     	if (maxWorker <= localWorker) {
@@ -1903,9 +1916,9 @@ function generateStats()
                 newWorker = maxWorker - localWorker;
             }
         }
-        
+
         genData.newWorker += newWorker;
-	
+
         genData.soldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
         genData.newSoldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "CreatingSoldier");
 
@@ -1941,7 +1954,7 @@ function generateStats()
         for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
             t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
             q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
-			
+
 			if (!ships[t] && t !== 'Soldier') {
 				continue;
 			}
@@ -2071,7 +2084,7 @@ function generateStats()
             }
         }
     }
-	
+
 	if (Object.keys(transData).length === 0) {
         document.getElementById('transportList').innerHTML += "<li><em>nothing</em></li>";
     } else {
@@ -2159,7 +2172,7 @@ function generateStats()
         buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
         buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
         buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
-        
+
         buf += "```"
 
         navigator.clipboard.writeText(buf);
@@ -2326,7 +2339,7 @@ function updatePlanetSorting(sortType)
     var rowsArray = Array.from(rows);
     const homePlanet = rowsArray.shift();
     const filterDiv = table.querySelector('div.seperator');
-    
+
     console.log(`Sorting by ${sortType}`);
     if (sortType==='name') {
         rowsArray.sort((a, b) => {
@@ -2345,7 +2358,7 @@ function updatePlanetSorting(sortType)
             const textB = linkB ? linkB.textContent.trim() : '';
             const p1 = getPlanetByName(textA.trim());
             const p2 = getPlanetByName(textB.trim());
-            
+
             workerA = getPopulationOfPlanet(p1);
             workerB = getPopulationOfPlanet(p2);
 
@@ -2371,13 +2384,13 @@ function updatePlanetSorting(sortType)
 function getPopulationOfPlanet(p)
 {
     var w1 = 0, w2 = 0;
-    
+
     w1 = getResource(p, 'Worker');
     w2 = getResource(p, 'OccupiedWorker');
-    
+
     w1 = w1?w1.amount:0;
     w2 = w2?w2.amount:0;
-    
+
     return w1+w2;
 }
 
@@ -2452,11 +2465,11 @@ function imageToBlob(imageURL)
 
 function copyToClipboard(base64image)
 {
-  const blob = imageToBlob(base64image)
-  const item = new ClipboardItem({ "image/png": blob });
-  navigator.clipboard.write([item]);
-  showNotification('The screenshot was copied into the local clipboard!');
-  return;
+    const blob = imageToBlob(base64image);
+    const item = new ClipboardItem({ "image/png": blob });
+    navigator.clipboard.write([item]);
+    showNotification('The screenshot was copied into the local clipboard!');
+    return;
 }
 
 function generateScreenshot(element)
@@ -2466,7 +2479,10 @@ function generateScreenshot(element)
     var screenshotTarget;
     if (typeof element !== 'undefined') {
         screenshotTarget = document.getElementById(element);
-console.log(element);
+        if (!screenshotTarget) {
+            console.log("Cannot find element by ID: " + element);
+            return;
+        }
     } else {
         screenshotTarget = document.getElementById('contentBox');
     }
@@ -2771,7 +2787,7 @@ function initializeConfig()
         return;
     }
 
-       localStorage.setItem('cfgRulername', playerName);
+    localStorage.setItem('cfgRulername', playerName);
     localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
     localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
     localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
