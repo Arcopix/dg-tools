@@ -20,35 +20,66 @@
 var i, j, k, l, m, n, p, r, q, s, t;
 var buf;
 
+var __HIDE_MENU_INSTRUCTION__ = false;
+
+var browser="chrome";
+
 /* Common data */
 
 const logisticsCapacity = {
-    "freighter": 100000,
-    "merchant": 250000,
-    "trader": 625000,
-    "hulk": 1562500
+    "Freighter": 100000,
+    "Merchant": 250000,
+    "Trader": 625000,
+    "Hulk": 1562500
 };
 
 const ships = {
-    "Freighter": 0,
-    "Merchant": 0,
-    "Trader": 0,
-    "Hulk": 0,
-    "Fighter": 0,
-    "Bomber": 0,
-    "Frigate": 0,
-    "Destroyer": 0,
-    "Cruiser": 0,
-    "Battleship": 0,
-    "Invasion_Ship": 0,
-    "Outpost_Ship": 0,
-    "Colony_Ship": 0
+    "Freighter": 3.84,
+    "Merchant": 7.68,
+    "Trader": 11.52,
+    "Hulk": 19.2,
+    "Fighter": 0.24,
+    "Bomber": 0.72,
+    "Frigate": 2.88,
+    "Destroyer": 12,
+    "Cruiser": 25.2,
+    "Battleship": 144,
+    "Invasion_Ship": 4.16,
+    "Outpost_Ship": 4.8,
+    "Colony_Ship": 105
 };
 
 const RTT = [32, 24, 16];
 var curRTT = 0;
 
 /* End of common data, variables */
+
+/* Global CSS */
+addGlobalStyle(`
+.large-input {
+  background-color: #4a4a4a;
+  border: 1px solid #7a7a7a;
+  color: #fff;
+  }
+.large-input::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+.fleet-filter {
+  float: right;
+  width: 200px;
+  height: 20px;
+  margin-top: 4px;
+  margin-right: 20px;   
+}
+.smallHeader {
+  padding: 4px;
+  font-family: DarkGalaxy, sans-serif;
+  font-size: 18px;
+  line-height: 22px;
+  color: #fff;
+}
+`);
 
 /* Development warning */
 m = localStorage.getItem('develWarning');
@@ -82,8 +113,11 @@ var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
 var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
-var cfgPlanetSorting = parseBool(localStorage.getItem('cfgPlanetSorting'));
+var cfgPlanetSorting = localStorage.getItem('cfgPlanetSortingV2');
 var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
+var cfgShowAS = (localStorage.getItem('cfgShowAS')!=='')?parseBool(localStorage.getItem('cfgShowAS')):true;
+
+
 
 /* Updated main menu items */
 var confIcon = document.createElement('div');
@@ -101,40 +135,39 @@ screenshotIcon.innerHTML = '<img alt="Take a screenshot" src="' + imageContainer
 
 screenshotIcon.addEventListener('click', function() { generateScreenshot() }, false);
 
-
-/* Updated main menu items */
-/* Proof of concept for screenshot of specific element
-var screenshotIcon2 = document.createElement('div');
-screenshotIcon2.className = 'left relative';
-screenshotIcon2.style = 'cursor:pointer;';
-screenshotIcon2.innerHTML = '<img src="' + imageContainer["screenshotIcon.png"] + '"/>';
-
-screenshotIcon2.addEventListener('click', function() { generateScreenshot('foobar') }, false);
-*/
-
 /* Updating main menu */
 var mainMenu = document.querySelector('div.icons');
 p = mainMenu.getElementsByTagName('a')[2];
 mainMenu.removeChild(p);
 mainMenu.appendChild(confIcon);
 mainMenu.appendChild(screenshotIcon);
-/* Proof of concept for screenshot of specific element
-mainMenu.appendChild(screenshotIcon2);
-*/
 mainMenu.appendChild(p);
 
 /* get the turnNumber */
 var turnNumber = document.getElementById('turnNumber').innerText;
 var jsonPageDataCache = null;
 
-if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) {
-    console.log("Setting jsonPageData to cache");
-    localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
-    jsonPageDataCache = jsonPageData;
-} else {
-    console.log("Fetching jsonPageData to cache");
-    jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
+q = document.head.querySelectorAll('script');
+for (i=0; i<q.length; i++) {
+	if (q[i].innerHTML.match(/let jsonPageData/g)) {
+		data = q[i].innerHTML;
+		data = data.replace("let jsonPageData =", "");
+		data = data.replace(/;$/, "");
+		data = data.trim();
+		jsonPageData = JSON.parse(data);
+	}
 }
+
+if (location.href.includes('/planets/') && typeof jsonPageData !== 'undefined' && jsonPageData !== null) { 
+	console.log("Setting jsonPageData to cache");
+	localStorage.setItem('jsonPageData', JSON.stringify(jsonPageData));
+	jsonPageDataCache = jsonPageData;
+} else {
+	console.log("Fetching jsonPageData from cache");
+	jsonPageDataCache = JSON.parse(localStorage.getItem('jsonPageData'));
+}
+
+jsonFleetCache = JSON.parse(localStorage.getItem('fleetArray'));
 
 addGlobalStyle('[data-tooltip] { display: inline-block; position: relative; cursor: help;  padding: 4px; }');
 addGlobalStyle('[data-tooltip]:before { content: attr(data-tooltip); display: none; position: absolute; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 4px 8px; font-size: 14px; line-height: 1.4; min-width: 100px; text-align: center; border-radius: 4px; }');
@@ -303,13 +336,13 @@ for (i=0; i<elems.length; i++) {
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector(".navigation.left")) {
     document.addEventListener("keydown", (e) => {
-        if (document.activeElement.tagName==='input') {
+        if (document.activeElement.tagName==='INPUT') {
             return;
         }
-        if (e.which === 37) {
+        if (e.which === 37 && !e.altKey && !e.ctrlKey) {
             document.querySelector(".navigation.left").click();
         }
-        if (e.which === 39) {
+        if (e.which === 39 && !e.altKey && !e.ctrlKey) {
             document.querySelector(".navigation.right").click();
         }
     });
@@ -391,10 +424,10 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
         if (document.activeElement.tagName==='INPUT') {
             return;
         }
-        if (e.which === 37) {
+        if (e.which === 37 && !e.altKey && !e.ctrlKey) {
             document.querySelector('#planetHeader .planetName a:nth-of-type(1)').click();
         }
-        if (e.which === 39) {
+        if (e.which === 39 && !e.altKey && !e.ctrlKey) {
             document.querySelector('#planetHeader .planetName a:nth-of-type(2)').click();
         }
     });
@@ -402,7 +435,7 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
-
+    
     if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
         addGlobalStyle("@keyframes color { 0%   { background: #A00; } 50% { background: #000; } 100% { background: #A00; } }");
         addGlobalStyle(".blinkButton { animation: color 1s infinite linear }");
@@ -418,6 +451,71 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
         buf = buf.querySelector('input[type="Submit"]');
         buf.className = 'blinkButton';
     }
+    
+    if (document.getElementById('fleetQueue')) {
+        buf = document.getElementById('fleetQueue');
+        p = buf.querySelector('div .header.border');
+        
+        var screenshotIcon = document.createElement('div');
+        screenshotIcon.className = 'right relative';
+        screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+        screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+        screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
+        
+        p.appendChild(screenshotIcon);
+    }
+    
+    q = document.querySelector('div .fleetRight');
+    if (q) {
+        q = q.querySelectorAll('div .fleetRight');
+        for (i = 0; i<q.length; i++) {
+            buf = q[i];
+            p = buf.querySelector('div .header.border');
+            currentTab = '';
+            
+            if (p.innerText.trim()==='Current Action') {
+                currentTab = 'currentAction';
+            }
+            
+            if (p.innerText.trim()==='Fleet Composition') {
+                currentTab = 'fleetComposition';
+            }
+            
+            if (currentTab==='') {
+                continue;
+            }
+            
+            var screenshotIcon = document.createElement('div');
+            screenshotIcon.className = 'right relative';
+            screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+            screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+            
+            /* The div is missing ID */
+            buf.id = currentTab;
+            if (p.innerText.trim()==='Current Action') {
+                screenshotIcon.addEventListener('click', function() { generateScreenshot('currentAction') }, false);
+            }
+            if (p.innerText.trim()==='Fleet Composition') {
+                screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetComposition') }, false);
+            }
+            
+            p.appendChild(screenshotIcon);
+        }
+/*
+        buf = document.getElementById('fleetQueue');
+        p = buf.querySelector('div .header.border');
+        
+        var screenshotIcon = document.createElement('div');
+        screenshotIcon.className = 'right relative';
+        screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+        screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+        screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
+        
+        p.appendChild(screenshotIcon);
+*/
+    }
 }
 
 /* Navigate through fleets using ARROW keys */
@@ -428,7 +526,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 39) {
+            if (e.which === 39 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
         });
@@ -438,10 +536,10 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 37) {
+            if (e.which === 37 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
-            if (e.which === 39) {
+            if (e.which === 39 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[1].click();
             }
         });
@@ -450,50 +548,64 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
             if (document.activeElement.tagName==='INPUT') {
                 return;
             }
-            if (e.which === 37) {
+            if (e.which === 37 && !e.altKey && !e.ctrlKey) {
                 document.querySelectorAll('.nextPrevFleet a:nth-of-type(1)')[0].click();
             }
         });
     }
 }
 
-
-if (cfgFleetSorting && location.href.includes('/fleets/')) {
-    const table = document.getElementById("fleetList");
-    var rows = table.querySelectorAll('.entry');
-    var rowsArray = Array.from(rows);
-
-   rowsArray.sort((a, b) => {
-        const linkA = a.querySelector('.name a');
-        const linkB = b.querySelector('.name a');
-        const textA = linkA ? linkA.textContent : '';
-        const textB = linkB ? linkB.textContent : '';
-        return textA.localeCompare(textB);
-    });
-
-   table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
-   rowsArray.forEach(row => table.appendChild(row));
-
-   rows = table.querySelectorAll('.entry');
-
-   for (i = 0; i<rows.length; i++) {
-        rowsArray[i].className = (i%2?'opacBackground entry':'opacLightBackground entry');
-   }
+/* Convert any friendly planets to link to the targeted planet instead of navigation */
+buf = document.querySelectorAll(".friendly");
+for (i=0; i<buf.length; i++) {
+    /* If it is link to a fleet -> do not replace as the fleet is named after the planet */
+    if (buf[i].querySelector('a').href.includes('/fleet/')) {
+        continue;
+    }
+    let p = getPlanetByName(buf[i].innerText);
+    if (!p) {
+        continue;
+    }
+    let plLink = buf[i].querySelector('a');
+    plLink.href = "/planet/"+p.id+"/"
 }
 
-/* Cache fleets for future usage */
 if (location.href.includes('/fleets/')) {
-    var fleetArray = [];
-    const table = document.getElementById("fleetList");
-    rows = table.querySelectorAll('.entry');
-    rowsArray = Array.from(rows);
+    /* Page filtering based on the input in the search box */
+    buf = document.querySelector('div .header.pageTitle');
+    buf.innerHTML = '<span>' + buf.innerHTML + '</span>';
+    buf.innerHTML += '<input type="text" id="filterFleet" class="fleet-filter large-input" placeholder="Filter fleets">';
+    document.getElementById('filterFleet').addEventListener("keyup", filterFleet, false);
 
-    for (i = 0; i<rowsArray.length; i++) {
-        const link = rowsArray[i].querySelector('.name a');
-        var fleet = { name: link.text, url: link.href };
-        fleetArray.push(fleet);
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='INPUT') {
+            if (e.which === 27) {
+                document.getElementById('filterFleet').value = '';
+            }
+            return;
+        }
+        if (e.which === 70 && e.ctrlKey) {
+            document.getElementById("filterFleet").focus();
+            console.log('Focusing on filterFleet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+        if (e.which === 191) {
+            document.getElementById("filterFleet").focus();
+            console.log('Focusing on filterFleet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+    });
+
+    if (cfgFleetSorting) {
+        sortFleets();
     }
-    localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+
+    /* Cache fleets for future usage */
+    cacheFleets();
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
@@ -505,34 +617,62 @@ if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0
 }
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
-    i = JSON.parse(localStorage.getItem('fleetArray'));
-    /* By default we should add this fleet to the fleetArray */
-    p = true;
-    for (j = 0; j<i.length; j++) {
-        if (i[j].url == window.location.href) {
-            /* If we find the URL in the fleetArray, set p to FALSE and leave the for */
-            p = false;
-            break;
-        }
-        console.log(i[j]);
-    }
+    parseFleet();
+}
 
+function parseFleet()
+{
+	var fleetArray = JSON.parse(localStorage.getItem('fleetArray'));
+	var fleetID = window.location.href.match(/\/fleet\/([0-9]+)[\/]?$/);
+	fleetID = parseInt(fleetID[1]);
+	var composition = {};
+	var s;
+	
+	p = getFleetById(fleetID);
+	
+	/* Parse fleet composition */
+    q = document.querySelectorAll('.structureImage');
+    for (i=0; i<q.length; i++) {
+		s = [];
+		t = q[i].parentNode.querySelectorAll('div');
+		if (t[1]) {
+			t = t[1].innerText.trim();
+			console.log(t);
+			s[1] = parseInt(t.split(' ', 1)[0].replace('x', ''));
+			s[0] = t.slice(t.indexOf(' ')).trim().replaceAll(' ', '_');
+			composition[s[0]] = s[1];
+		} else {
+			console.log("Cannot find node");
+		}
+    }
+	
     /* If we need to add it */
-    if (p) {
+    if (!p) {
         q = (document.querySelector('div .header.pageTitle').querySelectorAll('div .left')[2]).innerText;
         q = q.trim();
         if (q) {
             console.log('Adding fleet ' + q + ' to the fleetArray cache');
-            i.push({'name': q, 'url': window.location.href});
-            localStorage.setItem('fleetArray', JSON.stringify(i));
+            fleetArray.push({'id': fleetID, 'name': q, 'url': window.location.href, 'composition': composition});
+            localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
         } else {
             console.log('Cannot find name for fleet with URL ' + window.location.href);
+			return;
         }
-    }
+    } else {
+		for (i=0; i<fleetArray.length; i++) {
+			if (fleetArray[i].id === fleetID) {
+				fleetArray[i].composition = composition;
+				break;
+			}
+		}
+		localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+	}
+	
+	console.log(composition);
 }
 
 /* Fix sorting of planets */
-if (cfgPlanetSorting) {
+if (cfgPlanetSorting!=='') {
     /* Sort planets in select drop down in Fleet command */
     var planetSelect;
     planetSelect = document.querySelector('select[name="locationId"]')
@@ -541,13 +681,25 @@ if (cfgPlanetSorting) {
         const homePlanet = options.shift();
 
         options.sort((a, b) => {
-            const textA = a.text.toLowerCase();
-            const textB = b.text.toLowerCase();
-
-            if (textA < textB) return -1;
-            if (textA > textB) return 1;
-            return 0;
-        });
+            const textA = a.text;
+            const textB = b.text;
+            
+            if (cfgPlanetSorting==='name') {
+                return textA.localeCompare(textB);
+            }
+            
+            if (cfgPlanetSorting==='pop') {
+                const p1 = getPlanetByName(textA.trim());
+                const p2 = getPlanetByName(textB.trim());
+                workerA = getPopulationOfPlanet(p1);
+                workerB = getPopulationOfPlanet(p2);
+                if (workerA === workerB) {
+                    return textA.localeCompare(textB);
+                } else {
+                    return (workerA > workerB)?-1:1;
+                }
+            }
+       });
 
         // Clear the existing options
         planetSelect.innerHTML = '';
@@ -559,8 +711,10 @@ if (cfgPlanetSorting) {
     }
 
     if (location.href.includes('/planets/')) {
-        updatePlanetSorting();
+        updatePlanetSorting(cfgPlanetSorting);
     }
+} else {
+    console.log("Planet sorting disabled");
 }
 
 if (cfgShowSM) {
@@ -586,6 +740,72 @@ if (cfgShowSM) {
     }
 }
 
+if (cfgShowAS) {
+	if (location.href.includes('/planets/')) {
+		let planetsDiv = document.querySelectorAll('div .locationWrapper');
+		for (i=0; i<planetsDiv.length; i++) {
+			let coord = planetsDiv[i].querySelector('div .coords').innerText;
+			p = getPlanetByCoord(coord);
+			/* FIXME This is a bit dirty without any checks */
+			q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+			
+			q = q.querySelector('div');
+			
+			shipBuf = [];
+			wfShipStr = "";
+			trShipStr = "";
+			
+			for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+				t = p.mobileUnitCount.unitList[j].name;
+				q = p.mobileUnitCount.unitList[j].amount;
+				
+				if (!ships[t]) {
+					continue;
+				}
+				
+				shipBuf[t] = q;
+			}
+			
+			for ([t, q] of Object.entries(ships)) {
+				/* If not set - no such ships continue */
+				if (typeof shipBuf[t] === 'undefined') {
+					continue;
+				}
+				
+				if (logisticsCapacity[t]) {
+					trShipStr = trShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+				} else {
+					wfShipStr = wfShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+				}
+			}
+			
+			/* Nothing landed - skip */
+			if (trShipStr==="" && wfShipStr==="") {
+				continue;
+			}
+			
+			/* Both are set */
+			if (trShipStr!=="" && wfShipStr!=="") {
+				shipStr = wfShipStr + " | " + trShipStr;
+			} else {
+				shipStr = wfShipStr + trShipStr;
+			}
+			
+			t = document.createElement('div');
+			t.className = 'planetHeadSection';
+			t.style.marginTop = '2px';
+			t.innerHTML = `
+<div class="lightBorder ofHidden opacBackground padding fleetList">
+  <div class="left">
+    <span class="fleet" style="font-weight: bold">Landed ships: </span>
+    <span class="fleet">${shipStr}</span>
+  </div>
+</div>`;
+			planetsDiv[i].querySelector('div').appendChild(t);
+		}
+	}
+}
+
 if (location.href.includes('/planets/')) {
     addGlobalStyle(".btn { position: absolute; width: 120px; height: 25px; cursor: pointer; background: transparent; border: 1px solid #71A9CF; outline: none; transition: 1s ease-in-out; }");
     addGlobalStyle("svg { position: absolute; left: 0; top: 0; fill: none; stroke: #fff; stroke-dasharray: 150 480; stroke-dashoffset: 150; transition: 1s ease-in-out; }");
@@ -601,10 +821,38 @@ if (location.href.includes('/planets/')) {
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnStats" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Statistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnExport" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Export</span></button>';
+    buf.innerHTML += '<input type="text" id="filterPlanet" class="fleet-filter large-input" style="margin-top: 6px;" placeholder="Filter planets">';
 
     document.getElementById('btnStats').addEventListener("click", generateStats, false);
     document.getElementById('btnLogst').addEventListener("click", generateLogistics, false);
     document.getElementById('btnExport').addEventListener("click", exportPlanets, false);
+    
+    
+    document.getElementById('filterPlanet').addEventListener("keyup", filterPlanet, false);
+
+    document.addEventListener("keydown", (e) => {
+        if (document.activeElement.tagName==='INPUT') {
+            if (e.which === 27) {
+                document.getElementById('filterPlanet').value = '';
+            }
+            return;
+        }
+        if (e.which === 70 && e.ctrlKey) {
+            document.getElementById("filterPlanet").focus();
+            console.log('Focusing on filterPlanet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+        if (e.which === 191) {
+            document.getElementById("filterPlanet").focus();
+            console.log('Focusing on filterPlanet');
+            console.log(e.key);
+            console.log(e);
+            e.preventDefault();
+        }
+    });
+
 }
 
 if (window.location.href.match(/\/planet\/[0-9]+\//)) {
@@ -647,20 +895,20 @@ if (cfgRadarSorting && location.href.includes('/radar/')) {
         for (m=24; m>=0; m--) {
             for (j=crow.length-1; j>=0; j--) {
                 if (crow[j]&&crow[j].getElementsByClassName('turns')[0]&&parseInt(crow[j].getElementsByClassName('turns')[0].innerText)==m) {
-                    if (n = ((n+1)%2)) {
+                    if (n++%2===0) {
                         crow[j].className = "opacBackground lightBorderBottom entry";
                     } else {
                         crow[j].className = "opacLightBackground lightBorderBottom entry";
                     }
                     //alert(crow[j].className);
                     radars[i].appendChild(crow[j]);
-                    /* Nullify the row so we would not have to search it by class, text and so on */
+                    /* Nullify the row, so we would not have to search it by class, text and so on */
                     crow[j] = 0;
                 }
             }
         }
 
-        /* Make sure to add any rows that are not already aded/invalidated */
+        /* Make sure to add any rows that are not already added/invalidated */
         for (j=crow.length-1; j>=0; j--) {
             if (crow[j]) {
                 radars[i].appendChild(crow[j]);
@@ -785,7 +1033,7 @@ for (i=0; i<allForms.length; i++) {
                     /* We've found a checkbox, time to test if it has ID and if not allocate one for it */
 
                     /* All such cases do not have ID at the current time, but who knows */
-                    if (children[n].id == '') {
+                    if (children[n].id === '') {
                         const newId = makeId(8);
                         children[n].id = newId;
                         /* Update the original DIV to have label with the newId of the checkbox */
@@ -809,7 +1057,9 @@ function showWhatsNew()
     console.log("Showing whats new");
     var i = 0;
     const main = document.getElementById('contentBox');
-
+    if (!main) {
+        return;
+    }
     localStorage.setItem('cfgShowedVersion', 'v0.4.0006');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
@@ -918,6 +1168,13 @@ function showWhatsNew()
     <hr/><br/></div>`;
 }
 
+function getImageURL(file)
+{
+    window.alert(browser + " " + file);
+    return chrome.runtime.getURL("images/"+ file);
+
+}
+
 function showHelp()
 {
     console.log("Showing help");
@@ -988,6 +1245,8 @@ function showHelp()
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === 2) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       Screenshots
     </div>`;
+	let imgSrc = getImageURL("screenshotExample.png");
+
     help.innerHTML += `<div class="topicContent">
     <p>DG utilities comes with integrated screenshot capabiltity. This allows the player to easily share information
     from the game to his friends, allies, and sometimes - even enemies. In order to generate a screenshot click on the
@@ -1002,7 +1261,7 @@ function showHelp()
     </div><br/>
     Here's an example:
     </p>
-    <img style="padding: 10px;" src="` + imageContainer['screenshotExample.png'] + `"/>
+    <img style="padding: 10px;" src="`+imgSrc+`"/>
     </div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
@@ -1042,6 +1301,195 @@ function showHelp()
 
     //buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnLogst" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span id="labelLogst">Logistics</span></button>';
 
+}
+
+function cacheFleets()
+{
+    var fleetArray = [];
+    const table = document.getElementById("fleetList");
+    const idRegex = /\/fleet\/([0-9]+)/;
+
+    rows = table.querySelectorAll('.entry');
+    rowsArray = Array.from(rows);
+
+    console.log("Caching fleets");
+
+    for (i = 0; i<rowsArray.length; i++) {
+        const link = rowsArray[i].querySelector('.name a');
+        const linkId = link.href.match(idRegex);
+        const fleetData = getFleetById(parseInt(linkId[1]));
+		console.log(linkId);
+		console.log("i = " + i);
+		if (!fleetData) {
+			composition = null;
+		} else {
+			if (!fleetData.composition) {
+			    composition = null;
+			} else {
+			    composition = fleetData.composition;
+            }
+		}
+        var fleet = { id: parseInt(linkId[1]), name: link.text, url: link.href, composition: composition };
+        fleetArray.push(fleet);
+    }
+    localStorage.setItem('fleetArray', JSON.stringify(fleetArray));
+}
+
+function getFleetById(id)
+{
+    var i;
+    for (i=0; i<jsonFleetCache.length; i++) {
+        if (jsonFleetCache[i].id === id) {
+            return jsonFleetCache[i];
+        }
+    }
+    console.log(`Cannot find fleet by ID ${id}`);
+    return null;
+}
+
+function sortFleets()
+{
+    /* Sort the table based on fleet name */
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+    rowsArray.sort((a, b) => {
+        const linkA = a.querySelector('.name a');
+        const linkB = b.querySelector('.name a');
+        const textA = linkA ? linkA.textContent : '';
+        const textB = linkB ? linkB.textContent : '';
+        return textA.localeCompare(textB);
+    });
+
+    table.innerHTML = '<div class="tableHeader"><div>&nbsp;</div><div class="title name">Name</div><div class="title activity">Activity</div></div>';
+    rowsArray.forEach(row => table.appendChild(row));
+
+    /* Fix backgrounds due to resorting */
+    fixBackground(table,'.entry');
+}
+
+function filterPlanet(f)
+{
+    data = document.getElementById('filterPlanet').value;
+    /* Filter the data only to the entries matching data */
+    var re = new RegExp(".*" + data + ".*", "i");
+    
+    const table = document.getElementById("planetList");
+    var rows = table.querySelectorAll('.locationWrapper');
+    var rowsArray = Array.from(rows);
+
+    for (i=0; i<rowsArray.length; i++) {
+        if (!re.exec(rowsArray[i].innerText)) {
+            rowsArray[i].style.display = 'none';
+        } else {
+            rowsArray[i].style.display = '';
+        }
+    }
+    /* Fix backgrounds due to resorting */
+    fixBackground(table,'.entry');
+}
+
+function filterFleet(f)
+{
+    data = document.getElementById('filterFleet').value;
+    /* Filter the data only to the entries matching data */
+    var re = new RegExp(".*" + data + ".*", "i");
+
+    const table = document.getElementById("fleetList");
+    var rows = table.querySelectorAll('.entry');
+    var rowsArray = Array.from(rows);
+
+    for (i=0; i<rowsArray.length; i++) {
+        if (!re.exec(rowsArray[i].innerText)) {
+            rowsArray[i].style.display = 'none';
+        } else {
+            rowsArray[i].style.display = '';
+        }
+    }
+    /* Fix backgrounds due to resorting */
+    fixBackground(table,'.entry');
+}
+
+function fixBackground(element, selector)
+{
+    rows = element.querySelectorAll(selector);
+    j = 0;
+    for (i = 0; i<rows.length; i++) {
+        /* If the row is hidden -> skip it */
+        if (rows[i].style.display==='none') {
+            continue;
+        }
+        rows[i].className = (j++%2?'opacBackground entry':'opacLightBackground entry');
+    }
+}
+function addShipsDescriptions()
+{
+    let buf = null;
+    /* 109 fighter */
+    if (buf = document.getElementById('unit-109')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Fighters are good for intercepting Bombers and other Fighters. Usually used for dump for your excess metal.<br/><hr/><strong>Targeting:</strong> Bomber-&gt;Fighter-&gt;Destroyer`;
+    }
+    /* 110 bomber */
+    if (buf = document.getElementById('unit-110')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Bombers are good for dealing with those pesky Frigates and Destroyers. In high numbers they are capable of dealing with single digit Battleships.<br/><hr/><strong>Targeting:</strong> Destroyer-&gt;Frigate-&gt;Battleship`;
+    }
+    /* 111 frigate */
+    if (buf = document.getElementById('unit-111')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Frigates are the go to ship to deal with Cruisers and Fighters. Occasionally useful against Destroyers.<br/><hr/><strong>Targeting:</strong> Cruiser-&gt;Fighter-&gt;Destroyer`;
+    }
+    /* 112 destroyer */
+    if (buf = document.getElementById('unit-112')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Destroyers are arguably the only cost effective way to manage the enemy Battleships. Second to that, they're good at dealing with Cruisers.<br/><hr/><strong>Targeting:</strong> Battleship-&gt;Cruiser-&gt;Destroyer`;
+    }
+    /* 113 cruiser */
+    if (buf = document.getElementById('unit-113')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Send these bad boys in and watch the enemy Bomber burn. Known to use fighters for target practice when bored<br/><hr/><strong>Targeting:</strong> Fighter-&gt;Bomber-&gt;Frigate`;
+    }
+    /* 114 battleship */
+    if (buf = document.getElementById('unit-114')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `If your enemy has these and you don't, you might want to start rebuilding your fleet before it crashes and burn. Effective against all ship types although relatively weak against destroyers.<br/><hr/><strong>Targeting:</strong> Frigate-&gt;Cruiser-&gt;Battleship`;
+    }
+    /* Civilian stuff */
+    /* 115 outpost */
+    if (buf = document.getElementById('unit-115')) {
+        buf.querySelector('div .title').innerHTML = 'Outpost Ship';
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Used in the early and mid-game to colonize unihabited planets.<br/><hr/><strong>Tip:</strong> Scan with <img src='/images/units/main/structures/comms_satellite.jpg' width="16" height="16"/> Comms Satellite if available.`;
+    }
+    /* 116 colony ship ? */
+    /* 117 invasion */
+    if (buf = document.getElementById('unit-117')) {
+        buf.querySelector('div .title').innerHTML = 'Invasion Ship';
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `The only ship capable of transporting soldiers. Oh, and capable of performing invasions.<br/><hr/><strong>Tip:</strong> Scan with <img src='/images/units/main/structures/comms_satellite.jpg' width="16" height="16"/> Comms Satellite prior to invading.<br/><hr/><strong>Tip:</strong> Unsucessful invasions will cause the invasions ships to vanish from your fleet.`;
+    }
+    /* 118 invasion */
+    if (buf = document.getElementById('unit-118')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `The bread and butter of your early game economy. Used for transfers of resources and colonists.<br/><hr/><strong>Capacity:</strong> 100,000`;
+    }
+    /* 119 Merchant */
+    if (buf = document.getElementById('unit-119')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `A slightly advanced version of the Freighter. Good balance between cargo space and build time.<br/><hr/><strong>Capacity:</strong> 250,000`;
+    }
+    /* 120 Trader */
+    if (buf = document.getElementById('unit-120')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `An excellent choice if you want to move an entire planet resource production and have spare cargo space for passengers.<br/><hr/><strong>Capacity:</strong> 625,000`;
+    }
+    /* 121 Hulk */
+    if (buf = document.getElementById('unit-121')) {
+        buf = buf.querySelector('div .desc');
+        buf.innerHTML = `Meet the heavy weight champion of the galaxy. Pilot's favorite jokes starts with "Your mama is so big"...<br/><hr/><strong>Capacity:</strong> 1,562,500`;
+    }
 }
 
 function improveResXfer()
@@ -1200,7 +1648,7 @@ function improveResXferPlanner(fleetQueue)
 
 function getPlanetByCoord(coord)
 {
-    let i;
+    let i=0;
     const c = coord.split('.');
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         /* Home planets and their special coordinates */
@@ -1210,6 +1658,32 @@ function getPlanetByCoord(coord)
         let pC = jsonPageDataCache.locationList[i].coordinates;
         if (c[0] == pC[0] && c[1] == pC[1] && c[2] == pC[2] && c[3] == pC[3]) {
             return jsonPageDataCache.locationList[i];
+        }
+    }
+    return null;
+}
+
+function getPlanetByName(name)
+{
+    let i=0;
+    for (i=0; i<jsonPageDataCache.locationList.length; i++) {
+        if (jsonPageDataCache.locationList[i].name === name) {
+            return jsonPageDataCache.locationList[i];
+        }
+    }
+    return null;
+}
+
+function getResource(planet, type)
+{
+    var i;
+    if (!planet.mobileUnitCount.unitList) {
+        console.log("Missing mobileUnitCount");
+        return null;
+    }
+    for (i=0; i<planet.mobileUnitCount.unitList.length; i++) {
+        if (planet.mobileUnitCount.unitList[i].name === type) {
+            return planet.mobileUnitCount.unitList[i];
         }
     }
     return null;
@@ -1247,6 +1721,7 @@ function showScanMenu(e)
 {
     console.log("Executing showScanMenu");
     var commsLink = [];
+    var energy;
     const coordinate = e.currentTarget.getAttribute('coordinate').split('.');
     const m = document.getElementById('dhFleetListMenu');
 
@@ -1257,18 +1732,27 @@ function showScanMenu(e)
 
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         p = jsonPageDataCache.locationList[i];
-        for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
-            if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
-                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/" });
-                break;
+        c = getResource(p, 'Comms_Satellite');
+        if (c && c.amount ===1 ) {
+            energy = getResource(p, 'Energy');
+            /* Out of energy */
+            if (!energy) {
+                continue;
+            }
+            /* Do not add planets with insufficent energy for anything */
+            if (energy.amount >= 500) {
+                commsLink.push({'name': p.name, 'url': "/planet/" + p.id +"/comms/", 'energy': energy.amount });
             }
         }
     }
 
     if (commsLink.length === 0) {
-        window.alert('No planet with comms is detected!');
+        window.alert('No planet with Comms and sufficient energy was detected!');
         return;
     }
+
+    /* Sort by Energy descending-ly as we want the planet with most energy on the top */
+    commsLink.sort(function(a,b) {return (a.energy > b.energy) ? -1 : 1;} );
 
     m.style.left = e.x + 'px';
     m.style.top = e.y + 'px';
@@ -1292,6 +1776,7 @@ function showScanMenu(e)
         newDiv.innerHTML = '<a href="' + url + '">' + commsLink[i].name + '</a>';
         m.appendChild(newDiv);
     }
+    implementContextMenu();
     m.style.display = 'block';
 }
 
@@ -1333,7 +1818,35 @@ function showJumpMenu(e)
         newDiv.innerHTML = '<a href="' + url + '">' + f[i].name + '</a>';
         m.appendChild(newDiv);
     }
+    implementContextMenu();
     m.style.display = 'block';
+}
+
+function implementContextMenu()
+{
+    const m = document.getElementById('dhFleetListMenu');
+    if (!__HIDE_MENU_INSTRUCTION__) {
+        document.addEventListener("click", function (e) {
+            console.log('Click click');
+            if (e.composedPath().includes(m)) {
+                return;
+            }
+            q = document.querySelectorAll(".scanIcon");
+            for (i=0; i<q.length;i++) {
+                if (e.composedPath().includes(q[i])) {
+                    return;
+                }
+            }
+            q = document.querySelectorAll(".jumpTo");
+            for (i=0; i<q.length;i++) {
+                if (e.composedPath().includes(q[i])) {
+                    return;
+                }
+            }
+            m.style.display = 'none';
+        });
+        __HIDE_MENU_INSTRUCTION__ = true;
+    }
 }
 
 function generateStats()
@@ -1345,7 +1858,13 @@ function generateStats()
     var total = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var income = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
     var ratio = { "metal": 0, "mineral": 0, "food": 0, "energy": 0};
+    var reinfData = {};
+    var transData = {};
     var building = {};
+    var localWorker = 0;
+    var newWorker = 0;
+    var maxWorker = 0;
+
 
     document.getElementById('btnExport').style.display = 'none';
     document.getElementById('btnStats').style.display = 'none';
@@ -1353,16 +1872,42 @@ function generateStats()
 
     const fmt = new Intl.NumberFormat('en-US');
     const fmtRatio = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    console.log(total);
 
     genData.count = jsonPageDataCache.locationList.length;
     //console.log(jsonPageDataCache);
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         genData.ground += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
         genData.orbit += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
+        localWorker = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + 
+			getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+
         genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker");
-        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
-        genData.newWorker += getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+        genData.worker += localWorker;
+	
+        /* Calculate max living space fot the current planet */
+        maxWorker = 50000 + getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Colony")*100000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Metropolis")*200000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Living_Quarters")*50000 + 
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Habitat")*100000 +
+                getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Orbital_Ring")*1500000;
+	
+       	/* Copy newWorker to a local variable (for shortness) */
+        newWorker = getAmount(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList, "Worker");
+    
+        /* If maxWorker == localWorker (at max storage level OR
+         * somehow maxWorker less than localWorker (should not be possible */
+    	if (maxWorker <= localWorker) {
+            /* No new workers will be produced */
+            newWorker = 0;
+        } else {
+            if (localWorker + newWorker > maxWorker) {
+                /* Available space is less than max living space, limit it */
+                newWorker = maxWorker - localWorker;
+            }
+        }
+        
+        genData.newWorker += newWorker;
+	
         genData.soldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Soldier");
         genData.newSoldier += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "CreatingSoldier");
 
@@ -1389,22 +1934,37 @@ function generateStats()
                 building[buf] = jsonPageDataCache.locationList[i].executingItems.unitList[j].amount;
             }
         }
-    }
-    console.log(building);
-    if (0) {
-        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
-            /* General information */
-            //console.log(jsonPageDataCache.locationList[i]);
+        c = jsonPageDataCache.locationList[i].coordinates.join('.');
+        if (c === '') {
+            c = '0.0.0.0';
+        }
+        n = 0;
+		m = 0;
+        for (j = 0; j<jsonPageDataCache.locationList[i].mobileUnitCount.unitList.length; j++) {
+            t = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].name;
+            q = jsonPageDataCache.locationList[i].mobileUnitCount.unitList[j].amount;
+			
+			if (!ships[t] && t !== 'Soldier') {
+				continue;
+			}
 
-            /* What are we currently building */
-            // console.log(jsonPageDataCache.locationList[i].executingItems);
-
-            /* Ground, Orbit, Abundance */
-            // console.log(jsonPageDataCache.locationList[i].locationUnitCount.unitList);
-            /* Resources, Workers, Occupied Workers */
-            // console.log(jsonPageDataCache.locationList[i].mobileUnitCount.unitList);
-            /* Income of Resources, Workers */
-            // console.log(jsonPageDataCache.locationList[i].upkeepUnitCount.unitList);
+			if (logisticsCapacity[t]) {
+				if (!transData[c]) {
+                    transData[c] = [];
+                }
+                transData[c][m] = {amount: q, type: t};
+                m++;
+			} else {
+				/* Skip soldiers less than 1000 */
+				if (t === 'Soldier' && q<1000) {
+					continue;
+				}
+				if (!reinfData[c]) {
+					reinfData[c] = [];
+				}
+				reinfData[c][n] = {amount: q, type: t};
+				n++;
+			}
         }
     }
 
@@ -1475,18 +2035,22 @@ function generateStats()
     buf = document.getElementById('buildDiv');
     buf.innerHTML = "<div id='innerBuildDiv' class='opacBackground lightBorder paddingMid ofHidden'></div>";
     buf = document.getElementById('innerBuildDiv');
-    buf.innerHTML = "<div style='display: table-cell;'><strong>Currently constructing:</strong><ul id='buildList'></ul></div>";
-    buf.innerHTML += "<div style='display: table-cell; padding-left: 40px;'><strong>Currently training:</strong><ul id='trainList'></ul></div>";
+
+    buf.innerHTML =  "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently constructing:</div><ul id='buildList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Currently training:</div><ul id='trainList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Available reinforcements:</div><ul id='reinfList'></ul></div>";
+    buf.innerHTML += "<div class='lightBorder ofHidden' style='display: table-cell; width: 20%; padding: 5px; padding-left: 10px; margin-left: 10px; margin-bottom: 10px;'><div class='border smallHeader'>Parked transports:</div><ul id='transportList'></ul></div>";
     let p = 0;
 
     for (const key of Object.keys(building).sort()) {
-        if (ships[key] === 0 || key === 'Soldier') {
+        if (ships[key] >= 0 || key === 'Soldier') {
             buf = document.getElementById('trainList');
         } else {
             buf = document.getElementById('buildList');
         }
         buf.innerHTML += "<li>" + building[key] + "x <em>" + key.replaceAll("_", " ") + "</em></li>";
     }
+
 
     if (document.getElementById('buildList').childElementCount === 0) {
         document.getElementById('buildList').innerHTML += "<li><em>nothing</em></li>";
@@ -1495,10 +2059,40 @@ function generateStats()
         document.getElementById('trainList').innerHTML += "<li><em>nothing</em></li>";
     }
 
+    if (Object.keys(reinfData).length === 0) {
+        document.getElementById('reinfList').innerHTML += "<li><em>nothing</em></li>";
+    } else {
+        buf = document.getElementById('reinfList');
+        for ([c, data] of Object.entries(reinfData)) {
+            p = getPlanetByCoord(c);
+            a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
+            a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
+            buf.innerHTML += "<div style='margin-left: -20px;'><strong>" + a + "</strong></div>";
+            for (i=0; i<data.length; i++) {
+                buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
+            }
+        }
+    }
+	
+	if (Object.keys(transData).length === 0) {
+        document.getElementById('transportList').innerHTML += "<li><em>nothing</em></li>";
+    } else {
+        buf = document.getElementById('transportList');
+        for ([c, data] of Object.entries(transData)) {
+            p = getPlanetByCoord(c);
+            a = "<a href='/planet/" + p.id + "/'>" + c + "</a>";
+            a += "<span class='friendly'><a href='/planet/" + p.id + "/'>" + ' ' + p.name + "</a></span>";
+            buf.innerHTML += "<div style='margin-left: -20px;'><strong>" + a + "</strong></div>";
+            for (i=0; i<data.length; i++) {
+                buf.innerHTML += "<li>" + data[i].amount + "x <em>" + data[i].type.replaceAll("_", " ") + "</em></li>";
+            }
+        }
+    }
 
     buf = document.querySelector('div .header.pageTitle');
     buf.innerHTML = '<span>Planet Statistics</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
+    buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopyPartial" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Partial Copy</span></button>';
 
     document.getElementById('btnCopy').addEventListener("click", function (e) {
         var turn = ' turn '+ turnNumber + ' ';
@@ -1515,6 +2109,39 @@ function generateStats()
         buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
         buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
         buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
+        buf += "--- Constructing ---------------------------------\n";
+        if (document.getElementById('buildList').childElementCount === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for (const key of Object.keys(building).sort()) {
+                if (!ships[key] && key !== 'Soldier') {
+                    buf += (building[key]).toString().padStart(8, ' ') + "x " + key.replaceAll("_", " ") + "\n";
+                }
+            }
+        }
+        buf += "--- Training -------------------------------------\n";
+        if (document.getElementById('trainList').childElementCount === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for (const key of Object.keys(building).sort()) {
+                if (ships[key] >= 0 || key === 'Soldier') {
+                    buf += (building[key]).toString().padStart(8, ' ') + "x " + key.replaceAll("_", " ") + "\n";
+                }
+            }
+        }
+        buf += "--- Reinforcements -------------------------------\n";
+        if (Object.keys(reinfData).length === 0) {
+            buf += "  -- nothing --\n";
+        } else {
+            for ([c, data] of Object.entries(reinfData)) {
+                p = getPlanetByCoord(c);
+                buf += " ** " + c + " " + p.name + "\n";
+                for (i=0; i<data.length; i++) {
+                    buf += (data[i].amount).toString().padStart(8, ' ') + "x " + data[i].type.replaceAll("_", " ") + "\n";
+                }
+                console.log(data);
+            }
+        }
         buf += "```"
 
         navigator.clipboard.writeText(buf);
@@ -1566,24 +2193,24 @@ function getLogistics(res)
 
     const fmt = new Intl.NumberFormat('en-US');
 
-    /* If 1 freighter is sufficent, no need to continue */
-    if (res < logisticsCapacity.freighter) {
-        return "<span class='ofHidden metal'>1 <em>freighter</em></span>";
+    /* If 1 Freighter is sufficent, no need to continue */
+    if (res < logisticsCapacity.Freighter) {
+        return "<span class='ofHidden metal'>1 <em>Freighter</em></span>";
     }
 
-    ret += "<span class='ofHidden metal'>" + fmt.format(Math.ceil(res / logisticsCapacity.freighter)) + " <em>freighter</em></span> ";
-    ret += " OR <span class='ofHidden population'>" + fmt.format(Math.ceil(res / logisticsCapacity.merchant)) + " <em>merchant</em></span> ";
+    ret += "<span class='ofHidden metal'>" + fmt.format(Math.ceil(res / logisticsCapacity.Freighter)) + " <em>Freighter</em></span> ";
+    ret += " OR <span class='ofHidden population'>" + fmt.format(Math.ceil(res / logisticsCapacity.Merchant)) + " <em>Merchant</em></span> ";
     /* If 1 merchent is sufficent, no need to continue */
-    if (Math.ceil(res / logisticsCapacity.merchant) == 1) {
+    if (Math.ceil(res / logisticsCapacity.Merchant) == 1) {
         return ret;
     }
-    ret += " OR <span class='ofHidden food'>" + fmt.format(Math.ceil(res / logisticsCapacity.trader)) + " <em>trader</em></span> ";
-    /* If 1 trader is sufficent, no need to continue */
-    if (Math.ceil(res / logisticsCapacity.trader) == 1) {
+    ret += " OR <span class='ofHidden food'>" + fmt.format(Math.ceil(res / logisticsCapacity.Trader)) + " <em>Trader</em></span> ";
+    /* If 1 Trader is sufficent, no need to continue */
+    if (Math.ceil(res / logisticsCapacity.Trader) == 1) {
         return ret;
     }
-    /* Lastly add hulks */
-    ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.hulk)) + " <em>hulk</em></span> ";
+    /* Lastly add Hulks */
+    ret += " OR <span class='ofHidden energy'>" + fmt.format(Math.ceil(res / logisticsCapacity.Hulk)) + " <em>Hulk</em></span> ";
     return ret;
 }
 
@@ -1674,21 +2301,43 @@ function exportPlanets()
     elCSV.click();
 }
 
-function updatePlanetSorting()
+function updatePlanetSorting(sortType)
 {
     const table = document.getElementById("planetList");
     var rows = table.querySelectorAll("div[id='planetList']");
     var rowsArray = Array.from(rows);
     const homePlanet = rowsArray.shift();
     const filterDiv = table.querySelector('div.seperator');
+    
+    console.log(`Sorting by ${sortType}`);
+    if (sortType==='name') {
+        rowsArray.sort((a, b) => {
+           const linkA = a.querySelector('div .planetName');
+           const linkB = b.querySelector('div .planetName');
+           const textA = linkA ? linkA.textContent.trim() : '';
+           const textB = linkB ? linkB.textContent.trim() : '';
+           return textA.localeCompare(textB);
+       });
+    }
+    if (sortType==='pop') {
+        rowsArray.sort((a, b) => {
+            const linkA = a.querySelector('div .planetName');
+            const linkB = b.querySelector('div .planetName');
+            const textA = linkA ? linkA.textContent.trim() : '';
+            const textB = linkB ? linkB.textContent.trim() : '';
+            const p1 = getPlanetByName(textA.trim());
+            const p2 = getPlanetByName(textB.trim());
+            
+            workerA = getPopulationOfPlanet(p1);
+            workerB = getPopulationOfPlanet(p2);
 
-    rowsArray.sort((a, b) => {
-        const linkA = a.querySelector('div .planetName');
-        const linkB = b.querySelector('div .planetName');
-        const textA = linkA ? linkA.textContent : '';
-        const textB = linkB ? linkB.textContent : '';
-        return textA.localeCompare(textB);
-    });
+            if (workerA === workerB) {
+                return textA.localeCompare(textB);
+            } else {
+                return (workerA > workerB)?-1:1;
+            }
+       });
+    }
 
     table.innerHTML = '';
     const elementsToRemove = table.querySelectorAll("div[id='planetList']");
@@ -1699,6 +2348,19 @@ function updatePlanetSorting()
     table.appendChild(filterDiv);
     table.appendChild(homePlanet);
     rowsArray.forEach(row => table.appendChild(row));
+}
+
+function getPopulationOfPlanet(p)
+{
+    var w1 = 0, w2 = 0;
+    
+    w1 = getResource(p, 'Worker');
+    w2 = getResource(p, 'OccupiedWorker');
+    
+    w1 = w1?w1.amount:0;
+    w2 = w2?w2.amount:0;
+    
+    return w1+w2;
 }
 
 function sendBase64ImageToDiscord(webhookUrl, base64Image)
@@ -1786,6 +2448,7 @@ function generateScreenshot(element)
     var screenshotTarget;
     if (typeof element !== 'undefined') {
         screenshotTarget = document.getElementById(element);
+console.log(element);
     } else {
         screenshotTarget = document.getElementById('contentBox');
     }
@@ -1821,10 +2484,11 @@ function savePluginConfiguration()
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
-    localStorage.setItem('cfgPlanetSorting', document.getElementById('cfgPlanetSorting').checked);
+    localStorage.setItem('cfgPlanetSortingV2', document.getElementById('cfgPlanetSortingV2').value);
     localStorage.setItem('cfgRadarSorting', document.getElementById('cfgRadarSorting').checked);
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
     localStorage.setItem('cfgShowSM', document.getElementById('cfgShowSM').checked);
+    localStorage.setItem('cfgShowAS', document.getElementById('cfgShowAS').checked);
 
     showNotification("Settings saved successfully");
 }
@@ -1839,10 +2503,11 @@ function dumpPluginConfiguration()
     console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
     console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
 
-    console.log('cfgPlanetSorting = ' + localStorage.getItem('cfgPlanetSorting'));
+    console.log('cfgPlanetSortingV2 = ' + localStorage.getItem('cfgPlanetSortingV2'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
     console.log('cfgShowSM = ' + localStorage.getItem('cfgShowSM'));
+    console.log('cfgShowAS = ' + localStorage.getItem('cfgShowAS'));
 }
 
 function showPluginConfiguration()
@@ -1906,14 +2571,24 @@ function showPluginConfiguration()
     '  </div>' +
     `
   <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
-    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgPlanetSorting" name="cfgPlanetSorting" value=""/> <label for="cfgPlanetSorting">Fix planet sorting</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Planet sorting</div>
+    <div class="left" style="padding-top: 2px;">
+      <select style='font-size: 12px; border: 1px solid #7a7a7a; background-color: #4a4a4a; color: #ffffff;' id="cfgPlanetSortingV2" name="cfgPlanetSortingV2">
+        <option value=''>default / coords</option>
+        <option value='name'>by planet name</option>
+        <option value='pop'>by population</option>
+      </select>
+    </div>
+  </div>
+  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgRadarSorting" name="cfgRadarSorting" value="" /> <label for="cfgRadarSorting">Fix radar sorting</label></div>
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgFleetSorting" name="cfgFleetSorting" value="" /> <label for="cfgFleetSorting">Fix fleet sorting</label></div>
   </div>
-  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">
+  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowSM" name="cfgShowSM" value=""/> <label for="cfgShowSM">Show ST/GB/JG in planet list</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowAS" name="cfgShowAS" value=""/> <label for="cfgShowAS">Show available ships in planet list</label></div>
   </div>` +
-    '  <div class="entry opacBackground lightBorderBottom" style="padding: 4px">' +
+    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
     '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
     '    <div class="left" style="padding-top: 2px; ">' +
     '      <input type="text" class="input-text-cfg" id="cfgDiscordTokenA" value="" />' +
@@ -1944,8 +2619,9 @@ function showPluginConfiguration()
     /* Boolean setting */
     document.getElementById('cfgRadarSorting').checked = parseBool(localStorage.getItem('cfgRadarSorting'));
     document.getElementById('cfgFleetSorting').checked = parseBool(localStorage.getItem('cfgFleetSorting'));
-    document.getElementById('cfgPlanetSorting').checked = parseBool(localStorage.getItem('cfgPlanetSorting'));
+    document.getElementById('cfgPlanetSortingV2').value = localStorage.getItem('cfgPlanetSortingV2');
     document.getElementById('cfgShowSM').checked = parseBool(localStorage.getItem('cfgShowSM'));
+    document.getElementById('cfgShowAS').checked = parseBool(localStorage.getItem('cfgShowAS'));
 
     /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
@@ -2045,7 +2721,15 @@ function initializeConfig()
        This one holds "Welcome [TAG]Player name"
        This one holds "Welcome PLayer name"
      */
-    var e = document.getElementById("playerBox").querySelector('.left.border');
+    var e = document.getElementById("playerBox");
+    if (!e) {
+        return;
+    }
+    e = e.querySelector('.left.border');
+    if (!e) {
+        return;
+    }
+
     e = e.innerHTML.trim();
 
     var playerName = '';
@@ -2077,8 +2761,9 @@ function initializeConfig()
 
     localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
-    localStorage.setItem('cfgPlanetSorting', 'true');
+    localStorage.setItem('cfgPlanetSortingV2', 'name');
     localStorage.setItem('cfgShowSM', 'true');
+    localStorage.setItem('cfgShowAS', 'true');
 
     window.alert('Initializing config');
 }

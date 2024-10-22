@@ -1,8 +1,7 @@
-List of ideas which I may or may not implement.
+Version 0.5 TODO
 
-1. ~Sorting planets (by idea from Mord)~
-1. ~Mass messages (also requested by RoF)~ *rejected by admins*
-1. ~Right click + context menu to send fleet to planet?~
-1. Button to generate formatted text for Discord/forums from the comms/scan
-1. ~Fix NULL bug on https://beta.darkgalaxy.com/planet/XXXX/comms/~
-1. Rewrite sorting
+1. Recreate new images
+1. Create manifest for Chrome extension packaging
+1. Replace `resource.js` with local files
+1. Remove external sources (html2canvas) and incorporate that in the local extension
+
