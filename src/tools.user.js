@@ -2091,7 +2091,6 @@ function generateStats()
     buf.innerHTML = '<span>Planet Statistics</span>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopy" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Copy</span></button>';
     buf.innerHTML += '<span style="float: right; padding-right: 130px; padding-top: 7px;"><button id="btnCopyPartial" class="btn"><svg width="120px" height="25px" viewBox="0 0 120 25" class="border"><polyline points="119,0 119,24 0,24 0,0 119,0" class="bg-line" /><polyline points="119,0 119,24 1,24 0,0 119,0" class="hl-line" /></svg><span>Partial Copy</span></button>';
-
     document.getElementById('btnCopy').addEventListener("click", function (e) {
         var turn = ' turn '+ turnNumber + ' ';
         buf = "```\n";
@@ -2140,6 +2139,27 @@ function generateStats()
                 console.log(data);
             }
         }
+        buf += "```"
+
+        navigator.clipboard.writeText(buf);
+        showNotification("Information copied to clipboard");
+    }, false);
+    document.getElementById('btnCopyPartial').addEventListener("click", function (e) {
+        var turn = ' turn '+ turnNumber + ' ';
+        buf = "```\n";
+        buf += "--- General statistics --------------" + turn.padEnd(13, '-') + "\n";
+        buf += " Planets: " + fmt.format(genData.count).padStart(12) + "\n";
+        buf += "  Ground: " + fmt.format(genData.ground).padStart(12) + "\n";
+        buf += "   Orbit: " + fmt.format(genData.orbit).padStart(12) + "\n";
+        buf += " Workers: " + fmt.format(genData.worker).padStart(12) + ("+" + fmt.format(genData.newWorker)).padStart(14) + "\n";
+        buf += "Soldiers: " + fmt.format(genData.soldier).padStart(12) + ("+" + fmt.format(genData.newSoldier)).padStart(14) + "\n\n";
+        buf += "--- Resources ------------------------------------\n";
+        buf += "          " + "Storage".padStart(14) + "Income".padStart(12) + "Abundance".padStart(12) + "\n";
+        buf += "   Metal: " + total.metal.padStart(14) + income.metal.padStart(12) + ratio.metal.padStart(11) + "%\n";
+        buf += " Mineral: " + total.mineral.padStart(14) + income.mineral.padStart(12) + ratio.mineral.padStart(11) + "%\n";
+        buf += "    Food: " + total.food.padStart(14) + income.food.padStart(12) + ratio.food.padStart(11) + "%\n";
+        buf += "  Energy: " + total.energy.padStart(14) + income.energy.padStart(12) + ratio.energy.padStart(11) + "%\n";
+        
         buf += "```"
 
         navigator.clipboard.writeText(buf);
