@@ -435,7 +435,7 @@ if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
 
 if (window.location.href.match(/\/fleet\/[0-9]+/)) {
     buf = getQueryParams(document.location.search);
-
+    
     if (buf.c0 && buf.c1 && buf.c2 && buf.c3) {
         addGlobalStyle("@keyframes color { 0%   { background: #A00; } 50% { background: #000; } 100% { background: #A00; } }");
         addGlobalStyle(".blinkButton { animation: color 1s infinite linear }");
@@ -450,6 +450,71 @@ if (window.location.href.match(/\/fleet\/[0-9]+/)) {
         buf = document.querySelector('input[name="coordinate.0"]').parentNode.parentNode.parentNode;
         buf = buf.querySelector('input[type="Submit"]');
         buf.className = 'blinkButton';
+    }
+    
+    if (document.getElementById('fleetQueue')) {
+        buf = document.getElementById('fleetQueue');
+        p = buf.querySelector('div .header.border');
+        
+        var screenshotIcon = document.createElement('div');
+        screenshotIcon.className = 'right relative';
+        screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+        screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+        screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
+        
+        p.appendChild(screenshotIcon);
+    }
+    
+    q = document.querySelector('div .fleetRight');
+    if (q) {
+        q = q.querySelectorAll('div .fleetRight');
+        for (i = 0; i<q.length; i++) {
+            buf = q[i];
+            p = buf.querySelector('div .header.border');
+            currentTab = '';
+            
+            if (p.innerText.trim()==='Current Action') {
+                currentTab = 'currentAction';
+            }
+            
+            if (p.innerText.trim()==='Fleet Composition') {
+                currentTab = 'fleetComposition';
+            }
+            
+            if (currentTab==='') {
+                continue;
+            }
+            
+            var screenshotIcon = document.createElement('div');
+            screenshotIcon.className = 'right relative';
+            screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+            screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+            
+            /* The div is missing ID */
+            buf.id = currentTab;
+            if (p.innerText.trim()==='Current Action') {
+                screenshotIcon.addEventListener('click', function() { generateScreenshot('currentAction') }, false);
+            }
+            if (p.innerText.trim()==='Fleet Composition') {
+                screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetComposition') }, false);
+            }
+            
+            p.appendChild(screenshotIcon);
+        }
+/*
+        buf = document.getElementById('fleetQueue');
+        p = buf.querySelector('div .header.border');
+        
+        var screenshotIcon = document.createElement('div');
+        screenshotIcon.className = 'right relative';
+        screenshotIcon.style = 'cursor:pointer; margin-top: auto; margin-bottom: auto;';
+        screenshotIcon.innerHTML = '<img alt="Take a screenshot" style="margin-top: 4px" src="' + imageContainer["screenshotIcon.png"] + '"/>';
+
+        screenshotIcon.addEventListener('click', function() { generateScreenshot('fleetQueue') }, false);
+        
+        p.appendChild(screenshotIcon);
+*/
     }
 }
 
@@ -2407,6 +2472,7 @@ function generateScreenshot(element)
     var screenshotTarget;
     if (typeof element !== 'undefined') {
         screenshotTarget = document.getElementById(element);
+console.log(element);
     } else {
         screenshotTarget = document.getElementById('contentBox');
     }
