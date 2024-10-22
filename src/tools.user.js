@@ -1878,10 +1878,8 @@ function generateStats()
     for (i=0; i<jsonPageDataCache.locationList.length; i++) {
         genData.ground += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Ground");
         genData.orbit += getAmount(jsonPageDataCache.locationList[i].locationUnitCount.unitList, "Orbit");
-        localWorker = getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker") + 
-			getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "OccupiedWorker");
+        localWorker = getPopulationOfPlanet(jsonPageDataCache.locationList[i]);
 
-        genData.worker += getAmount(jsonPageDataCache.locationList[i].mobileUnitCount.unitList, "Worker");
         genData.worker += localWorker;
 	
         /* Calculate max living space fot the current planet */
