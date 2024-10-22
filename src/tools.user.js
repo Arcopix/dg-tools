@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name     DG utilities v0.4 dev
+// @name     DG utilities v0.4
 // @namespace    devhex
-// @version      0.4.0007
+// @version      0.4.0006
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://raw.githubusercontent.com/Arcopix/dg-tools/dg-tools-v4-dev/resources.js?v=0.4.0007
+// @require      https://github.com/Arcopix/dg-tools/raw/master/resources.js?v=0.4.0006
 // @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
@@ -671,12 +671,6 @@ function parseFleet()
 	console.log(composition);
 }
 
-/* Fix ships description */
-/* Outposts have the least amount of requirements, and have id of 115 */
-if (document.getElementById('unit-115')) {
-    addShipsDescriptions();
-}
-
 /* Fix sorting of planets */
 if (cfgPlanetSorting!=='') {
     /* Sort planets in select drop down in Fleet command */
@@ -1078,34 +1072,10 @@ function showWhatsNew()
     help.innerHTML = '';
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
-      v0.4.0007
-    </div>`;
-
-    help.innerHTML += `<div class="topicContent show">
-    Version 0.4.0007 comes with the following changes:<br/><br/>
-    <strong>New features:</strong>
-    <ul>
-      <li></li>
-    </ul>
-    <br/>
-    <strong>Updates:</strong>
-    <ul>
-      <li>Added ships descriptions in the on-hover tips with basic targeting information, capacity, some tips and some flavor text where appropriate.</li>
-      <li></li>
-    </ul>
-    <br/>
-    <strong>Bug Fixes:</strong>
-    <ul>
-      <li></li>
-    </ul><br/>
-    <hr/><br/></div>`;
-
-    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
-    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       v0.4.0006
     </div>`;
 
-    help.innerHTML += `<div class="topicContent">
+    help.innerHTML += `<div class="topicContent show">
     Version 0.4.0006 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
@@ -2783,7 +2753,7 @@ function initializeConfig()
         return;
     }
 
-    localStorage.setItem('cfgRulername', playerName);
+       localStorage.setItem('cfgRulername', playerName);
     localStorage.setItem('cfgAllyNAP', 'ALLY1, ALLY2');
     localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
     localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
