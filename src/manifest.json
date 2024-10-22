@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DarkGalaxy Plus",
-  "version": "0.5.0003",
+  "version": "0.5.0007",
   "action": {
     "default_icon": {
       "16": "images/icon16.png",
