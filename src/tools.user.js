@@ -972,6 +972,7 @@ if (window.location.pathname.match(/\/planet\/[0-9]+\/comms\/$/)) {
         l[i].addEventListener('click', function(e) {
             this.getElementsByTagName('input')[0].click();
         });
+        l[i].style = 'pointer';
     }
 
     /* If coordinates are set as parameters, set the coordinates for scanning */
