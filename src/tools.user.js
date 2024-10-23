@@ -7,7 +7,7 @@
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
 // @require      https://github.com/Arcopix/dg-tools/raw/master/src/resources.js?v=0.5.0007
-// @copyright    2020-2023, Stefan Lekov / Arcopix / Devhex Ltd
+// @copyright    2020-2024, Stefan Lekov / Arcopix / Devhex Ltd
 // @homepage     https://github.com/Arcopix/dg-tools
 // @supportURL   https://github.com/Arcopix/dg-tools/issues
 // @downloadURL  https://github.com/Arcopix/dg-tools/raw/master/src/tools.user.js
