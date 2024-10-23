@@ -720,93 +720,89 @@ if (cfgPlanetSorting!=='') {
     console.log("Planet sorting disabled");
 }
 
-if (cfgShowSM) {
-    if (location.href.includes('/planets/')) {
-        let planetsDiv = document.querySelectorAll('div .locationWrapper');
-        for (i=0; i<planetsDiv.length; i++) {
-            let coord = planetsDiv[i].querySelector('div .coords').innerText;
-            p = getPlanetByCoord(coord);
-            /* FIXME This is a bit dirty without any checks */
-            q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
-            q = q.querySelector('div');
+if (cfgShowSM && location.href.includes('/planets/')) {
+    let planetsDiv = document.querySelectorAll('div .locationWrapper');
+    for (i=0; i<planetsDiv.length; i++) {
+        let coord = planetsDiv[i].querySelector('div .coords').innerText;
+        p = getPlanetByCoord(coord);
+        /* FIXME This is a bit dirty without any checks */
+        q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+        q = q.querySelector('div');
 
-            if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
-                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
-            }
-            if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
-                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
-            }
-            if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
-                q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
-            }
+        if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
+            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
+        }
+        if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
+            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
+        }
+        if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
+            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
         }
     }
 }
 
-if (cfgShowAS) {
-	if (location.href.includes('/planets/')) {
-		let planetsDiv = document.querySelectorAll('div .locationWrapper');
-		for (i=0; i<planetsDiv.length; i++) {
-			let coord = planetsDiv[i].querySelector('div .coords').innerText;
-			p = getPlanetByCoord(coord);
-			/* FIXME This is a bit dirty without any checks */
-			q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
+if (cfgShowAS && location.href.includes('/planets/')) {
+    let planetsDiv = document.querySelectorAll('div .locationWrapper');
+    for (i=0; i<planetsDiv.length; i++) {
+        let coord = planetsDiv[i].querySelector('div .coords').innerText;
+        p = getPlanetByCoord(coord);
+        /* FIXME This is a bit dirty without any checks */
+        q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
 
-			q = q.querySelector('div');
+        q = q.querySelector('div');
 
-			shipBuf = [];
-			wfShipStr = "";
-			trShipStr = "";
+        shipBuf = [];
+        wfShipStr = "";
+        trShipStr = "";
 
-			for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
-				t = p.mobileUnitCount.unitList[j].name;
-				q = p.mobileUnitCount.unitList[j].amount;
+        for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
+            t = p.mobileUnitCount.unitList[j].name;
+            q = p.mobileUnitCount.unitList[j].amount;
 
-				if (!ships[t]) {
-					continue;
-				}
+            if (!ships[t]) {
+                continue;
+            }
 
-				shipBuf[t] = q;
-			}
+            shipBuf[t] = q;
+        }
 
-			for ([t, q] of Object.entries(ships)) {
-				/* If not set - no such ships continue */
-				if (typeof shipBuf[t] === 'undefined') {
-					continue;
-				}
+        for ([t, q] of Object.entries(ships)) {
+            /* If not set - no such ships continue */
+            if (typeof shipBuf[t] === 'undefined') {
+                continue;
+            }
 
-				if (logisticsCapacity[t]) {
-					trShipStr = trShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
-				} else {
-					wfShipStr = wfShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
-				}
-			}
+            if (logisticsCapacity[t]) {
+                trShipStr = trShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+            } else {
+                wfShipStr = wfShipStr + " <em>" + shipBuf[t] + "</em> " + t.replaceAll('_', ' ');
+            }
+        }
 
-			/* Nothing landed - skip */
-			if (trShipStr==="" && wfShipStr==="") {
-				continue;
-			}
+        /* Nothing landed - skip */
+        if (trShipStr==="" && wfShipStr==="") {
+            continue;
+        }
 
-			/* Both are set */
-			if (trShipStr!=="" && wfShipStr!=="") {
-				shipStr = wfShipStr + " | " + trShipStr;
-			} else {
-				shipStr = wfShipStr + trShipStr;
-			}
+        /* Both are set */
+        if (trShipStr!=="" && wfShipStr!=="") {
+            shipStr = wfShipStr + " | " + trShipStr;
+        } else {
+            shipStr = wfShipStr + trShipStr;
+        }
 
-			t = document.createElement('div');
-			t.className = 'planetHeadSection';
-			t.style.marginTop = '2px';
-			t.innerHTML = `
+        t = document.createElement('div');
+        t.className = 'planetHeadSection';
+        t.style.marginTop = '2px';
+        t.innerHTML = `
 <div class="lightBorder ofHidden opacBackground padding fleetList">
   <div class="left">
     <span class="fleet" style="font-weight: bold">Landed ships: </span>
     <span class="fleet">${shipStr}</span>
   </div>
 </div>`;
-			planetsDiv[i].querySelector('div').appendChild(t);
-		}
-	}
+        planetsDiv[i].querySelector('div').appendChild(t);
+    }
 }
 
 if (location.href.includes('/planets/')) {
