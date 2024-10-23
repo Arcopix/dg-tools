@@ -569,8 +569,7 @@ for (i=0; i<buf.length; i++) {
     if (!p) {
         continue;
     }
-    let plLink = buf[i].querySelector('a');
-    plLink.href = "/planet/" + p.id + "/";
+    buf[i].href = "/planet/" + p.id + "/";
 }
 
 if (location.href.includes('/fleets/')) {
