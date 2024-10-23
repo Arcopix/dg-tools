@@ -1349,11 +1349,17 @@ function cacheFleets()
 function getFleetById(id)
 {
     var i;
+    if (!jsonFleetCache) {
+        console.log("jsonFleetCache is not set. getFleetById returning NULL");
+        return null;
+    }
+    
     for (i=0; i<jsonFleetCache.length; i++) {
         if (jsonFleetCache[i].id === id) {
             return jsonFleetCache[i];
         }
     }
+    
     console.log(`Cannot find fleet by ID ${id}`);
     return null;
 }
