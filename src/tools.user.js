@@ -562,7 +562,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 buf = document.querySelectorAll(".friendly > a");
 for (i=0; i<buf.length; i++) {
     /* If it is link to a fleet -> do not replace as the fleet is named after the planet */
-    if (buf[i].querySelector('a').href.includes('/fleet/')) {
+    if (buf[i].href.includes('/fleet/')) {
         continue;
     }
     let p = getPlanetByName(buf[i].innerText);
