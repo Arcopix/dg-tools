@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name     DG utilities v0.4
+// @name     DarkGalaxy Plus
 // @namespace    devhex
-// @version      0.5.0007
+// @version      0.5.0008
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
