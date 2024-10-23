@@ -559,7 +559,7 @@ if (location.href.includes('/fleet/')&&document.querySelector('.nextPrevFleet'))
 }
 
 /* Convert any friendly planets to link to the targeted planet instead of navigation */
-buf = document.querySelectorAll(".friendly");
+buf = document.querySelectorAll("a .friendly");
 for (i=0; i<buf.length; i++) {
     /* If it is link to a fleet -> do not replace as the fleet is named after the planet */
     if (buf[i].querySelector('a').href.includes('/fleet/')) {
@@ -570,7 +570,7 @@ for (i=0; i<buf.length; i++) {
         continue;
     }
     let plLink = buf[i].querySelector('a');
-    plLink.href = "/planet/"+p.id+"/"
+    plLink.href = "/planet/" + p.id + "/";
 }
 
 if (location.href.includes('/fleets/')) {
