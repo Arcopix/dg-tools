@@ -629,7 +629,12 @@ function parseFleet()
 	fleetID = parseInt(fleetID[1]);
 	var composition = {};
 	var s;
-
+    
+    /* If not initialized yet?! */
+    if (!fleetArray) {
+        fleetArray = [];
+    }
+    
 	p = getFleetById(fleetID);
 
 	/* Parse fleet composition */
@@ -1329,17 +1334,16 @@ function cacheFleets()
         const link = rowsArray[i].querySelector('.name a');
         const linkId = link.href.match(idRegex);
         const fleetData = getFleetById(parseInt(linkId[1]));
-		console.log(linkId);
-		console.log("i = " + i);
-		if (!fleetData) {
-			composition = null;
-		} else {
-			if (!fleetData.composition) {
-			    composition = null;
-			} else {
-			    composition = fleetData.composition;
+
+        if (!fleetData) {
+            composition = null;
+        } else {
+            if (!fleetData.composition) {
+                composition = null;
+            } else {
+                composition = fleetData.composition;
             }
-		}
+        }
         var fleet = { id: parseInt(linkId[1]), name: link.text, url: link.href, composition: composition };
         fleetArray.push(fleet);
     }
