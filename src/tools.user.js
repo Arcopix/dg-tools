@@ -444,69 +444,6 @@ if (document.querySelector(".navigation.left")) {
     });
 }
 
-/* Fix coordinates to be min 100 px in width due bug in Navigation:
-   - News link is not shown due to width of 85px for longer coordinates (10-12) */
-if (0 && window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-
-    var newDiv = document.createElement('div');
-    newDiv.id = 'dhFleetListMenu';
-    newDiv.className = 'contextMenu';
-    newDiv.style.minHeight = '50px';
-    document.body.appendChild(newDiv);
-
-    foundComms = false;
-
-    if (!jsonPageDataCache.locationList) {
-        console.log("Missing jsonPageDataCache.locationList");
-    } else {
-        for (i=0; i<jsonPageDataCache.locationList.length; i++) {
-            p = jsonPageDataCache.locationList[i];
-            for (j=0; j<p.mobileUnitCount.unitList.length; j++) {
-                if (p.mobileUnitCount.unitList[j].name === "Comms_Satellite" && p.mobileUnitCount.unitList[j].amount === 1) {
-                    foundComms = true;
-                    break;
-                }
-            }
-            if (foundComms) {
-                break;
-            }
-        }
-    }
-
-    buf = document.querySelectorAll('div .planets');
-    for (i = 0; i<buf.length; i++) {
-        p = buf[i].querySelector('div .right');
-        n = buf[i].querySelector('span');
-
-        if (n.querySelector('a')) {
-            n = n.querySelector('a');
-        }
-
-        /* Actual coordinates */
-        n = n.innerHTML;
-
-        if (foundComms) {
-            r = document.createElement('img');
-            r.id = makeId(8);
-            console.log(imageContainer["scanPlanet.png"]);
-            r.src = imageContainer["scanPlanet.png"];
-            r.setAttribute('coordinate', n);
-            r.className = 'scanIcon';
-            r.style.paddingRight = '4px';
-            r.addEventListener("click", showScanMenu, false);
-            p.appendChild(r);
-        }
-
-        m = document.createElement('img');
-        m.id = makeId(8);
-        m.src = imageContainer["jumpToIcon.png"];
-        m.setAttribute('coordinate', n);
-        m.className = 'jumpTo';
-        m.addEventListener("click", showJumpMenu, false);
-        p.appendChild(m);
-    }
-}
-
 /* Script by Mordread -> use ARROW keys to navigate in planet details
    fix by Arcopix - removed anonymous function, since it was useless */
 if (document.querySelector('#planetHeader .planetName a:nth-of-type(1)')) {
