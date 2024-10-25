@@ -1097,7 +1097,9 @@ function showWhatsNew()
     console.log("Showing whats new");
     var i = 0;
     const main = document.getElementById('contentBox');
-
+    if (!main) {
+        return;
+    }
     localStorage.setItem('cfgShowedVersion', 'v0.4.0006');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
@@ -2797,7 +2799,15 @@ function initializeConfig()
        This one holds "Welcome [TAG]Player name"
        This one holds "Welcome PLayer name"
      */
-    var e = document.getElementById("playerBox").querySelector('.left.border');
+    var e = document.getElementById("playerBox");
+    if (!e) {
+        return;
+    }
+    e = e.querySelector('.left.border');
+    if (!e) {
+        return;
+    }
+
     e = e.innerHTML.trim();
 
     var playerName = '';
