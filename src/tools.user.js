@@ -27,8 +27,13 @@ var __HIDE_MENU_INSTRUCTION__ = false;
 var browser = identifyPluginRuntime();
 console.log(`Running on browser "${browser}"`);
 
-/* Common data */
 
+if (!document.getElementById('playerBox')) {
+	console.log("Element 'playerBox' not detected. Likely not logged in - in that case this is normal");
+	throw 'Element "playerBox" not detected';
+}
+
+/* Common data */
 const logisticsCapacity = {
     "Freighter": 100000,
     "Merchant": 250000,
