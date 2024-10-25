@@ -82,6 +82,29 @@ addGlobalStyle(`
   line-height: 22px;
   color: #fff;
 }
+.coords {
+  min-width: 130px;
+}
+img.jumpTo, img.scanIcon {
+  cursor: pointer;
+}
+div.contextMenu {
+  background-color: rgba(100, 100, 100, 0.8);
+  min-width: 100px;
+  padding: 10px;
+  display: none;
+  position: absolute;
+  border: 1px solid #fff;
+}
+div.contextMenuItem {
+  background-color: rgba(100, 100, 100);
+  margin: 2px;
+  padding-left: 3px;
+  border-left: 1px solid #000;
+}
+div.contextMenuItem:hover {
+  background-color: rgba(80, 80, 80, 1);
+}
 `);
 
 /* Development warning */
@@ -191,7 +214,10 @@ addGlobalStyle('[data-tooltip]:hover:before, [data-tooltip]:hover:after { displa
 
 /* Coordinates as links */
 var coords;
-coords = document.getElementsByClassName('coords')
+var curCoord;
+var foundComms = false;
+var newDiv;
+coords = document.getElementsByClassName('coords');
 for (i=0; i<coords.length; i++)
 {
     let c = coords[i];
@@ -200,19 +226,78 @@ for (i=0; i<coords.length; i++)
     if (__c) {
         c = __c;
     }
-
     /* Don't bother with home planets */
     if (typeof c !== 'undefined' && typeof c.innerText !== 'undefined' && c.innerText==='0.0.0.0') {
         continue;
     }
-
+    
+    if (!document.getElementById('contextMenu')) {
+        newDiv = document.createElement('div');
+        newDiv.id = 'dhFleetListMenu';
+        newDiv.className = 'contextMenu';
+        newDiv.style.minHeight = '50px';
+        document.body.appendChild(newDiv);
+    }
+    
     if (c && c.innerText.match(/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/g)) {
         let p = c.innerText.split('.');
+        curCoord = c.innerText;
+        /* In case innerHTML === innerText -> no <a href> -> create one */
         if (c.innerHTML === c.innerText) {
             c.innerHTML = '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerHTML + '</a>';
         } else {
+            /* Replace the coordinates with a link */
             c.innerHTML = c.innerHTML.replace(c.innerText, '<a href="/navigation/' + p[0] + '/' + p[1] + '/' + p[2] + '/">' + c.innerText + '</a>');
         }
+        let q = c.parentNode.querySelector('img');
+        
+        /* This is handled elsewhere (for now) */
+        if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
+            continue;
+        }
+        
+        /* coords.gif not found - skip */
+        if (!q || !q.src.endsWith("/images/units/small/coords.gif")) {
+            continue;
+        }
+        /* Get the DIV */
+        q = q.parentNode;
+        
+
+        if (!jsonPageDataCache.locationList) {
+            console.log("Missing jsonPageDataCache.locationList");
+            continue;
+        }
+        
+        /* Run only once to check if there is Comms already */
+        for (j=0; j<jsonPageDataCache.locationList.length && !foundComms; j++) {
+            p = jsonPageDataCache.locationList[j];
+            if (getAmount(p.mobileUnitCount.unitList, "Comms_Satellite")>0) {
+                foundComms = true;
+                break;
+            }
+        }
+    
+        /* Actual coordinates */
+        /*n = n.innerHTML; */
+
+        if (foundComms) {
+            r = document.createElement('img');
+            r.id = makeId(8);
+            r.src = imageContainer["scanPlanet.png"];
+            r.setAttribute('coordinate', curCoord);
+            r.className = 'scanIcon';
+            r.style.paddingRight = '4px';
+            r.addEventListener("click", showScanMenu, false);
+            q.appendChild(r);
+        }
+        m = document.createElement('img');
+        m.id = makeId(8);
+        m.src = imageContainer["jumpToIcon.png"];
+        m.setAttribute('coordinate', curCoord);
+        m.className = 'jumpTo';
+        m.addEventListener("click", showJumpMenu, false);
+        q.appendChild(m);
     }
 }
 
@@ -354,12 +439,6 @@ if (document.querySelector(".navigation.left")) {
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
 if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-    addGlobalStyle(".coords {min-width: 130px;}");
-
-    addGlobalStyle("img.jumpTo, img.scanIcon {cursor: pointer;}");
-    addGlobalStyle("div.contextMenu { background-color: rgba(100, 100, 100, 0.8); min-width: 100px; padding: 10px; display: none; position: absolute; border: 1px solid #fff}");
-    addGlobalStyle("div.contextMenuItem { background-color: rgba(100, 100, 100); margin: 2px; padding-left: 3px; border-left: 1px solid #000 }");
-    addGlobalStyle("div.contextMenuItem:hover { background-color: rgba(80, 80, 80, 1); }");
 
     var newDiv = document.createElement('div');
     newDiv.id = 'dhFleetListMenu';
@@ -367,7 +446,7 @@ if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
     newDiv.style.minHeight = '50px';
     document.body.appendChild(newDiv);
 
-    var foundComms = false;
+    foundComms = false;
 
     if (!jsonPageDataCache.locationList) {
         console.log("Missing jsonPageDataCache.locationList");
@@ -1775,8 +1854,8 @@ function showScanMenu(e)
     /* Sort by Energy descending-ly as we want the planet with most energy on the top */
     commsLink.sort(function(a,b) {return (a.energy > b.energy) ? -1 : 1;} );
 
-    m.style.left = e.x + 'px';
-    m.style.top = e.y + 'px';
+    m.style.left = (e.x+window.scrollX) + 'px';
+    m.style.top = (e.y+window.scrollY) + 'px';
 
     /* Reset context menu */
     /* Previous optimization does not work due to not changing the coordinates */
@@ -1816,9 +1895,9 @@ function showJumpMenu(e)
         window.alert('No fleets are cached. Visit your fleet list!');
         return;
     }
-
-    m.style.left = e.x + 'px';
-    m.style.top = e.y + 'px';
+    
+    m.style.left = (e.x+window.scrollX) + 'px';
+    m.style.top = (e.y+window.scrollY) + 'px';
 
     /* Reset context menu */
     /* Previous optimization does not work due to not changing the coordinates */
