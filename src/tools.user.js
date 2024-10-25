@@ -83,7 +83,7 @@ addGlobalStyle(`
   color: #fff;
 }
 .coords {
-  min-width: 130px;
+  width: auto !important;
 }
 img.jumpTo, img.scanIcon {
   cursor: pointer;
@@ -252,16 +252,24 @@ for (i=0; i<coords.length; i++)
         let q = c.parentNode.querySelector('img');
         
         /* This is handled elsewhere (for now) */
-        if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
-            continue;
-        }
+//        if (window.location.href.match(/\/planets\//)) {
+//            continue;
+//        }
         
         /* coords.gif not found - skip */
         if (!q || !q.src.endsWith("/images/units/small/coords.gif")) {
             continue;
         }
         /* Get the DIV */
-        q = q.parentNode;
+        q = q.parentNode.parentNode;
+        r = document.createElement('div');
+        q.appendChild(r);
+        q = r;
+        q.className = 'left seperatorRight';
+        q.style.marginLeft = '3px';
+        q.style.marginRight = '3px';
+        /* Eh ?! */
+//        q = q.parentNode.parentNode.parentNode.parentNode;
         
 
         if (!jsonPageDataCache.locationList) {
@@ -438,7 +446,7 @@ if (document.querySelector(".navigation.left")) {
 
 /* Fix coordinates to be min 100 px in width due bug in Navigation:
    - News link is not shown due to width of 85px for longer coordinates (10-12) */
-if (window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
+if (0 && window.location.href.match(/\/navigation\/[0-9]+\/[0-9]+\/[0-9]+/)) {
 
     var newDiv = document.createElement('div');
     newDiv.id = 'dhFleetListMenu';
@@ -806,20 +814,32 @@ if (cfgPlanetSorting!=='') {
 if (cfgShowSM && location.href.includes('/planets/')) {
     let planetsDiv = document.querySelectorAll('div .locationWrapper');
     for (i=0; i<planetsDiv.length; i++) {
-        let coord = planetsDiv[i].querySelector('div .coords').innerText;
+        let coord = planetsDiv[i].querySelector('div .coords').innerText.trim();
         p = getPlanetByCoord(coord);
         /* FIXME This is a bit dirty without any checks */
         q = planetsDiv[i].querySelectorAll('div .planetHeadSection')[0];
         q = q.querySelector('div');
 
         if (getAmount(p.mobileUnitCount.unitList, "Jump_Gate")>0) {
-            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18"></div>';
+            t = document.createElement('div');
+            t.className = 'right resource';
+            t.innerHTML = '<img style="border: 1px solid #666;" src="/images/units/main/structures/jump_gate.jpg" title="' + p.name + ' has Jump Gate" alt="' + p.name + ' has Jump Gate" width="18" height="18">';
+
+            q.appendChild(t);
         }
         if (getAmount(p.mobileUnitCount.unitList, "Hyperspace_Beacon")>0) {
-            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18"></div>';
+            t = document.createElement('div');
+            t.className = 'right resource';
+            t.innerHTML = '<img style="border: 1px solid #666;" src="/images/units/main/structures/hyperspace_beacon.jpg" title="' + p.name + ' has Hyperspace Beacon" alt="' + p.name + ' has Hyperspace Beacon" width="18" height="18">';
+
+            q.appendChild(t);
         }
         if (getAmount(p.mobileUnitCount.unitList, "Space_Tether")>0) {
-            q.innerHTML += '<div class="right resource"><img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18"></div>';
+            t = document.createElement('div');
+            t.className = 'right resource';
+            t.innerHTML = '<img style="border: 1px solid #666;" src="/images/units/main/structures/space_tether.jpg" title="' + p.name + ' has Space Tether" alt="' + p.name + ' has Space Tether" width="18" height="18">';
+
+            q.appendChild(t);
         }
     }
 }
