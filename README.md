@@ -52,6 +52,10 @@ Basic Javascript fixes for DarkGalaxy beta released in May 2020. It fixes/augmen
 * Raptor
   * for proof of concept code for general statistics
 
+* CR1 & Kroketa
+  * for providing ideas for improvements (landed ships and sorting by population)
+  * general testing of 0.5.0007 - 0.5.0009
+
 **Bugs and issues**
 
 If you find any bugs or want to provide any feedback, feel free to open an issue on GitHub (https://github.com/Arcopix/dg-tools/issues) or message me in DarkGalaxy Discord.
