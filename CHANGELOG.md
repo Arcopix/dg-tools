@@ -1,19 +1,31 @@
-## Version 0.5.0007
+## Version 0.5.0009
 
 **New features:**
 
 1. Planet statistics now has _"Partial Copy"_ button which only copies the income
 1. Planet statistics now has _"Available reinforcements"_ which lists any available warships, invasions and soldiers
 1. Planet statistics now has _"Parked transports"_ which lists any available transport ships
+1. All friendly _(owned by the player)_ planets are now links to the respective planet page instead of coordinates
+1. _Experimental fleet caching - usage reserved for future versions_
+1. Planet and Fleet listing pages now have built-in filters _(also accessible via `/` or `Ctrl+F`)_
+1. Implemented "Landed ships" inline information for each planet (configurable via Settings)
 
 **Updates:**
 
 1. Planet statistics output received an update in order to have better output
+1. User script for TamperMonkey was renamed to "DarkGalaxy Plus" _(same as the Chrome extension)_
+1. Experimental loading of images from the extension pack
+1. Various adjustments related to rules changes in Andromeda 3 and Andromeda 4
+1. Implemented capability to hide the "context menu" for "Scan Target" and "Jump To" if the user clicks elsewhere on the interface
+1. Icons for "Scan Target" and "Jump To" context menus are now available throughout the entire interface and not in Navigation only
+1. Planet sorting was extended to support "order by population"
+1. Various optimizations and code clean-ups
 
 **Bug Fixes:**
 
 1. Now workers statistics is now taking into consideration "available living space" on each planet, thus providing accurate information.
-
+1. Added checks for some elements in order to deactivate the script/extension if not logged in
+1. Disabled Alt+Left / Alt+Right or Ctrl+Left / Ctrl+Right shorcuts for switching to previous/next for planets, fleets or navigation
 
 ## Version 0.4.0007
 **New features:**
