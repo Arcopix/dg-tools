@@ -141,6 +141,7 @@ if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp'
             localStorage.setItem('cfgAllyWAR', 'ALLY5,ALLY6');
             localStorage.setItem('cfgAllyWARcolor', '#ff0000');
             localStorage.setItem('cfgShowAS', 'true');
+            localStorage.setItem('cfgConfirmInvasion', 'false');
         }
     }
 }
@@ -159,7 +160,7 @@ var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = localStorage.getItem('cfgPlanetSortingV2');
 var cfgShowSM = (localStorage.getItem('cfgShowSM')!=='')?parseBool(localStorage.getItem('cfgShowSM')):true;
 var cfgShowAS = (localStorage.getItem('cfgShowAS')!=='')?parseBool(localStorage.getItem('cfgShowAS')):true;
-
+var cfgConfirmInvasion = (localStorage.getItem('cfgConfirmInvasion')!=='')?parseBool(localStorage.getItem('cfgConfirmInvasion')):false;
 
 
 /* Updated main menu items */
@@ -2578,6 +2579,7 @@ function savePluginConfiguration()
     localStorage.setItem('cfgFleetSorting', document.getElementById('cfgFleetSorting').checked);
     localStorage.setItem('cfgShowSM', document.getElementById('cfgShowSM').checked);
     localStorage.setItem('cfgShowAS', document.getElementById('cfgShowAS').checked);
+    localStorage.setItem('cfgConfirmInvasion', document.getElementById('cfgConfirmInvasion').checked);
 
     showNotification("Settings saved successfully");
 }
@@ -2598,6 +2600,7 @@ function dumpPluginConfiguration()
     console.log('cfgFleetSorting = ' + localStorage.getItem('cfgFleetSorting'));
     console.log('cfgShowSM = ' + localStorage.getItem('cfgShowSM'));
     console.log('cfgShowAS = ' + localStorage.getItem('cfgShowAS'));
+    console.log('cfgConfirmInvasion = ' + localStorage.getItem('cfgConfirmInvasion'));
 }
 
 function showPluginConfiguration()
@@ -2687,6 +2690,7 @@ function showPluginConfiguration()
   <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowSM" name="cfgShowSM" value=""/> <label for="cfgShowSM">Show ST/GB/JG in planet list</label></div>
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgShowAS" name="cfgShowAS" value=""/> <label for="cfgShowAS">Show available ships in planet list</label></div>
+    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;"><input type="checkbox" id="cfgConfirmInvasion" name="cfgConfirmInvasion" value=""/> <label for="cfgConfirmInvasion">Additional confirmation for invading</label></div>
   </div>` +
     '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
     '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Discord sharing</div>' +
@@ -2723,6 +2727,7 @@ function showPluginConfiguration()
     document.getElementById('cfgPlanetSortingV2').value = localStorage.getItem('cfgPlanetSortingV2');
     document.getElementById('cfgShowSM').checked = parseBool(localStorage.getItem('cfgShowSM'));
     document.getElementById('cfgShowAS').checked = parseBool(localStorage.getItem('cfgShowAS'));
+    document.getElementById('cfgConfirmInvasion').checked = parseBool(localStorage.getItem('cfgConfirmInvasion'));
 
     /* Buttons */
     document.getElementById('cfgVers').addEventListener('click', function() { showWhatsNew(); }, false);
@@ -2773,7 +2778,7 @@ function colorizeByNapCapWar(allyList, color)
         
     }
     
-    if (!jsonPageData.fleetList && !jsonPageData.radarList) {
+    if (!jsonPageData || (!jsonPageData.fleetList && !jsonPageData.radarList)) {
         console.log("Missing fleet list, not attempting to colorize coordinates");
         return;
     }
@@ -2974,6 +2979,7 @@ function initializeConfig()
     localStorage.setItem('cfgPlanetSortingV2', 'name');
     localStorage.setItem('cfgShowSM', 'true');
     localStorage.setItem('cfgShowAS', 'true');
+    localStorage.setItem('cfgConfirmInvasion', 'false');
 
     window.alert('Initializing config');
 }
