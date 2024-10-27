@@ -2739,7 +2739,7 @@ function colorizeByNapCapWar(allyList, color)
         arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
     }
     
-    var elems = document.querySelectorAll(".allianceName");
+    var elems = document.querySelectorAll("div .allianceName");
     var player="";
     for (i=0; i<elems.length; i++) {
         var e = elems[i];
@@ -2770,8 +2770,72 @@ function colorizeByNapCapWar(allyList, color)
                 p.querySelector('div .playerName').style.color = color;
             }
         }
+        
     }
     
+    if (!jsonPageData.fleetList && !jsonPageData.radarList) {
+        console.log("Missing fleet list, not attempting to colorize coordinates");
+        return;
+    }
+    
+    /* Try to check for some coordinates ?! */
+    var elems = document.querySelectorAll(".coords");
+    
+    for (i=0; i<elems.length; i++) {
+        var e = elems[i];
+        c = e.querySelector('span > a');
+        if (!c) {
+            continue;
+        }
+        c = c.innerText.trim();
+        
+        a = e.querySelector('.hostile');
+        if (!a) {
+            continue;
+        }
+
+        if (jsonPageData.radarList) {
+            for (j=0; j<jsonPageData.radarList.length; j++) {
+                if (jsonPageData.radarList[j].fleetList) {
+                    dstPlanet = findPlanetInFleetList(jsonPageData.radarList[j].fleetList, c);
+                    if (dstPlanet) {
+                        break;
+                    }
+                }
+            }
+        } else {
+            dstPlanet = findPlanetInFleetList(jsonPageData.fleetList, c);
+        }
+        
+        if (!dstPlanet) {
+            continue;
+        }
+        
+        if ((!dstPlanet.playerInfo && dstPlanet.playerInfo.alliance)) {
+            continue;
+        }
+        
+        if (arrayAlly.includes('[' + dstPlanet.playerInfo.alliance.tag + ']')) {
+            if (a.querySelector('a')) {
+                a.querySelector('a').style.color = color;
+            }
+        }
+    }
+}
+
+function findPlanetInFleetList(fleetList, coord)
+{
+    var i;
+    for (i = 0; i<fleetList.length; i++) {
+        if (fleetList[i].destination&&fleetList[i].destination.coordinates.join('.') === coord) {
+            return fleetList[i].destination;
+        }
+        if (fleetList[i].origin&&fleetList[i].origin.coordinates.join('.') === coord) {
+            return fleetList[i].origin;
+        }
+    }
+    
+    return null;
 }
 
 /* === END OF FEATURE FUNCTIONS === */
