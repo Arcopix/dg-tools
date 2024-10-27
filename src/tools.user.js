@@ -131,8 +131,16 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
 } else {
-    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.4.0006') {
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.5.0009') {
         showWhatsNew();
+        
+        /* Configure 0.5.0009 features */
+        if (!localStorage.getItem('cfgAllyWAR')) {
+            console.log("Configuring 0.5.0009 features");
+            localStorage.setItem('cfgAllyWAR', 'ALLY5,ALLY6');
+            localStorage.setItem('cfgAllyWARcolor', '#ff0000');
+            localStorage.setItem('cfgShowAS', 'true');
+        }
     }
 }
 
@@ -142,6 +150,9 @@ var cfgAllyNAP = localStorage.getItem('cfgAllyNAP');
 var cfgAllyNAPcolor = localStorage.getItem('cfgAllyNAPcolor');
 var cfgAllyCAP = localStorage.getItem('cfgAllyCAP');
 var cfgAllyCAPcolor = localStorage.getItem('cfgAllyCAPcolor');
+var cfgAllyWAR = localStorage.getItem('cfgAllyWAR');
+var cfgAllyWARcolor = localStorage.getItem('cfgAllyWARcolor');
+
 var cfgRadarSorting = parseBool(localStorage.getItem('cfgRadarSorting'));
 var cfgFleetSorting = parseBool(localStorage.getItem('cfgFleetSorting'));
 var cfgPlanetSorting = localStorage.getItem('cfgPlanetSortingV2');
@@ -314,75 +325,57 @@ for (i=0; i<coords.length; i++)
     }
 }
 
-/* TODO: Thsi should be combined with cfgAllyCAP */
-/* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
-if (cfgAllyNAP!=='') {
-    var arrayAllyNAP = cfgAllyNAP.split(',');
+function colorizeByNapCapWar(allyList, color)
+{
+    var arrayAlly = allyList.split(',');
 
-    for (i=0; i<arrayAllyNAP.length; i++) {
-        arrayAllyNAP[i] = '[' + arrayAllyNAP[i].trim() + ']';
+    for (i=0; i<arrayAlly.length; i++) {
+        arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
     }
 
     var elems = document.getElementsByTagName("div");
     var player="";
     for (i=0; i<elems.length; i++) {
         var e = elems[i];
-        if (e.className==="allianceName"&&arrayAllyNAP.includes(e.innerText.trim())) {
+        if (e.className==="allianceName"&&arrayAlly.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
-            e.style.color = cfgAllyNAPcolor;
+            e.style.color = color;
             /* Only for navigation */
             if (location.href.includes('/navigation/')) {
                 /* Find the Element with the entire planet */
                 p = e.parentElement.parentElement.parentElement;
                 /* Reset the border of the planet */
 
-                p.style.border = "1px solid " + cfgAllyNAPcolor;
+                p.style.border = "1px solid " + color;
 
                 /* Reset the color for any text */
-                p.style.color = cfgAllyNAPcolor;
-                p.querySelector("span").style.color = cfgAllyNAPcolor;
+                p.style.color = color;
+                p.querySelector("span").style.color = color;
                 if (p.querySelector("a")) {
-                    p.querySelector("a").style.color = cfgAllyNAPcolor;
+                    p.querySelector("a").style.color = color;
                 }
                 /* Properly colorize the player name */
-                p.querySelector('div .playerName').style.color = cfgAllyNAPcolor;
+                p.querySelector('div .playerName').style.color = color;
             }
         }
     }
+    
+}
+
+/* TODO: Thsi should be combined with cfgAllyCAP */
+/* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
+if (cfgAllyNAP!=='') {
+    colorizeByNapCapWar(cfgAllyNAP, cfgAllyNAPcolor);
 }
 
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyCAP */
 if (cfgAllyCAP!=='') {
-    var arrayAllyCAP = cfgAllyCAP.split(',');
+    colorizeByNapCapWar(cfgAllyCAP, cfgAllyCAPcolor);
+}
 
-    for (i=0; i<arrayAllyCAP.length; i++) {
-        arrayAllyCAP[i] = '[' + arrayAllyCAP[i].trim() + ']';
-    }
-
-    elems = document.getElementsByTagName("div");
-    player="";
-    for (i=0; i<elems.length; i++) {
-        e = elems[i];
-        if (e.className==="allianceName"&&arrayAllyCAP.includes(e.innerText.trim())) {
-            /* Colorize the alliance TAG */
-            e.style.color = cfgAllyCAPcolor;
-            /* Find the Element with the entire planet */
-            p = e.parentElement.parentElement.parentElement;
-            /* Reset the border of the planet */
-            if (location.href.includes('/navigation/')) {
-                p.style.border = "1px solid " + cfgAllyCAPcolor;
-
-                /* Reset the color for any text */
-                p.style.color = cfgAllyCAPcolor;
-                p.querySelector("span").style.color = cfgAllyCAPcolor;
-                if (p.querySelector("a")) {
-                    p.querySelector("a").style.color = cfgAllyCAPcolor;
-                }
-                /* Properly colorize the player name */
-                p.querySelector('div .playerName').style.color = cfgAllyCAPcolor;
-            }
-        }
-    }
+/* Colorize the alliance tag / playname if it matches a tag arrayAllyWAR */
+if (cfgAllyWAR!=='') {
+    colorizeByNapCapWar(cfgAllyWAR, cfgAllyWARcolor);
 }
 
 /* Add onclick to player names through the interface to forward to mail module */
@@ -1105,7 +1098,7 @@ function showWhatsNew()
     if (!main) {
         return;
     }
-    localStorage.setItem('cfgShowedVersion', 'v0.4.0006');
+    localStorage.setItem('cfgShowedVersion', 'v0.5.0009');
 
     addGlobalStyle('.topic {padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; letter-spacing: 1px; padding-left: 20px;}');
     addGlobalStyle('.topicContent { display: none; padding: 10px; font-size: 1.2em; border-bottom: 1px solid #ddd; }');
@@ -2608,7 +2601,8 @@ function savePluginConfiguration()
     localStorage.setItem('cfgAllyNAPcolor', document.getElementById('cfgAllyNAPcolor').value);
     localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
     localStorage.setItem('cfgAllyCAPcolor', document.getElementById('cfgAllyCAPcolor').value);
-    localStorage.setItem('cfgAllyCAP', document.getElementById('cfgAllyCAP').value);
+    localStorage.setItem('cfgAllyWAR', document.getElementById('cfgAllyWAR').value);
+    localStorage.setItem('cfgAllyWARcolor', document.getElementById('cfgAllyWARcolor').value);
 
     localStorage.setItem('cfgDiscordTokenA', document.getElementById('cfgDiscordTokenA').value);
 
@@ -2629,7 +2623,8 @@ function dumpPluginConfiguration()
     console.log('cfgAllyNAPcolor = ' + localStorage.getItem('cfgAllyNAPcolor'));
     console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
     console.log('cfgAllyCAPcolor = ' + localStorage.getItem('cfgAllyCAPcolor'));
-    console.log('cfgAllyCAP = ' + localStorage.getItem('cfgAllyCAP'));
+    console.log('cfgAllyWAR = ' + localStorage.getItem('cfgAllyWAR'));
+    console.log('cfgAllyWARcolor = ' + localStorage.getItem('cfgAllyWARcolor'));
 
     console.log('cfgPlanetSortingV2 = ' + localStorage.getItem('cfgPlanetSortingV2'));
     console.log('cfgRadarSorting = ' + localStorage.getItem('cfgRadarSorting'));
@@ -2697,6 +2692,16 @@ function showPluginConfiguration()
     '      <input type="color" class="input-text-cfg-color" id="cfgAllyCAPcolor" value="#f6b73c" />' +
     '    </div>' +
     '  </div>' +
+    '  <div class="entry opacLightBackground lightBorderBottom" style="padding: 4px">' +
+    '    <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">WAR list</div>' +
+    '    <div class="left" style="padding-top: 2px; ">' +
+    '      <input type="text" class="input-text-cfg" id="cfgAllyWAR" value="" />' +
+    '    </div>' +
+    '    <div class="left" style="line-height: 22px">Which alliances should be classified and color coded as WAR</div>' +
+    '    <div class="right" style="padding-top: 2px; width: 100px; text-align: right;">' +
+    '      <input type="color" class="input-text-cfg-color" id="cfgAllyWARcolor" value="#f6b73c" />' +
+    '    </div>' +
+    '  </div>' +
     `
   <div class="entry opacBackground lightBorderBottom" style="padding: 4px">
     <div class="left name" style="line-height: 22px; padding-right: 20px; text-align: right;">Planet sorting</div>
@@ -2741,7 +2746,8 @@ function showPluginConfiguration()
     document.getElementById('cfgAllyNAPcolor').value = localStorage.getItem('cfgAllyNAPcolor');
     document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
     document.getElementById('cfgAllyCAPcolor').value = localStorage.getItem('cfgAllyCAPcolor');
-    document.getElementById('cfgAllyCAP').value = localStorage.getItem('cfgAllyCAP');
+    document.getElementById('cfgAllyWAR').value = localStorage.getItem('cfgAllyWAR');
+    document.getElementById('cfgAllyWARcolor').value = localStorage.getItem('cfgAllyWARcolor');
     document.getElementById('cfgDiscordTokenA').value = localStorage.getItem('cfgDiscordTokenA');
 
     /* Boolean setting */
@@ -2886,6 +2892,8 @@ function initializeConfig()
     localStorage.setItem('cfgAllyNAPcolor', '#FFE66F');
     localStorage.setItem('cfgAllyCAP', 'ALLY3, ALLY4');
     localStorage.setItem('cfgAllyCAPcolor', '#6FFFA2');
+    localStorage.setItem('cfgAllyWAR', 'ALLY5, ALLY6');
+    localStorage.setItem('cfgAllyCAPcolor', '#FF0000');
 
     localStorage.setItem('cfgRadarSorting', 'true');
     localStorage.setItem('cfgFleetSorting', 'true');
