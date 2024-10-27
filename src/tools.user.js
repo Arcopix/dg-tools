@@ -1140,7 +1140,7 @@ function showWhatsNew()
       <li>Experimental loading of images from the extension pack</li>
       <li>Various adjustments related to rules changes in Andromeda 3 and Andromeda 4</li>
       <li>Implemented capability to hide the "context menu" for "Scan Target" and "Jump To" if the user clicks elsewhere on the interface</li>
-      <li>Icons for "Scan Target" and "Jump To" context menus are now available throughout the entire interface and not in Navigation only</li>
+      <li>Icons for "Scan Target" (<img src='${imageContainer["scanPlanet.png"]}'/>) and "Jump To" (<img src='${imageContainer["jumpToIcon.png"]}'/>) context menus are now available throughout the entire interface and not in Navigation only</li>
       <li>Planet sorting was extended to support "order by population"</li>
       <li>Various optimizations and code clean-ups</li>
     </ul>
@@ -1332,7 +1332,7 @@ function showHelp()
     </div>`;
     help.innerHTML += `<div class="topicContent">
     <p>In order to use special colorization of players based on their alliance for NAP/CAP purposes,
-    click on settings icon (<img style="vertical-align: middle;" src="` + imageContainer['confIcon.png'] + `"/>)
+    click on settings icon (<img style="vertical-align: middle;" src='${imageContainer['confIcon.png']}'/>)
     in the top right menu. There you can configure NAP and CAP list as well as setting custom color for each group:</p>
     <ul>
     <li>Your should specify the alliance TAG(s) in the respective inout.</li>
@@ -1340,7 +1340,7 @@ function showHelp()
     <li>The alliance tags are CASE sensitive</li>
     <li>Setting NAP list to "DalCom,EST" and CAP list to "EsRi,GP" will result in something like the image below:</li>
     </ul>
-    <img style="padding: 10px;" src="` + imageContainer['navExample.png'] + `"/>
+    <img style="padding: 10px;" src="${imageContainer['navExample.png']}"/>
     </div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
@@ -1371,10 +1371,10 @@ function showHelp()
       Fleet queuing
     </div>`;
     help.innerHTML += `<div class="topicContent">
-    <p>While browsing the in-game Navigation you can press the queue fleet icon (<img style="vertical-align: middle;" src="` + imageContainer['jumpToIcon.png'] + `"/>)
+    <p>While browsing the in-game Navigation you can press the queue fleet icon (<img style="vertical-align: middle;" src="${imageContainer['jumpToIcon.png']}"/>)
     which will pop a context menu with your current fleets.</p>
     <div class="error seperator"><strong>Warning:</strong> This will only open the selected fleet and populate the coordinates. You'll have to confirm the fleet movement manually.</div>
-    <img style="padding: 10px;" src="` + imageContainer['navigationExample.png'] + `"/>
+    <img style="padding: 10px;" src="${imageContainer['navigationExample.png']}"/>
     </div>`;
 
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic "
