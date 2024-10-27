@@ -27,6 +27,7 @@ var __HIDE_MENU_INSTRUCTION__ = false;
 var browser = identifyPluginRuntime();
 console.log(`Running on browser "${browser}"`);
 
+var startTime = performance.now();
 
 if (!document.getElementById('playerBox')) {
 	console.log("Element 'playerBox' not detected. Likely not logged in - in that case this is normal");
@@ -1047,6 +1048,10 @@ for (i=0; i<allForms.length; i++) {
         }
     }
 }
+
+var endTime = performance.now()
+
+console.log(`DarkGalaxy Plus took ${endTime - startTime} milliseconds`)
 
 /* End of script */
 
@@ -2733,7 +2738,7 @@ function colorizeByNapCapWar(allyList, color)
     for (i=0; i<arrayAlly.length; i++) {
         arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
     }
-
+/* TODO XXX */
     var elems = document.getElementsByTagName("div");
     var player="";
     for (i=0; i<elems.length; i++) {
@@ -2745,6 +2750,7 @@ function colorizeByNapCapWar(allyList, color)
             if (e.parentNode.tagName == 'SPAN' && (e.parentNode.className == 'hostile' || e.parentNode.className == 'allied')) {
                 e.parentNode.style.color = color;
             }
+            
             /* Only for navigation */
             if (location.href.includes('/navigation/')) {
                 /* Find the Element with the entire planet */
