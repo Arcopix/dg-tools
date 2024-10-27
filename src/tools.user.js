@@ -132,18 +132,18 @@ if (!localStorage.getItem('cfgRulername')||localStorage.getItem('cfgRulername')=
 if (!localStorage.getItem('cfgShowedHelp')||localStorage.getItem('cfgShowedHelp')!=='v0.4.0004') {
     showHelp();
 } else {
-    /* if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.5.0009') 
+    if (!localStorage.getItem('cfgShowedVersion')||localStorage.getItem('cfgShowedVersion')!=='v0.5.0009') {
         showWhatsNew();
-     */
-
-	/* Configure 0.5.0009 features */
-	if (!localStorage.getItem('cfgAllyWAR')) {
-		console.log("Configuring 0.5.0009 features");
-		localStorage.setItem('cfgAllyWAR', 'ALLY5,ALLY6');
-		localStorage.setItem('cfgAllyWARcolor', '#ff0000');
-		localStorage.setItem('cfgShowAS', 'true');
-		localStorage.setItem('cfgConfirmInvasion', 'false');
-	}
+        
+        /* Configure 0.5.0009 features */
+        if (!localStorage.getItem('cfgAllyWAR')) {
+            console.log("Configuring 0.5.0009 features");
+            localStorage.setItem('cfgAllyWAR', 'ALLY5,ALLY6');
+            localStorage.setItem('cfgAllyWARcolor', '#ff0000');
+            localStorage.setItem('cfgShowAS', 'true');
+            localStorage.setItem('cfgConfirmInvasion', 'false');
+        }
+    }
 }
 
 /* Global configuration */
