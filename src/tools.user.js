@@ -606,6 +606,33 @@ if (window.location.href.match(/\/fleet\/[0-9]+\/transfer\/(location|mobile)\/[0
 
 if (window.location.href.match(/\/fleet\/[0-9]+[\/]?$/)) {
     parseFleet();
+    if (cfgConfirmInvasion) {
+        f = document.getElementsByTagName('form');
+        for (i = 0; i<f.length; i++) {
+            if (f[i].action.match(/fleet\/[0-9]+\/colonise/)) {
+                q = f[i];
+                q = q.querySelector('input[name="isInvasion"]');
+                if (!q) {
+                    break;
+                }
+                if (!parseBool(q.value)) {
+                    break;
+                }
+                
+                f = f[i];
+                
+                f.addEventListener("submit", function(event) {
+                    var confirmed = confirm("Are you sure you want to invade?");
+                    if (!confirmed) {
+                        event.preventDefault();
+                        location.reload();
+                    }
+                });
+
+                break;
+            }
+        }
+    }
 }
 
 function parseFleet()
