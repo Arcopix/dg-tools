@@ -1119,6 +1119,8 @@ function showWhatsNew()
       <li><em>Experimental fleet caching - usage reserved for future versions</em></li>
       <li>Planet and Fleet listing pages now have built-in filters <em>(also accessible via \`/\` or \`Ctrl+F\`)</em></li>
       <li>Implemented "Landed ships" inline information for each planet (configurable via Settings)</li>
+      <li>Implemented confirmation on invasion <em>(optional, configurable in the settings, disabled by default)</em></li>
+      <li>Added new colorization options for alliances which your are at WAR with <em>(same as NAP/CAP capabilities)</em></li>
     </ul>
     <br/>
     <strong>Updates:</strong>
@@ -1130,6 +1132,7 @@ function showWhatsNew()
       <li>Implemented capability to hide the "context menu" for "Scan Target" and "Jump To" if the user clicks elsewhere on the interface</li>
       <li>Icons for "Scan Target" (<img src='${imageContainer["scanPlanet.png"]}'/>) and "Jump To" (<img src='${imageContainer["jumpToIcon.png"]}'/>) context menus are now available throughout the entire interface and not in Navigation only</li>
       <li>Planet sorting was extended to support "order by population"</li>
+      <li>Colorization of NAP/CAP/WAR alliancies is now also applied to planets <em>(wherever it's possible)</em></li>
       <li>Various optimizations and code clean-ups</li>
     </ul>
     <br/>
