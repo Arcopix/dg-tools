@@ -2741,6 +2741,10 @@ function colorizeByNapCapWar(allyList, color)
         if (e.className==="allianceName"&&arrayAlly.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
             e.style.color = color;
+            
+            if (e.parentNode.tagName == 'SPAN' && (e.parentNode.className == 'hostile' || e.parentNode.className == 'allied')) {
+                e.parentNode.style.color = color;
+            }
             /* Only for navigation */
             if (location.href.includes('/navigation/')) {
                 /* Find the Element with the entire planet */
