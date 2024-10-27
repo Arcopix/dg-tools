@@ -2738,12 +2738,13 @@ function colorizeByNapCapWar(allyList, color)
     for (i=0; i<arrayAlly.length; i++) {
         arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
     }
-/* TODO XXX */
-    var elems = document.getElementsByTagName("div");
+    
+    var elems = document.querySelectorAll(".allianceName");
     var player="";
     for (i=0; i<elems.length; i++) {
         var e = elems[i];
-        if (e.className==="allianceName"&&arrayAlly.includes(e.innerText.trim())) {
+        
+        if (arrayAlly.includes(e.innerText.trim())) {
             /* Colorize the alliance TAG */
             e.style.color = color;
             
