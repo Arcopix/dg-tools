@@ -325,44 +325,6 @@ for (i=0; i<coords.length; i++)
     }
 }
 
-function colorizeByNapCapWar(allyList, color)
-{
-    var arrayAlly = allyList.split(',');
-
-    for (i=0; i<arrayAlly.length; i++) {
-        arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
-    }
-
-    var elems = document.getElementsByTagName("div");
-    var player="";
-    for (i=0; i<elems.length; i++) {
-        var e = elems[i];
-        if (e.className==="allianceName"&&arrayAlly.includes(e.innerText.trim())) {
-            /* Colorize the alliance TAG */
-            e.style.color = color;
-            /* Only for navigation */
-            if (location.href.includes('/navigation/')) {
-                /* Find the Element with the entire planet */
-                p = e.parentElement.parentElement.parentElement;
-                /* Reset the border of the planet */
-
-                p.style.border = "1px solid " + color;
-
-                /* Reset the color for any text */
-                p.style.color = color;
-                p.querySelector("span").style.color = color;
-                if (p.querySelector("a")) {
-                    p.querySelector("a").style.color = color;
-                }
-                /* Properly colorize the player name */
-                p.querySelector('div .playerName').style.color = color;
-            }
-        }
-    }
-    
-}
-
-/* TODO: Thsi should be combined with cfgAllyCAP */
 /* Colorize the alliance tag / playname if it matches a tag arrayAllyNAP */
 if (cfgAllyNAP!=='') {
     colorizeByNapCapWar(cfgAllyNAP, cfgAllyNAPcolor);
@@ -2762,6 +2724,43 @@ function showPluginConfiguration()
     document.getElementById('cfgHelp').addEventListener('click', function() { showHelp(); }, false);
     document.getElementById('cfgDump').addEventListener('click', function() { dumpPluginConfiguration(); }, false);
     document.getElementById('cfgSave').addEventListener('click', function() { savePluginConfiguration(); }, false);
+}
+
+function colorizeByNapCapWar(allyList, color)
+{
+    var arrayAlly = allyList.split(',');
+
+    for (i=0; i<arrayAlly.length; i++) {
+        arrayAlly[i] = '[' + arrayAlly[i].trim() + ']';
+    }
+
+    var elems = document.getElementsByTagName("div");
+    var player="";
+    for (i=0; i<elems.length; i++) {
+        var e = elems[i];
+        if (e.className==="allianceName"&&arrayAlly.includes(e.innerText.trim())) {
+            /* Colorize the alliance TAG */
+            e.style.color = color;
+            /* Only for navigation */
+            if (location.href.includes('/navigation/')) {
+                /* Find the Element with the entire planet */
+                p = e.parentElement.parentElement.parentElement;
+                /* Reset the border of the planet */
+
+                p.style.border = "1px solid " + color;
+
+                /* Reset the color for any text */
+                p.style.color = color;
+                p.querySelector("span").style.color = color;
+                if (p.querySelector("a")) {
+                    p.querySelector("a").style.color = color;
+                }
+                /* Properly colorize the player name */
+                p.querySelector('div .playerName').style.color = color;
+            }
+        }
+    }
+    
 }
 
 /* === END OF FEATURE FUNCTIONS === */
