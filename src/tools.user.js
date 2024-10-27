@@ -1117,10 +1117,55 @@ function showWhatsNew()
     help.innerHTML = '';
     help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
     onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
+      v0.5.0009
+    </div>`;
+    
+    help.innerHTML += `<div class="topicContent show">
+    Version 0.5.0009 comes with the following changes:<br/><br/>
+    <strong>New features:</strong>
+    <ul>
+      <li>Planet statistics now has <em>"Partial Copy"</em> button which only copies the income</li>
+      <li>Planet statistics now has <em>"Available reinforcements"</em> which lists any available warships, invasions and soldiers</li>
+      <li>Planet statistics now has <em>"Parked transports"</em> which lists any available transport ships</li>
+      <li>All friendly <em>(owned by the player)</em> planets are now links to the respective planet page instead of coordinates</li>
+      <li><em>Experimental fleet caching - usage reserved for future versions</em></li>
+      <li>Planet and Fleet listing pages now have built-in filters <em>(also accessible via \`/\` or \`Ctrl+F\`)</em></li>
+      <li>Implemented "Landed ships" inline information for each planet (configurable via Settings)</li>
+    </ul>
+    <br/>
+    <strong>Updates:</strong>
+    <ul>
+      <li>Planet statistics output received an update in order to have better output</li>
+      <li>User script for TamperMonkey was renamed to "DarkGalaxy Plus" <em>(same as the Chrome extension)</em></li>
+      <li>Experimental loading of images from the extension pack</li>
+      <li>Various adjustments related to rules changes in Andromeda 3 and Andromeda 4</li>
+      <li>Implemented capability to hide the "context menu" for "Scan Target" and "Jump To" if the user clicks elsewhere on the interface</li>
+      <li>Icons for "Scan Target" and "Jump To" context menus are now available throughout the entire interface and not in Navigation only</li>
+      <li>Planet sorting was extended to support "order by population"</li>
+      <li>Various optimizations and code clean-ups</li>
+    </ul>
+    <br/>
+    <strong>Bug Fixes:</strong>
+    <ul>
+      <li>Now workers statistics is now taking into consideration "available living space" on each planet, thus providing accurate information.</li>
+      <li>Added checks for some elements in order to deactivate the script/extension if not logged in</li>
+      <li>Disabled Alt+Left / Alt+Right or Ctrl+Left / Ctrl+Right shorcuts for switching to previous/next for planets, fleets or navigation</li>
+    </ul><br/>
+    <hr/><br/></div>`;
+
+/*
+**New features:**
+
+
+**Updates:**
+
+*/
+    help.innerHTML += `<div class="lightBorder ofHidden opacBackground header topic"
+    onclick="c = document.querySelectorAll(\'.topicContent\'); c.forEach((s, i) => { if (i === ` + i++ + `) { s.classList.toggle(\'show\'); } else {s.classList.remove(\'show\'); } });">
       v0.4.0006
     </div>`;
 
-    help.innerHTML += `<div class="topicContent show">
+    help.innerHTML += `<div class="topicContent">
     Version 0.4.0006 comes with the following changes:<br/><br/>
     <strong>New features:</strong>
     <ul>
