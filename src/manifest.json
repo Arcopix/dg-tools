@@ -41,8 +41,12 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "images/screenshotExample.png" ],
-      "matches": [ "https://*.darkgalaxy.com/*" ]
+      "resources": [
+        "images/screenshotExample.png"
+      ],
+      "matches": [
+        "https://*.darkgalaxy.com/*"
+      ]
     }
   ],
   "file_browser_handlers": [],
