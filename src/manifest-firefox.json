@@ -1,8 +1,8 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "DarkGalaxy Plus",
-  "version": "0.5.0009",
-  "action": {
+  "version": "5.9",
+  "browser_action": {
     "default_icon": {
       "16": "images/icon16.png",
       "24": "images/icon24.png",
@@ -37,16 +37,6 @@
         "https://manual.darkgalaxy.com/*"
       ],
       "run_at": "document_end"
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "images/screenshotExample.png"
-      ],
-      "matches": [
-        "https://*.darkgalaxy.com/*"
-      ]
     }
   ],
   "file_browser_handlers": [],
