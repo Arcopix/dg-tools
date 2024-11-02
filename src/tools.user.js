@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name     DarkGalaxy Plus
 // @namespace    devhex
-// @version      0.5.0010
+// @version      0.5.0009
 // @description  various minor improvements of DG interface
 // @match        https://*.darkgalaxy.com
 // @match        https://*.darkgalaxy.com/*
 // @require      https://html2canvas.hertzen.com/dist/html2canvas.min.js
-// @require      https://github.com/Arcopix/dg-tools/raw/master/src/resources.js?v=0.5.0010
+// @require      https://github.com/Arcopix/dg-tools/raw/master/src/resources.js?v=0.5.0009
 // @copyright    2020-2024, Stefan Lekov / Arcopix / Devhex Ltd
 // @author       Arcopix
 // @homepage     https://github.com/Arcopix/dg-tools
